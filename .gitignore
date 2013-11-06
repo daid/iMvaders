@@ -1,0 +1,5 @@
+*.dll
+*.depend
+*.layout
+.bin
+.obj
