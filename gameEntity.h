@@ -10,12 +10,12 @@
     The GameEntities are based of the Pobject class, which helps in tracking references and destruction.
     
     Create a new GameEntity with "new GameEntity()" and destroy it with "entity->destroy()", never use
-    "delete entity", as the Pobject takes care of this.
+    "delete entity", as the PObject takes care of this.
  */
 
 class GameEntity;
 PVector<GameEntity> entityList;
-class GameEntity: public Pobject
+class GameEntity: public PObject
 {
 public:
     GameEntity()

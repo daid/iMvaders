@@ -34,19 +34,52 @@ sf::Clock Clock;
 
 PlayerController playerController[2];
 
-class mainMenu : public GameEntity
+class GameRound : public GameEntity
+{
+private:
+    PVector<EnemyGroup> groupList;
+    float enemyOffset;
+    float enemyDirection;
+public:
+    GameRound()
+    {
+        enemyDirection = 0.2;
+        enemyOffset = 0;
+        
+        EnemyGroup* g = new EnemyGroup(sf::Vector2f(random(20, 300), -20));
+        groupList.push_back(g);
+        for(int n=0; n<8; n++)
+            g->add(sf::Vector2f(160 - 4 * 20 + n * 20, 50));
+        for(int n=0; n<10; n++)
+            g->add(sf::Vector2f(160 - 5 * 20 + n * 20, 70));
+        for(int n=0; n<4; n++)
+            g->add(sf::Vector2f(160 - 5 * 20 + n * 20, 90));
+        for(int n=0; n<4; n++)
+            g->add(sf::Vector2f(160 + 4 * 20 - n * 20, 90));
+    }
+    virtual ~GameRound() {}
+    
+    virtual void update()
+    {
+        if (enemyOffset > 20)
+            enemyDirection = -fabs(enemyDirection);
+        if (enemyOffset < -20)
+            enemyDirection = fabs(enemyDirection);
+        enemyOffset += enemyDirection;
+        //foreach(Enemy, e, enemyList)
+        //    e->flightCurve.p1 += sf::Vector2f(enemyDirection, 0);
+    }
+};
+
+class MainMenu : public GameEntity
 {
 public:
     sf::Sprite logoSprite;
     sf::Sprite insertCoinSprite;
-    PVector<Enemy> enemyList;
-    P<Enemy> lastSpawn;
-    sf::Vector2f enemyStartPosition;
+    P<EnemyGroup> enemyGroup;
     bool startGame;
-    int enemyDelay, enemyWaveState, enemySpawnCount;
     
-    mainMenu()
-    : enemyStartPosition(50, -20), enemyDelay(0), enemyWaveState(0), enemySpawnCount(10)
+    MainMenu()
     {
         startGame = false;
         
@@ -57,112 +90,57 @@ public:
         insertCoinSprite.setTexture(insertCoinTexture);
         insertCoinSprite.setOrigin(insertCoinTexture.getSize().x / 2, 0);
         insertCoinSprite.setPosition(160, 200);
+        
+        enemyGroup = new EnemyGroup(sf::Vector2f(50, -20));
+        for(unsigned int n=0; n<10; n++)
+            enemyGroup->add(sf::Vector2f(160+4*20 - n * 20, 100));
     }
     
-    ~mainMenu()
+    virtual ~MainMenu()
     {
     }
     
     virtual void update()
     {
-        updateEnemies();
+        if (enemyGroup->isAll(ES_CenterField))
+            enemyGroup->dive(sf::Vector2f(random(20, 300), 260));
+        if (enemyGroup->isAll(ES_Outside))
+            enemyGroup->flyIn();
         
         if (!startGame)
         {
             if (playerController[0].fire())
                 startGame = true;
         }
-        if (startGame && enemyList.size() == 0)
+        if (startGame)
         {
             foreach(GameEntity, e, entityList)
                 e->destroy();
             new PlayerCraft(&playerController[0]);
-        }
-    }
-    
-    void updateEnemies()
-    {
-        if (enemyDelay && !startGame)
-        {
-            enemyDelay--;
-            return;
-        }
-        //If we are starting, call the update for each enemy another time, so the fly double as fast.
-        if (startGame)
-            foreach(Enemy, e, enemyList)
-                e->update();
-        
-        switch(enemyWaveState)
-        {
-        case 0:
-            if (lastSpawn)
-            {
-                if (lastSpawn->flightCurve.delta == 1.0f)
-                    lastSpawn = NULL;
-                else if ((lastSpawn->sprite.getPosition() - enemyStartPosition) > 20.0f)
-                    lastSpawn = NULL;
-            }
-            if (!lastSpawn)
-            {
-                if (enemySpawnCount > 0 && !startGame)
-                {
-                    lastSpawn = new Enemy();
-                    lastSpawn->flightCurve.p0 = enemyStartPosition;
-                    lastSpawn->flightCurve.cp0 = enemyStartPosition + sf::Vector2f(0, 140);
-                    lastSpawn->flightCurve.cp1 = sf::Vector2f(160-5*30 + enemySpawnCount * 30, 200);
-                    lastSpawn->flightCurve.p1 = sf::Vector2f(160-5*20 + enemySpawnCount * 20, 100);
-                    enemyList.push_back(lastSpawn);
-                    enemySpawnCount--;
-                }
-                else
-                {
-                    enemyDelay = 300;
-                    enemyWaveState = 1;
-                }
-            }
-            break;
-        case 1:
-            foreach(Enemy, e, enemyList)
-                if (e->flightCurve.delta != 1.0f)
-                    return;
-
-            foreach(Enemy, e, enemyList)
-            {
-                e->flightCurve.delta = 0.0f;
-                e->flightCurve.p0 = e->flightCurve.p1;
-                e->flightCurve.cp0 = e->flightCurve.p0 + sf::Vector2f(0, 140);
-                e->flightCurve.p1 = sf::Vector2f(random(20, 300), 260);
-                e->flightCurve.cp1 = e->flightCurve.p1 - sf::Vector2f(0, 140);
-            }
-            enemyWaveState = 2;
-            break;
-        case 2:
-            foreach(Enemy, e, enemyList)
-                if (e->flightCurve.delta != 1.0f)
-                    return;
-            
-            foreach(Enemy, e, enemyList)
-                e->destroy();
-            enemyStartPosition = sf::Vector2f(random(20, 300), -20);
-            
-            enemyWaveState = 0;
-            enemySpawnCount = 10;
-            break;
+            new GameRound();
         }
     }
     
     virtual void postRender(sf::RenderTarget& window)
     {
         window.draw(logoSprite);
-        if (Clock.getElapsedTime().asMilliseconds() % 1000 < 500)
-            window.draw(insertCoinSprite);
+        if (startGame)
+        {
+            if (Clock.getElapsedTime().asMilliseconds() % 200 < 100)
+                window.draw(insertCoinSprite);
+        }
+        else
+        {
+            if (Clock.getElapsedTime().asMilliseconds() % 1000 < 500)
+                window.draw(insertCoinSprite);
+        }
     }
 };
 
 void mainloop(sf::RenderWindow& window)
 {
     //new BreEnemy();
-    new mainMenu();
+    new MainMenu();
     
     StarBackground background;
     while (window.isOpen())

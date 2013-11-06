@@ -14,7 +14,7 @@
     and automaticly removes any pointer from the list that points to an Pobject which has been destroyed.
  */
 
-class Pobject: public sf::NonCopyable
+class PObject: public sf::NonCopyable
 {
 private:
     int refCount;
@@ -23,18 +23,20 @@ private:
     //Make the P template a friend so it can access the private refCount and destroyed.
     template<typename> friend class P;
 public:
-    Pobject()
+    PObject()
     {
         refCount = 0;
         destroyed = false;
     }
-    virtual ~Pobject() {}
+    virtual ~PObject() {}
     
     void destroy()
     {
         destroyed = true;
     }
 };
+template<class T>
+class Piterator;
 
 template<class T>
 class P
@@ -72,6 +74,12 @@ public:
     P& operator = (const P& p)
     {
         if (&p != this) set(p.ptr);
+        return *this;
+    }
+
+    P& operator = (const Piterator<T>& i)
+    {
+        set(*i);
         return *this;
     }
     
@@ -154,12 +162,17 @@ public:
         }
     }
     
-    operator bool()
+    operator bool() const
     {
         return ptr != NULL;
     }
 
-    T* operator->()
+    T* operator->() const
+    {
+        return ptr;
+    }
+
+    T* operator*() const
     {
         return ptr;
     }
