@@ -52,7 +52,7 @@ public:
         EnemyGroup* g = new EnemyGroup();
         groupList.push_back(g);
         for(int n=0; n<8; n++)
-            g->add(sf::Vector2f(160 - 4 * 20 + n * 20, 50));
+            g->add(sf::Vector2f(160 - 4 * 20 + n * 20, 50))->giveShield();
         g = new EnemyGroup();
         groupList.push_back(g);
         for(int n=0; n<10; n++)

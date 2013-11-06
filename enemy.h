@@ -15,6 +15,9 @@ public:
     Curve flyInCurve;
     Curve diveCurve;
     int shotDelay;
+    bool hasShield;
+    int shieldPower;
+    static const int shieldMaxPower = 30;
     static const int shotAngle = 120;
 
 public:    
@@ -33,6 +36,7 @@ public:
         sprite.setOrigin(invaderTexture.getSize().x/2, invaderTexture.getSize().y/2);
         sprite.setPosition(flyInCurve.p0);
         shotDelay = random(50, 500);
+        hasShield = false;
     }
     virtual ~Enemy()
     {
@@ -48,6 +52,12 @@ public:
             float a = sprite.getRotation();
             if (a > 180 - shotAngle/2 && a < 180 + shotAngle/2)
                 new Bullet(sprite.getPosition(), 0, a);
+        }
+        if (hasShield && shieldPower < shieldMaxPower)
+        {
+            shieldPower++;
+            if (shieldPower == shieldMaxPower)
+                giveShield();
         }
         
         switch(state)
@@ -110,6 +120,14 @@ public:
         flyInCurve.delta = 0.0;
     }
     
+    void giveShield()
+    {
+        hasShield = true;
+        shieldPower = shieldMaxPower;
+        sprite.setTexture(invaderShieldedTexture, true);
+        sprite.setOrigin(invaderShieldedTexture.getSize().x/2, invaderShieldedTexture.getSize().y/2);
+    }
+    
     virtual void render(sf::RenderTarget& window)
     {
         window.draw(sprite);
@@ -120,14 +138,30 @@ public:
 #endif
     }
     
+    bool shieldUp()
+    {
+        return hasShield && shieldPower == shieldMaxPower;
+    }
+    
     virtual bool takeDamage(sf::Vector2f position, int damageType, int damageAmount)
     {
         if (damageType != 2)
             return false;
-        if ((position - sprite.getPosition()) > 8.0f)
-            return false;
-        new Explosion(sprite.getPosition(), 8);
-        destroy();
+        if (shieldUp())
+        {
+            if ((position - sprite.getPosition()) > 12.0f)
+                return false;
+            shieldPower = 0;
+            sprite.setTexture(invaderTexture, true);
+            sprite.setOrigin(invaderTexture.getSize().x/2, invaderTexture.getSize().y/2);
+        }
+        else
+        {
+            if ((position - sprite.getPosition()) > 8.0f)
+                return false;
+            new Explosion(sprite.getPosition(), 8);
+            destroy();
+        }
         return true;
     }
 };
@@ -141,10 +175,11 @@ public:
     {
     }
     
-    void add(sf::Vector2f targetPoint)
+    Enemy* add(sf::Vector2f targetPoint)
     {
         Enemy* e = new Enemy(targetPoint);
         enemyList.push_back(e);
+        return e;
     }
     
     virtual ~EnemyGroup() {}
