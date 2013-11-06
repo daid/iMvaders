@@ -18,12 +18,14 @@ class PlayerCraft: public GameEntity
 private:
     PlayerController* controller;
     int fireCooldown;
+    int invulnerability;
 public:
     sf::Sprite sprite;
     
     PlayerCraft(PlayerController* controller)
     : controller(controller)
     {
+        invulnerability = 30;
         fireCooldown = 20;
         sprite.setTexture(playerTexture);
         sprite.setOrigin(playerTexture.getSize().x/2, playerTexture.getSize().y/2);
@@ -38,6 +40,8 @@ public:
     {
         if (fireCooldown)
             fireCooldown--;
+        if (invulnerability)
+            invulnerability--;
         
         if (controller->left())
             sprite.setPosition(sprite.getPosition().x - 2.0f, sprite.getPosition().y);
@@ -66,16 +70,19 @@ public:
     
     virtual void render(sf::RenderTarget& window)
     {
+        if (invulnerability & 2)
+            return;
         window.draw(sprite);
     }
     
     virtual bool takeDamage(sf::Vector2f position, int damageType, int damageAmount)
     {
-        if (damageType >= 2)
+        if (damageType >= 2 || invulnerability)
             return false;
         if ((position - sprite.getPosition()) > 10.0f)
             return false;
-        destroy();
+        //destroy();
+        invulnerability = 30;
         return true;
     }
 };

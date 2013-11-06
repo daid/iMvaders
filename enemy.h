@@ -126,6 +126,7 @@ public:
             return false;
         if ((position - sprite.getPosition()) > 8.0f)
             return false;
+        new Explosion(sprite.getPosition(), 8);
         destroy();
         return true;
     }

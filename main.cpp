@@ -27,6 +27,7 @@ sf::Texture invaderShieldedTexture;
 sf::Texture playerTexture;
 sf::Clock Clock;
 
+#include "explosion.h"
 #include "bullet.h"
 #include "player.h"
 #include "enemy.h"

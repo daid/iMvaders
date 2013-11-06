@@ -32,7 +32,10 @@ public:
         foreach(GameEntity, e, entityList)
         {
             if (e->takeDamage(sprite.getPosition(), type, 1))
+            {
                 destroy();
+                new Explosion(sprite.getPosition(), 3);
+            }
         }
     }
     
