@@ -1,6 +1,9 @@
 #ifndef PEE_POINTER_H
 #define PEE_POINTER_H
 
+#include <vector>
+#include <assert.h>
+
 /**
     P<T> is a reference counting pointer class. This class keeps track to the amount of P<T> pointers pointing to a Pobject.
     If no more P<T> pointers point to a Pobject, the object is deleted. The object also has a destroyed flag, if the destroyed
@@ -25,6 +28,13 @@ private:
 public:
     PObject()
     {
+#ifdef DEBUG
+        int stackTest = 0;
+        ptrdiff_t diff = &stackTest - (int*)this;
+        //Check if this object is created on the stack, PObjects should not be created on the stack, as they manage
+        // their own destruction.
+        assert(("Object on stack! Not allowed!", abs(diff) > 10000));
+#endif
         refCount = 0;
         destroyed = false;
     }

@@ -40,20 +40,28 @@ private:
     PVector<EnemyGroup> groupList;
     float enemyOffset;
     float enemyDirection;
+    int diveCountdown;
 public:
     GameRound()
     {
         enemyDirection = 0.2;
         enemyOffset = 0;
+        diveCountdown = random(100, 300);
         
-        EnemyGroup* g = new EnemyGroup(sf::Vector2f(random(20, 300), -20));
+        EnemyGroup* g = new EnemyGroup();
         groupList.push_back(g);
         for(int n=0; n<8; n++)
             g->add(sf::Vector2f(160 - 4 * 20 + n * 20, 50));
+        g = new EnemyGroup();
+        groupList.push_back(g);
         for(int n=0; n<10; n++)
             g->add(sf::Vector2f(160 - 5 * 20 + n * 20, 70));
+        g = new EnemyGroup();
+        groupList.push_back(g);
         for(int n=0; n<4; n++)
             g->add(sf::Vector2f(160 - 5 * 20 + n * 20, 90));
+        g = new EnemyGroup();
+        groupList.push_back(g);
         for(int n=0; n<4; n++)
             g->add(sf::Vector2f(160 + 4 * 20 - n * 20, 90));
     }
@@ -66,6 +74,41 @@ public:
         if (enemyOffset < -20)
             enemyDirection = fabs(enemyDirection);
         enemyOffset += enemyDirection;
+        
+        bool allowDive = true;
+        bool allowFlyIn = true;
+        foreach(EnemyGroup, g, groupList)
+        {
+            if (!g->isAll(ES_CenterField))
+            {
+                allowDive = false;
+                if (!g->isAll(ES_Outside))
+                    allowFlyIn = false;
+            }
+        }
+        if (groupList.size() < 1)
+            return;
+        
+        if (allowFlyIn)
+        {
+            P<EnemyGroup> g = groupList[rand() % groupList.size()];
+            if (g->isAll(ES_Outside))
+                g->flyIn(sf::Vector2f(random(0, 320), -20));
+        }
+        
+        if (allowDive)
+        {
+            if (diveCountdown)
+            {
+                diveCountdown--;
+            }
+            else
+            {
+                diveCountdown = random(100, 300);
+                P<EnemyGroup> g = groupList[rand() % groupList.size()];
+                g->dive(sf::Vector2f(random(20, 300), 300));
+            }
+        }
         //foreach(Enemy, e, enemyList)
         //    e->flightCurve.p1 += sf::Vector2f(enemyDirection, 0);
     }
@@ -91,7 +134,7 @@ public:
         insertCoinSprite.setOrigin(insertCoinTexture.getSize().x / 2, 0);
         insertCoinSprite.setPosition(160, 200);
         
-        enemyGroup = new EnemyGroup(sf::Vector2f(50, -20));
+        enemyGroup = new EnemyGroup();
         for(unsigned int n=0; n<10; n++)
             enemyGroup->add(sf::Vector2f(160+4*20 - n * 20, 100));
     }
@@ -105,7 +148,7 @@ public:
         if (enemyGroup->isAll(ES_CenterField))
             enemyGroup->dive(sf::Vector2f(random(20, 300), 260));
         if (enemyGroup->isAll(ES_Outside))
-            enemyGroup->flyIn();
+            enemyGroup->flyIn(sf::Vector2f(random(0, 320), -20));
         
         if (!startGame)
         {

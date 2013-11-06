@@ -38,6 +38,23 @@ public:
         sf::Vector2f diff = getPosition() - getPosition(0.01);
         return vector2ToAngle(diff);
     }
+    
+    void draw(sf::RenderTarget& window)
+    {
+        sf::RectangleShape debug(sf::Vector2f(1, 1));
+        debug.setFillColor(sf::Color(255,255,255,64));
+        for(unsigned int n=0; n<100; n++)
+        {
+            debug.setPosition(getPosition(-delta + 1.0f/100.0 * n));
+            window.draw(debug);
+        }
+        debug.setFillColor(sf::Color(255,0,255,64));
+        debug.setSize(sf::Vector2f(3, 3));
+        debug.setPosition(cp0);
+        window.draw(debug);
+        debug.setPosition(cp1);
+        window.draw(debug);
+    }
 };
 
 #endif//CUBIC_BEZIER_CURVE_H

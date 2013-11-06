@@ -20,18 +20,18 @@ public:
 public:    
     sf::Sprite sprite;
     
-    Enemy(sf::Vector2f entryPosition, sf::Vector2f finalPosition)
+    Enemy(sf::Vector2f finalPosition)
     {
-        state = ES_FlyIn;
+        state = ES_Outside;
         
-        flyInCurve.p0 = entryPosition;
+        flyInCurve.p0 = sf::Vector2f(-50, -50);
         flyInCurve.p1 = finalPosition;
-        flyInCurve.cp0 = entryPosition + sf::Vector2f(0, 30);
+        flyInCurve.cp0 = flyInCurve.p0;
         flyInCurve.cp1 = finalPosition - sf::Vector2f(0, 30);
         
         sprite.setTexture(invaderTexture, true);
         sprite.setOrigin(invaderTexture.getSize().x/2, invaderTexture.getSize().y/2);
-        sprite.setPosition(entryPosition);
+        sprite.setPosition(flyInCurve.p0);
         shotDelay = random(50, 500);
     }
     virtual ~Enemy()
@@ -92,14 +92,16 @@ public:
         diveCurve.p0 = sprite.getPosition();
         diveCurve.cp0 = diveCurve.p0 + sf::vector2FromAngle(sprite.getRotation()) * 30.0f;
         diveCurve.p1 = target;
-        diveCurve.cp1 = target + sf::Vector2f(0, -30);
+        diveCurve.cp1 = sf::Vector2f(target.x, 180);
         diveCurve.delta = 0.0;
         state = ES_Diving;
     }
     
-    void wait()
+    void wait(sf::Vector2f start)
     {
         state = ES_Wait;
+        flyInCurve.p0 = start;
+        flyInCurve.cp0 = start + sf::Vector2f(0, 30);
         sprite.setPosition(flyInCurve.p0);
     }
     void flyIn()
@@ -113,19 +115,8 @@ public:
         window.draw(sprite);
 
 #ifdef DEBUG
-        sf::RectangleShape debug(sf::Vector2f(1, 1));
-        debug.setFillColor(sf::Color(255,255,255,64));
-        for(unsigned int n=0; n<100; n++)
-        {
-            debug.setPosition(flightCurve.getPosition(-flightCurve.delta + 1.0f/100.0 * n));
-            window.draw(debug);
-        }
-        debug.setFillColor(sf::Color(255,0,255,64));
-        debug.setSize(sf::Vector2f(3, 3));
-        debug.setPosition(flightCurve.cp0);
-        window.draw(debug);
-        debug.setPosition(flightCurve.cp1);
-        window.draw(debug);
+        flyInCurve.draw(window);
+        diveCurve.draw(window);
 #endif
     }
     
@@ -144,17 +135,14 @@ class EnemyGroup : public GameEntity
 {
 private:
     PVector<Enemy> enemyList;
-    sf::Vector2f entryPoint;
 public:
-    EnemyGroup(sf::Vector2f entryPoint)
-    : entryPoint(entryPoint)
+    EnemyGroup()
     {
     }
     
     void add(sf::Vector2f targetPoint)
     {
-        Enemy* e = new Enemy(entryPoint, targetPoint);
-        e->wait();
+        Enemy* e = new Enemy(targetPoint);
         enemyList.push_back(e);
     }
     
@@ -162,6 +150,9 @@ public:
     
     virtual void update()
     {
+        if (enemyList.size() < 1)
+            destroy();
+    
         P<Enemy> prev;
         foreach(Enemy, e, enemyList)
         {
@@ -198,10 +189,10 @@ public:
         }
     }
     
-    void flyIn()
+    void flyIn(sf::Vector2f start)
     {
         foreach(Enemy, e, enemyList)
-            e->wait();
+            e->wait(start);
         foreach(Enemy, e, enemyList)
         {
             e->flyIn();
