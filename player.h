@@ -20,10 +20,8 @@ private:
     int fireCooldown;
     int invulnerability;
 public:
-    sf::Sprite sprite;
-    
     PlayerCraft(PlayerController* controller)
-    : controller(controller)
+    : GameEntity(10.0f), controller(controller)
     {
         invulnerability = 30;
         fireCooldown = 20;
@@ -63,7 +61,7 @@ public:
         
         if (controller->fire() && !fireCooldown)
         {
-            new Bullet(sprite.getPosition(), 2, 0);
+            new Bullet(sprite.getPosition(), -1, 0);
             fireCooldown = 20;
         }
     }
@@ -77,9 +75,7 @@ public:
     
     virtual bool takeDamage(sf::Vector2f position, int damageType, int damageAmount)
     {
-        if (damageType >= 2 || invulnerability)
-            return false;
-        if ((position - sprite.getPosition()) > 10.0f)
+        if (damageType < 0 || invulnerability)
             return false;
         //destroy();
         invulnerability = 30;

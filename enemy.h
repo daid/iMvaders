@@ -21,9 +21,8 @@ public:
     static const int shotAngle = 120;
 
 public:    
-    sf::Sprite sprite;
-    
     Enemy(sf::Vector2f finalPosition)
+    : GameEntity(8.0f)
     {
         state = ES_Outside;
         
@@ -122,6 +121,7 @@ public:
     
     void giveShield()
     {
+        collisionRadius = 12.0f;
         hasShield = true;
         shieldPower = shieldMaxPower;
         sprite.setTexture(invaderShieldedTexture, true);
@@ -145,20 +145,17 @@ public:
     
     virtual bool takeDamage(sf::Vector2f position, int damageType, int damageAmount)
     {
-        if (damageType != 2)
+        if (damageType >= 0)
             return false;
         if (shieldUp())
         {
-            if ((position - sprite.getPosition()) > 12.0f)
-                return false;
             shieldPower = 0;
+            collisionRadius = 8.0f;
             sprite.setTexture(invaderTexture, true);
             sprite.setOrigin(invaderTexture.getSize().x/2, invaderTexture.getSize().y/2);
         }
         else
         {
-            if ((position - sprite.getPosition()) > 8.0f)
-                return false;
             new Explosion(sprite.getPosition(), 8);
             destroy();
         }

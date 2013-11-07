@@ -2,12 +2,11 @@
 class Bullet: public GameEntity
 {
 private:
-    sf::Sprite sprite;
     float speed;
     int type;
 public:
     Bullet(sf::Vector2f position, int type, float angle, float speed = 3.0f)
-    : speed(speed), type(type)
+    : GameEntity(1.0f), speed(speed), type(type)
     {
         sprite.setTexture(bulletTexture);
         sprite.setOrigin(bulletTexture.getSize().x/2, bulletTexture.getSize().y/10);
@@ -17,7 +16,7 @@ public:
             sprite.setColor(sf::Color::Red);
         else if (type == 1)
             sprite.setColor(sf::Color::Green);
-        else if (type == 2)
+        else if (type == -1)
             sprite.setColor(sf::Color(24, 161, 212));
     }
     
@@ -29,7 +28,7 @@ public:
         if (sprite.getPosition().x > 330) destroy();
         if (sprite.getPosition().y > 250) destroy();
 
-        foreach(GameEntity, e, entityList)
+        foreach_hit(e, this)
         {
             if (e->takeDamage(sprite.getPosition(), type, 1))
             {

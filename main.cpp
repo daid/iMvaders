@@ -115,6 +115,15 @@ public:
         //foreach(Enemy, e, enemyList)
         //    e->flightCurve.p1 += sf::Vector2f(enemyDirection, 0);
     }
+
+    virtual void postRender(sf::RenderTarget& window)
+    {
+        sf::Sprite tmp;
+        tmp.setTexture(letterTexture[0]);
+        window.draw(tmp);
+        tmp.setTexture(letterTexture[1],true);
+        window.draw(tmp);
+    }
 };
 
 class MainMenu : public GameEntity
@@ -213,7 +222,21 @@ void mainloop(sf::RenderWindow& window)
         window.clear(sf::Color(0, 0, 0));
         background.render(window);
         foreach(GameEntity, e, entityList)
+        {
+#ifdef DEBUG
+            if (e->collisionRadius > 0.0)
+            {
+                sf::CircleShape circle(e->collisionRadius, 30);
+                circle.setOrigin(e->collisionRadius, e->collisionRadius);
+                circle.setPosition(e->sprite.getPosition());
+                circle.setFillColor(sf::Color::Transparent);
+                circle.setOutlineColor(sf::Color(255,255,255,128));
+                circle.setOutlineThickness(1);
+                window.draw(circle);
+            }
+#endif
             e->preRender(window);
+        }
         foreach(GameEntity, e, entityList)
             e->render(window);
         foreach(GameEntity, e, entityList)

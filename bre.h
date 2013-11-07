@@ -2,7 +2,6 @@
 class BreEnemy: public GameEntity
 {
 public:
-    sf::Sprite sprite;
     sf::Sprite mouth;
     int state;
     float mouthPos;
