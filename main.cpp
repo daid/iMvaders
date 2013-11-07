@@ -90,7 +90,11 @@ public:
             }
         }
         if (groupList.size() < 1)
+        {
+            destroy();
+            new GameRound();
             return;
+        }
         
         if (allowFlyIn)
         {
@@ -114,15 +118,6 @@ public:
         }
         //foreach(Enemy, e, enemyList)
         //    e->flightCurve.p1 += sf::Vector2f(enemyDirection, 0);
-    }
-
-    virtual void postRender(sf::RenderTarget& window)
-    {
-        sf::Sprite tmp;
-        tmp.setTexture(letterTexture[0]);
-        window.draw(tmp);
-        tmp.setTexture(letterTexture[1],true);
-        window.draw(tmp);
     }
 };
 
