@@ -53,6 +53,7 @@
 		<Unit filename="bullet.h" />
 		<Unit filename="curve.h" />
 		<Unit filename="enemy.h" />
+		<Unit filename="explosion.h" />
 		<Unit filename="gameEntity.cpp" />
 		<Unit filename="gameEntity.h" />
 		<Unit filename="main.cpp" />

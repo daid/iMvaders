@@ -41,8 +41,6 @@ class GameRound : public GameEntity
 {
 private:
     PVector<EnemyGroup> groupList;
-    float enemyOffset;
-    float enemyDirection;
     int diveCountdown;
 public:
     GameRound()
@@ -72,9 +70,9 @@ public:
     
     virtual void update()
     {
-        if (enemyOffset > 20)
+        if (enemyOffset > 30)
             enemyDirection = -fabs(enemyDirection);
-        if (enemyOffset < -20)
+        if (enemyOffset < -30)
             enemyDirection = fabs(enemyDirection);
         enemyOffset += enemyDirection;
         

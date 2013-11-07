@@ -8,12 +8,16 @@ enum EnemyState
     ES_Outside
 };
 
+float enemyOffset;
+float enemyDirection;
+
 class Enemy: public GameEntity
 {
 public:
     EnemyState state;
     Curve flyInCurve;
     Curve diveCurve;
+    sf::Vector2f targetPosition;
     int shotDelay;
     bool hasShield;
     int shieldPower;
@@ -21,15 +25,15 @@ public:
     static const int shotAngle = 120;
 
 public:    
-    Enemy(sf::Vector2f finalPosition)
-    : GameEntity(8.0f)
+    Enemy(sf::Vector2f targetPosition)
+    : GameEntity(8.0f), targetPosition(targetPosition)
     {
         state = ES_Outside;
         
         flyInCurve.p0 = sf::Vector2f(-50, -50);
-        flyInCurve.p1 = finalPosition;
+        flyInCurve.p1 = targetPosition;
         flyInCurve.cp0 = flyInCurve.p0;
-        flyInCurve.cp1 = finalPosition - sf::Vector2f(0, 30);
+        flyInCurve.cp1 = targetPosition - sf::Vector2f(0, 30);
         
         sprite.setTexture(invaderTexture, true);
         sprite.setOrigin(invaderTexture.getSize().x/2, invaderTexture.getSize().y/2);
@@ -64,6 +68,7 @@ public:
         case ES_Wait:
             break;
         case ES_FlyIn:
+            flyInCurve.p1 = targetPosition + sf::Vector2f(enemyOffset, 0);
             if (flyInCurve.delta < 1.0)
             {
                 flyInCurve.moveDistance(2.0);
@@ -77,6 +82,7 @@ public:
             sprite.setPosition(flyInCurve.getPosition());
             break;
         case ES_CenterField:
+            sprite.setPosition(targetPosition + sf::Vector2f(enemyOffset, 0));
             break;
         case ES_Diving:
             if (diveCurve.delta < 1.0)
