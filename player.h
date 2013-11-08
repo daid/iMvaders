@@ -23,7 +23,7 @@ public:
     PlayerCraft(PlayerController* controller)
     : GameEntity(10.0f), controller(controller)
     {
-        invulnerability = 30;
+        invulnerability = 60;
         fireCooldown = 20;
         sprite.setTexture(playerTexture);
         sprite.setOrigin(playerTexture.getSize().x/2, playerTexture.getSize().y/2);
@@ -59,7 +59,7 @@ public:
         if (sprite.getPosition().y > 230)
             sprite.setPosition(sprite.getPosition().x, 230);
         
-        if (controller->fire() && !fireCooldown)
+        if (controller->fire() && !fireCooldown && !invulnerability)
         {
             new Bullet(sprite.getPosition(), -1, 0);
             fireCooldown = 20;
@@ -77,8 +77,8 @@ public:
     {
         if (damageType < 0 || invulnerability)
             return false;
-        //destroy();
-        invulnerability = 30;
+        destroy();
+        new Explosion(sprite.getPosition(), 12);
         return true;
     }
 };

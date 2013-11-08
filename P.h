@@ -45,8 +45,6 @@ public:
         destroyed = true;
     }
 };
-template<class T>
-class Piterator;
 
 template<class T>
 class P
@@ -86,12 +84,6 @@ public:
         if (&p != this) set(p.ptr);
         return *this;
     }
-
-    P& operator = (const Piterator<T>& i)
-    {
-        set(*i);
-        return *this;
-    }
     
     T* operator->()
     {
@@ -109,8 +101,8 @@ public:
         check_release();
         return ptr != NULL;
     }
-
-private:
+    
+protected:
     void check_release()
     {
         if (ptr && ptr->destroyed)
@@ -140,15 +132,14 @@ template<class T>
 class PVector: public std::vector<P<T> > {};
 
 template<class T>
-class Piterator : public sf::NonCopyable
+class Piterator : public P<T>
 {
 private:
     PVector<T>& list;
     unsigned int index;
-    T* ptr;
 public:
     Piterator(PVector<T>& list)
-    : list(list), index(0), ptr(NULL)
+    : P<T>(NULL), list(list), index(0)
     {
        next();
     }
@@ -159,11 +150,11 @@ public:
         {
             if (index >= list.size())
             {
-                ptr = NULL;
+                P<T>::set(NULL);
                 return;
             }
-            ptr = *(list[index]);
-            if (ptr)
+            P<T>::set(*list[index]);
+            if (*this)
             {
                 index++;
                 return;
@@ -171,22 +162,18 @@ public:
             list.erase(list.begin() + index);
         }
     }
-    
-    operator bool() const
-    {
-        return ptr != NULL;
-    }
-
-    T* operator->() const
-    {
-        return ptr;
-    }
-
-    T* operator*() const
-    {
-        return ptr;
-    }
 };
 #define foreach(type, var, list) for(Piterator<type> var(list); var; var.next())
+
+template<class T>
+bool operator == (P<T>& p, const PObject* ptr)
+{
+    return *p == ptr;
+}
+template<class T>
+bool operator != (P<T>& p, const PObject* ptr)
+{
+    return *p != ptr;
+}
 
 #endif//PEE_POINTER_H

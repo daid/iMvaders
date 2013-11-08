@@ -23,7 +23,8 @@ sf::Texture bre1Texture;
 sf::Texture bre2Texture;
 sf::Texture robotTexture;
 sf::Texture insertCoinTexture;
-sf::Texture letterTexture[9];
+sf::Texture ultimakerTexture[9];
+sf::Texture numberTexture[10];
 sf::Texture invaderTexture;
 sf::Texture invaderShieldedTexture;
 sf::Texture playerTexture;
@@ -89,8 +90,8 @@ public:
         }
         if (groupList.size() < 1)
         {
+            //Destroy ourselves if all our groups are destroyed, to indicate the round is done.
             destroy();
-            new GameRound();
             return;
         }
         
@@ -117,6 +118,60 @@ public:
         }
         //foreach(Enemy, e, enemyList)
         //    e->flightCurve.p1 += sf::Vector2f(enemyDirection, 0);
+    }
+};
+
+class GameState : public GameEntity
+{
+private:
+    P<PlayerCraft> player;
+    P<GameRound> round;
+    int lives;
+public:
+    GameState()
+    {
+        lives = 4;
+        //Destroy all objects except ourselves.
+        foreach(GameEntity, e, entityList)
+            if (e != this)
+                e->destroy();
+    }
+    virtual ~GameState() {}
+    
+    virtual void update()
+    {
+        if (!player)
+        {
+            if (lives)
+            {
+                lives --;
+                player = new PlayerCraft(&playerController[0]);
+            }
+            else
+            {
+                //foreach(GameEntity, e, entityList)
+                //    e->destroy();
+                //new MainMenu();
+                return;
+            }
+        }
+            
+        if (!round)
+            round = new GameRound();
+    }
+    
+    virtual void postRender(sf::RenderTarget& window)
+    {
+        sf::Sprite life;
+        life.setTexture(playerTexture);
+        life.setScale(0.5, 0.5);
+        life.setOrigin(playerTexture.getSize().x / 2, playerTexture.getSize().y / 2);
+        life.setColor(sf::Color(255,255,255,192));
+        for(int n=0; n<lives; n++)
+        {
+            life.setPosition(10 + 13 * n, 230);
+            window.draw(life);
+        }
     }
 };
 
@@ -163,10 +218,7 @@ public:
         }
         if (startGame)
         {
-            foreach(GameEntity, e, entityList)
-                e->destroy();
-            new PlayerCraft(&playerController[0]);
-            new GameRound();
+            new GameState();
         }
     }
     
@@ -260,15 +312,25 @@ int main()
     bre1Texture.loadFromFile("resources/bre1.png");
     bre2Texture.loadFromFile("resources/bre2.png");
     robotTexture.loadFromFile("resources/robot.png");
-    letterTexture[0].loadFromFile("resources/letter_u.png");
-    letterTexture[1].loadFromFile("resources/letter_l.png");
-    letterTexture[2].loadFromFile("resources/letter_t.png");
-    letterTexture[3].loadFromFile("resources/letter_i.png");
-    letterTexture[4].loadFromFile("resources/letter_m.png");
-    letterTexture[5].loadFromFile("resources/letter_a.png");
-    letterTexture[6].loadFromFile("resources/letter_k.png");
-    letterTexture[7].loadFromFile("resources/letter_e.png");
-    letterTexture[8].loadFromFile("resources/letter_r.png");
+    ultimakerTexture[0].loadFromFile("resources/letter_u.png");
+    ultimakerTexture[1].loadFromFile("resources/letter_l.png");
+    ultimakerTexture[2].loadFromFile("resources/letter_t.png");
+    ultimakerTexture[3].loadFromFile("resources/letter_i.png");
+    ultimakerTexture[4].loadFromFile("resources/letter_m.png");
+    ultimakerTexture[5].loadFromFile("resources/letter_a.png");
+    ultimakerTexture[6].loadFromFile("resources/letter_k.png");
+    ultimakerTexture[7].loadFromFile("resources/letter_e.png");
+    ultimakerTexture[8].loadFromFile("resources/letter_r.png");
+    numberTexture[0].loadFromFile("resources/num0.png");
+    numberTexture[1].loadFromFile("resources/num1.png");
+    numberTexture[2].loadFromFile("resources/num2.png");
+    numberTexture[3].loadFromFile("resources/num3.png");
+    numberTexture[4].loadFromFile("resources/num4.png");
+    numberTexture[5].loadFromFile("resources/num5.png");
+    numberTexture[6].loadFromFile("resources/num6.png");
+    numberTexture[7].loadFromFile("resources/num7.png");
+    numberTexture[8].loadFromFile("resources/num8.png");
+    numberTexture[9].loadFromFile("resources/num9.png");
     insertCoinTexture.loadFromFile("resources/insertCoin.png");
     invaderTexture.loadFromFile("resources/MakerBotLogoMini.png");
     invaderShieldedTexture.loadFromFile("resources/MakerBotLogoMiniShielded.png");
