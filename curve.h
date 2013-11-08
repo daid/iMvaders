@@ -43,9 +43,9 @@ public:
     {
         sf::RectangleShape debug(sf::Vector2f(1, 1));
         debug.setFillColor(sf::Color(255,255,255,64));
-        for(unsigned int n=0; n<100; n++)
+        for(unsigned int n=0; n<50; n++)
         {
-            debug.setPosition(getPosition(-delta + 1.0f/100.0 * n));
+            debug.setPosition(getPosition(-delta + 1.0f/50.0 * n));
             window.draw(debug);
         }
         debug.setFillColor(sf::Color(255,0,255,64));

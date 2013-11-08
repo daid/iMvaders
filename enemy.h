@@ -15,12 +15,13 @@ class Enemy: public GameEntity
 {
 public:
     EnemyState state;
-    Curve flyInCurve;
+    Curve flyInCurve[2];
     Curve diveCurve;
     sf::Vector2f targetPosition;
     int shotDelay;
     bool hasShield;
     int shieldPower;
+    int flyIncurveNr, flyIncurveCount;
     static const int shieldMaxPower = 30;
     static const int shotAngle = 120;
 
@@ -29,15 +30,11 @@ public:
     : GameEntity(8.0f), targetPosition(targetPosition)
     {
         state = ES_Outside;
-        
-        flyInCurve.p0 = sf::Vector2f(-50, -50);
-        flyInCurve.p1 = targetPosition;
-        flyInCurve.cp0 = flyInCurve.p0;
-        flyInCurve.cp1 = targetPosition - sf::Vector2f(0, 30);
+        flyIncurveCount = 0;
         
         sprite.setTexture(invaderTexture, true);
         sprite.setOrigin(invaderTexture.getSize().x/2, invaderTexture.getSize().y/2);
-        sprite.setPosition(flyInCurve.p0);
+        sprite.setPosition(sf::Vector2f(-50, -50));
         shotDelay = random(50, 500);
         hasShield = false;
     }
@@ -63,23 +60,31 @@ public:
                 giveShield();
         }
         
+        if (flyIncurveCount > 0)
+            flyInCurve[flyIncurveCount-1].p1 = targetPosition + sf::Vector2f(enemyOffset, 0);
+        diveCurve.p0 = targetPosition + sf::Vector2f(enemyOffset, 0);
         switch(state)
         {
         case ES_Wait:
             break;
         case ES_FlyIn:
-            flyInCurve.p1 = targetPosition + sf::Vector2f(enemyOffset, 0);
-            if (flyInCurve.delta < 1.0)
+            if (flyInCurve[flyIncurveNr].delta < 1.0)
             {
-                flyInCurve.moveDistance(2.0);
-                sprite.setRotation(flyInCurve.angle());
+                flyInCurve[flyIncurveNr].moveDistance(2.0);
+                sprite.setRotation(flyInCurve[flyIncurveNr].angle());
             }
             else
             {
-                sprite.setRotation(180);
-                state = ES_CenterField;
+                if (flyIncurveNr < flyIncurveCount - 1)
+                {
+                    flyIncurveNr++;
+                    flyInCurve[flyIncurveNr].delta = 0.0;
+                }else{
+                    sprite.setRotation(180);
+                    state = ES_CenterField;
+                }
             }
-            sprite.setPosition(flyInCurve.getPosition());
+            sprite.setPosition(flyInCurve[flyIncurveNr].getPosition());
             break;
         case ES_CenterField:
             sprite.setPosition(targetPosition + sf::Vector2f(enemyOffset, 0));
@@ -92,7 +97,6 @@ public:
             }
             else
             {
-                flyInCurve.delta = 0.0;
                 state = ES_Outside;
             }
             sprite.setPosition(diveCurve.getPosition());
@@ -115,14 +119,43 @@ public:
     void wait(sf::Vector2f start)
     {
         state = ES_Wait;
-        flyInCurve.p0 = start;
-        flyInCurve.cp0 = start + sf::Vector2f(0, 30);
-        sprite.setPosition(flyInCurve.p0);
+        flyIncurveNr = 0;
+        flyInCurve[0].delta = 0.0;
+        flyInCurve[0].p0 = start;
+        flyInCurve[0].cp0 = flyInCurve[0].p0 + sf::Vector2f(0, 30);
+        flyInCurve[0].p1 = targetPosition;
+        flyInCurve[0].cp1 = flyInCurve[0].p1 - sf::Vector2f(0, 30);
+        flyIncurveCount = 1;
+        sprite.setPosition(flyInCurve[0].p0);
     }
+
+    void wait(sf::Vector2f start, sf::Vector2f flyByTarget)
+    {
+        state = ES_Wait;
+        
+        sf::Vector2f normal = normalize(flyByTarget - start);
+        sf::Vector2f dir(-normal.y, normal.x);
+        if (start.x > flyByTarget.x)
+            dir = -dir;
+        
+        flyIncurveNr = 0;
+        flyInCurve[0].delta = 0.0;
+        flyInCurve[0].p0 = start;
+        flyInCurve[0].cp0 = flyInCurve[0].p0 + sf::Vector2f(0, 30);
+        flyInCurve[0].p1 = flyByTarget;
+        flyInCurve[0].cp1 = flyByTarget + dir * 50.f;
+
+        flyInCurve[1].p0 = flyByTarget;
+        flyInCurve[1].cp0 = flyByTarget - dir * 50.f;
+        flyInCurve[1].p1 = targetPosition;
+        flyInCurve[1].cp1 = flyInCurve[1].p1 - sf::Vector2f(0, 50);
+        flyIncurveCount = 2;
+        sprite.setPosition(flyInCurve[0].p0);
+    }
+
     void flyIn()
     {
         state = ES_FlyIn;
-        flyInCurve.delta = 0.0;
     }
     
     void giveShield()
@@ -139,7 +172,8 @@ public:
         window.draw(sprite);
 
 #ifdef DEBUG
-        flyInCurve.draw(window);
+        for(int n=0; n<flyIncurveCount; n++)
+            flyInCurve[n].draw(window);
         diveCurve.draw(window);
 #endif
     }
@@ -232,10 +266,15 @@ public:
     {
         foreach(Enemy, e, enemyList)
             e->wait(start);
+        if (enemyList.size() > 0)
+            enemyList[0]->flyIn();
+    }
+
+    void flyIn(sf::Vector2f start, sf::Vector2f flyByPoint)
+    {
         foreach(Enemy, e, enemyList)
-        {
-            e->flyIn();
-            break;
-        }
+            e->wait(start, flyByPoint);
+        if (enemyList.size() > 0)
+            enemyList[0]->flyIn();
     }
 };

@@ -44,6 +44,18 @@ namespace sf
     {
         return atan2(-v.x, v.y) / M_PI * 180;
     }
+    
+    template <typename T>
+    T length(const Vector2<T>& v)
+    {
+        return sqrtf(v.x*v.x+v.y*v.y);
+    }
+    
+    template <typename T>
+    Vector2<T> normalize(const Vector2<T>& v)
+    {
+        return v / length(v);
+    }
 }
 
 #endif//SFML_EXTRA_VECTOR_UTILS_H

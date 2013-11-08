@@ -33,7 +33,7 @@ public:
         ptrdiff_t diff = &stackTest - (int*)this;
         //Check if this object is created on the stack, PObjects should not be created on the stack, as they manage
         // their own destruction.
-        assert(("Object on stack! Not allowed!", abs(diff) > 10000));
+        assert(abs(diff) > 10000);//"Object on stack! Not allowed!"
 #endif
         refCount = 0;
         destroyed = false;

@@ -98,7 +98,8 @@ public:
         {
             P<EnemyGroup> g = groupList[rand() % groupList.size()];
             if (g->isAll(ES_Outside))
-                g->flyIn(sf::Vector2f(random(0, 320), -20));
+                //g->flyIn(sf::Vector2f(random(0, 320), -20));
+                g->flyIn(sf::Vector2f(random(0, 320), -20), sf::Vector2f(160, 160));
         }
         
         if (allowDive)
