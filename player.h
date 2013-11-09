@@ -15,7 +15,7 @@ public:
 
 class PlayerCraft: public GameEntity
 {
-private:
+public:
     PlayerController* controller;
     int fireCooldown;
     int invulnerability;

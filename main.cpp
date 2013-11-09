@@ -22,15 +22,67 @@ sf::Texture bulletTexture;
 sf::Texture bre1Texture;
 sf::Texture bre2Texture;
 sf::Texture robotTexture;
-sf::Texture insertCoinTexture;
 sf::Texture ultimakerTexture[9];
 sf::Texture numberTexture[10];
+int numberWidth[10] = {7, 4, 7, 7, 8, 7, 7, 7, 7, 7};
+sf::Texture abcTexture;
+int abcWidth[26] = {12, 10, 10, 11, 8, 8, 13, 12, 5, 8, 11, 8, 15, 13, 14, 9, 14, 10, 9, 9, 11, 11, 17, 11, 11, 10};
 sf::Texture invaderTexture;
 sf::Texture invaderShieldedTexture;
 sf::Texture playerTexture;
 sf::Clock Clock;
 sf::SoundBuffer laserSound;
 sf::SoundBuffer explosionSound;
+
+int textWidth(const char* str)
+{
+    int ret = 0;
+    while(*str)
+    {
+        int c = (*str++);
+        if (c >= 'A' && c <= 'Z')
+            ret += abcWidth[c-'A'];
+        else if (c >= '0' && c <= '9')
+            ret += numberWidth[c-'0'];
+        else
+            ret += 8;
+    }
+    return ret;
+}
+
+
+void drawText(sf::RenderTarget& window, int x, int y, const char* str)
+{
+    sf::Sprite letter;
+    x -= textWidth(str)/2;
+    while(*str)
+    {
+        int c = (*str++);
+        if (c >= 'A' && c <= 'Z')
+        {
+            c -= 'A';
+            int offset = 0;
+            for(int i=0; i<c; i++)
+                offset += abcWidth[i];
+            letter.setTexture(abcTexture);
+            letter.setTextureRect(sf::IntRect(offset, 0, abcWidth[c], 12));
+            letter.setPosition(x, y);
+            x += abcWidth[c];
+            window.draw(letter);
+        }
+        else if (c >= '0' && c <= '9')
+        {
+            letter.setTexture(numberTexture[c-'0'], true);
+            letter.setPosition(x, y);
+            x += numberWidth[c-'0'];
+            window.draw(letter);
+        }
+        else
+        {
+            x += 8;
+        }
+    }
+}
 
 #include "explosion.h"
 #include "bullet.h"
@@ -158,7 +210,7 @@ public:
             }
         }
             
-        if (!round)
+        if (!round && !player->invulnerability)
             round = new GameRound();
     }
     
@@ -181,7 +233,6 @@ class MainMenu : public GameEntity
 {
 public:
     sf::Sprite logoSprite;
-    sf::Sprite insertCoinSprite;
     P<EnemyGroup> enemyGroup;
     bool startGame;
     
@@ -192,10 +243,6 @@ public:
         logoSprite.setTexture(logoTexture);
         logoSprite.setOrigin(logoTexture.getSize().x / 2, 0);
         logoSprite.setPosition(160, 40);
-        
-        insertCoinSprite.setTexture(insertCoinTexture);
-        insertCoinSprite.setOrigin(insertCoinTexture.getSize().x / 2, 0);
-        insertCoinSprite.setPosition(160, 200);
         
         enemyGroup = new EnemyGroup();
         for(unsigned int n=0; n<10; n++)
@@ -227,15 +274,19 @@ public:
     virtual void postRender(sf::RenderTarget& window)
     {
         window.draw(logoSprite);
+        drawText(window, 160, 120, "HIGH SCORE");
+        drawText(window, 160, 120 + 16 * 1, "DAV 1337");
+        drawText(window, 160, 120 + 16 * 2, "DAV 1337");
+        drawText(window, 160, 120 + 16 * 3, "DAV 1337");
         if (startGame)
         {
             if (Clock.getElapsedTime().asMilliseconds() % 200 < 100)
-                window.draw(insertCoinSprite);
+                drawText(window, 160, 200, "INSERT COIN");
         }
         else
         {
             if (Clock.getElapsedTime().asMilliseconds() % 1000 < 500)
-                window.draw(insertCoinSprite);
+                drawText(window, 160, 200, "INSERT COIN");
         }
     }
 };
@@ -333,7 +384,7 @@ int main()
     numberTexture[7].loadFromFile("resources/num7.png");
     numberTexture[8].loadFromFile("resources/num8.png");
     numberTexture[9].loadFromFile("resources/num9.png");
-    insertCoinTexture.loadFromFile("resources/insertCoin.png");
+    abcTexture.loadFromFile("resources/abc.png");
     invaderTexture.loadFromFile("resources/MakerBotLogoMini.png");
     invaderShieldedTexture.loadFromFile("resources/MakerBotLogoMiniShielded.png");
     playerTexture.loadFromFile("resources/m.png");

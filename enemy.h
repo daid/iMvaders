@@ -22,7 +22,6 @@ public:
     int shieldPower;
     int flyIncurveNr, flyIncurveCount;
     static const int shieldMaxPower = 30;
-    static const int shotAngle = 120;
 
 public:    
     BasicEnemyBase(sf::Vector2f targetPosition)
@@ -33,6 +32,7 @@ public:
         
         sprite.setTexture(invaderTexture, true);
         sprite.setOrigin(invaderTexture.getSize().x/2, invaderTexture.getSize().y/2);
+        sprite.setColor(sf::Color(212, 0, 0, 255));
         sprite.setPosition(sf::Vector2f(-50, -50));
         hasShield = false;
     }
@@ -196,6 +196,7 @@ class BasicEnemy : public BasicEnemyBase
 {
 private:
     int shotDelay;
+    static const int shotAngle = 120;
 public:
     BasicEnemy(sf::Vector2f targetPosition)
     : BasicEnemyBase(targetPosition)
@@ -220,6 +221,55 @@ public:
     }
 };
 
+class BurstShotEnemy : public BasicEnemyBase
+{
+private:
+    int shotDelay;
+    int charge;
+    int shots;
+    static const int shotAngle = 10;
+    static const int shotsPerBurst = 60;
+public:
+    BurstShotEnemy(sf::Vector2f targetPosition)
+    : BasicEnemyBase(targetPosition)
+    {
+        shotDelay = random(50, 500);
+        charge = 0;
+        shots = 0;
+    }
+    
+    virtual ~BurstShotEnemy() {}
+    
+    virtual void update()
+    {
+        if (shots)
+        {
+            new Bullet(sprite.getPosition() + sf::Vector2f(8.0f * sinf((shotsPerBurst - shots) / float(shotsPerBurst) * M_PI * 4), 4.0), 0, sprite.getRotation(), 6.0f);
+            shots--;
+        }
+        else if (charge)
+        {
+            charge--;
+            if (charge & 2)
+                sprite.setColor(sf::Color(255, 255, 255));
+            else
+                sprite.setColor(sf::Color(212, 0, 0));
+            if (charge == 0)
+                shots = shotsPerBurst;
+        }
+        else if (shotDelay)
+        {
+            shotDelay--;
+        }else{
+            shotDelay = random(400, 600);
+            float a = sprite.getRotation();
+            if (a > 180 - shotAngle/2 && a < 180 + shotAngle/2)
+                charge = 60;
+        }
+        BasicEnemyBase::update();
+    }
+};
+
 class EnemyGroup : public GameEntity
 {
 private:
@@ -231,7 +281,11 @@ public:
     
     BasicEnemyBase* add(sf::Vector2f targetPoint)
     {
-        BasicEnemyBase* e = new BasicEnemy(targetPoint);
+        BasicEnemyBase* e;
+        if (random(0, 100) < 80)
+            e = new BasicEnemy(targetPoint);
+        else
+            e = new BurstShotEnemy(targetPoint);
         enemyList.push_back(e);
         return e;
     }
