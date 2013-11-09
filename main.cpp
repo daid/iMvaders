@@ -29,6 +29,8 @@ sf::Texture invaderTexture;
 sf::Texture invaderShieldedTexture;
 sf::Texture playerTexture;
 sf::Clock Clock;
+sf::SoundBuffer laserSound;
+sf::SoundBuffer explosionSound;
 
 #include "explosion.h"
 #include "bullet.h"
@@ -335,6 +337,8 @@ int main()
     invaderTexture.loadFromFile("resources/MakerBotLogoMini.png");
     invaderShieldedTexture.loadFromFile("resources/MakerBotLogoMiniShielded.png");
     playerTexture.loadFromFile("resources/m.png");
+    laserSound.loadFromFile("resources/laser.wav");
+    explosionSound.loadFromFile("resources/explosion.wav");
 
     mainloop(window);
 

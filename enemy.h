@@ -11,14 +11,13 @@ enum EnemyState
 float enemyOffset;
 float enemyDirection;
 
-class Enemy: public GameEntity
+class BasicEnemyBase: public GameEntity
 {
 public:
     EnemyState state;
     Curve flyInCurve[2];
     Curve diveCurve;
     sf::Vector2f targetPosition;
-    int shotDelay;
     bool hasShield;
     int shieldPower;
     int flyIncurveNr, flyIncurveCount;
@@ -26,7 +25,7 @@ public:
     static const int shotAngle = 120;
 
 public:    
-    Enemy(sf::Vector2f targetPosition)
+    BasicEnemyBase(sf::Vector2f targetPosition)
     : GameEntity(8.0f), targetPosition(targetPosition)
     {
         state = ES_Outside;
@@ -35,24 +34,14 @@ public:
         sprite.setTexture(invaderTexture, true);
         sprite.setOrigin(invaderTexture.getSize().x/2, invaderTexture.getSize().y/2);
         sprite.setPosition(sf::Vector2f(-50, -50));
-        shotDelay = random(50, 500);
         hasShield = false;
     }
-    virtual ~Enemy()
+    virtual ~BasicEnemyBase()
     {
     }
     
     virtual void update()
     {
-        if (shotDelay)
-        {
-            shotDelay--;
-        }else{
-            shotDelay = random(200, 400);
-            float a = sprite.getRotation();
-            if (a > 180 - shotAngle/2 && a < 180 + shotAngle/2)
-                new Bullet(sprite.getPosition(), 0, a);
-        }
         if (hasShield && shieldPower < shieldMaxPower)
         {
             shieldPower++;
@@ -203,18 +192,46 @@ public:
     }
 };
 
+class BasicEnemy : public BasicEnemyBase
+{
+private:
+    int shotDelay;
+public:
+    BasicEnemy(sf::Vector2f targetPosition)
+    : BasicEnemyBase(targetPosition)
+    {
+        shotDelay = random(50, 500);
+    }
+    
+    virtual ~BasicEnemy() {}
+    
+    virtual void update()
+    {
+        if (shotDelay)
+        {
+            shotDelay--;
+        }else{
+            shotDelay = random(200, 400);
+            float a = sprite.getRotation();
+            if (a > 180 - shotAngle/2 && a < 180 + shotAngle/2)
+                new Bullet(sprite.getPosition(), 0, a);
+        }
+        BasicEnemyBase::update();
+    }
+};
+
 class EnemyGroup : public GameEntity
 {
 private:
-    PVector<Enemy> enemyList;
+    PVector<BasicEnemyBase> enemyList;
 public:
     EnemyGroup()
     {
     }
     
-    Enemy* add(sf::Vector2f targetPoint)
+    BasicEnemyBase* add(sf::Vector2f targetPoint)
     {
-        Enemy* e = new Enemy(targetPoint);
+        BasicEnemyBase* e = new BasicEnemy(targetPoint);
         enemyList.push_back(e);
         return e;
     }
@@ -226,8 +243,8 @@ public:
         if (enemyList.size() < 1)
             destroy();
     
-        P<Enemy> prev;
-        foreach(Enemy, e, enemyList)
+        P<BasicEnemyBase> prev;
+        foreach(BasicEnemyBase, e, enemyList)
         {
             if (e->state == ES_Wait)
             {
@@ -247,7 +264,7 @@ public:
     
     bool isAll(EnemyState state)
     {
-        foreach(Enemy, e, enemyList)
+        foreach(BasicEnemyBase, e, enemyList)
             if (e->state != state)
                 return false;
         return true;
@@ -255,7 +272,7 @@ public:
     
     void dive(sf::Vector2f target)
     {
-        foreach(Enemy, e, enemyList)
+        foreach(BasicEnemyBase, e, enemyList)
         {
             e->dive(target);
             break;
@@ -264,7 +281,7 @@ public:
     
     void flyIn(sf::Vector2f start)
     {
-        foreach(Enemy, e, enemyList)
+        foreach(BasicEnemyBase, e, enemyList)
             e->wait(start);
         if (enemyList.size() > 0)
             enemyList[0]->flyIn();
@@ -272,7 +289,7 @@ public:
 
     void flyIn(sf::Vector2f start, sf::Vector2f flyByPoint)
     {
-        foreach(Enemy, e, enemyList)
+        foreach(BasicEnemyBase, e, enemyList)
             e->wait(start, flyByPoint);
         if (enemyList.size() > 0)
             enemyList[0]->flyIn();

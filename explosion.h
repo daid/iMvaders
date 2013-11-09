@@ -12,11 +12,16 @@ public:
 
 class Explosion : public GameEntity
 {
+private:
+    sf::Sound sound;
     std::vector<Particle> particles;
     float life;
 public:
     Explosion(sf::Vector2f position, float radius)
+    : sound(explosionSound)
     {
+        sound.setVolume(radius * 10.0);
+        sound.play();
         unsigned int count = int(radius*radius*8);
         particles.reserve(count);
         for(unsigned int n=0; n<count; n++)
