@@ -9,6 +9,7 @@ public:
     Bullet(sf::Vector2f position, int type, float angle, float speed = 3.0f)
     : GameEntity(1.0f), sound(laserSound), speed(speed), type(type)
     {
+        sound.setPitch(random(0.8, 1.2));
         sound.play();
         sprite.setTexture(bulletTexture);
         sprite.setOrigin(bulletTexture.getSize().x/2, bulletTexture.getSize().y/10);
