@@ -187,6 +187,7 @@ public:
         {
             new Explosion(sprite.getPosition(), 8);
             destroy();
+            addScore(10);
         }
         return true;
     }
@@ -244,7 +245,9 @@ public:
     {
         if (shots)
         {
-            new Bullet(sprite.getPosition() + sf::Vector2f(8.0f * sinf((shotsPerBurst - shots) / float(shotsPerBurst) * M_PI * 4), 4.0), 0, sprite.getRotation(), 6.0f);
+            float a = sprite.getRotation();
+            if (a > 180 - shotAngle/2 && a < 180 + shotAngle/2)
+                new Bullet(sprite.getPosition() + sf::Vector2f(8.0f * sinf((shotsPerBurst - shots) / float(shotsPerBurst) * M_PI * 4), 4.0), 0, a, 6.0f);
             shots--;
         }
         else if (charge)

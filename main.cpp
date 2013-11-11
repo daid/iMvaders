@@ -12,6 +12,9 @@ float random(float fmin, float fmax)
     return (float(rand()) / float(RAND_MAX)) * (fmax - fmin) + fmin;
 }
 
+int scoreCount;
+void addScore(int amount) { scoreCount += amount; }
+
 #include "vectorUtils.h"
 #include "curve.h"
 #include "background.h"
@@ -50,11 +53,19 @@ int textWidth(const char* str)
     return ret;
 }
 
-
-void drawText(sf::RenderTarget& window, int x, int y, const char* str)
+enum textAlign
+{
+    align_center = 0,
+    align_left = 1,
+    align_right = 2
+};
+void drawText(sf::RenderTarget& window, int x, int y, const char* str, textAlign align = align_center)
 {
     sf::Sprite letter;
-    x -= textWidth(str)/2;
+    if (align == align_center)
+        x -= textWidth(str)/2;
+    if (align == align_right)
+        x -= textWidth(str);
     while(*str)
     {
         int c = (*str++);
@@ -92,13 +103,13 @@ void drawText(sf::RenderTarget& window, int x, int y, const char* str)
 
 PlayerController playerController[2];
 
-class GameRound : public GameEntity
+class GameStage : public GameEntity
 {
 private:
     PVector<EnemyGroup> groupList;
     int diveCountdown;
 public:
-    GameRound()
+    GameStage()
     {
         enemyDirection = 0.2;
         enemyOffset = 0;
@@ -121,7 +132,7 @@ public:
         for(int n=0; n<4; n++)
             g->add(sf::Vector2f(160 + 4 * 20 - n * 20, 90));
     }
-    virtual ~GameRound() {}
+    virtual ~GameStage() {}
     
     virtual void update()
     {
@@ -175,16 +186,43 @@ public:
     }
 };
 
+class BreStage : public GameEntity
+{
+private:
+    P<BreEnemy> bre;
+public:
+    BreStage()
+    {
+        bre = new BreEnemy();
+    }
+    virtual ~BreStage() {}
+    
+    virtual void update()
+    {
+        if (!bre)
+        {
+            //Destroy ourselves if bre is destroyed, to indicate the round is done.
+            destroy();
+            return;
+        }
+    }
+};
+
 class GameState : public GameEntity
 {
 private:
     P<PlayerCraft> player;
-    P<GameRound> round;
+    P<GameEntity> stage;
     int lives;
+    int stageNr;
+    int startStageDelay;
 public:
     GameState()
     {
+        stageNr = 0;
+        scoreCount = 0;
         lives = 4;
+        startStageDelay = 120;        
         //Destroy all objects except ourselves.
         foreach(GameEntity, e, entityList)
             if (e != this)
@@ -210,8 +248,22 @@ public:
             }
         }
             
-        if (!round && !player->invulnerability)
-            round = new GameRound();
+        if (!stage)
+        {
+            if (startStageDelay)
+            {
+                startStageDelay--;
+            }
+            else
+            {
+                stageNr++;
+                if (stageNr % 3 == 0)
+                    stage = new BreStage();
+                else
+                    stage = new GameStage();
+                startStageDelay = 120;
+            }
+        }
     }
     
     virtual void postRender(sf::RenderTarget& window)
@@ -225,6 +277,19 @@ public:
         {
             life.setPosition(10 + 13 * n, 230);
             window.draw(life);
+        }
+        char buf[8];
+        sprintf(buf, "%i", scoreCount);
+        drawText(window, 310, 220, buf, align_right);
+        
+        if (!stage)
+        {
+            char buf[16];
+            sprintf(buf, "STAGE %i", stageNr + 1);
+            if (startStageDelay > 60)
+                drawText(window, 160, 240 - startStageDelay * 2, buf);
+            else
+                drawText(window, 160, 120, buf);
         }
     }
 };
