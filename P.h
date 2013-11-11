@@ -1,6 +1,7 @@
 #ifndef PEE_POINTER_H
 #define PEE_POINTER_H
 
+#include <SFML/System.hpp>
 #include <vector>
 #include <assert.h>
 
@@ -9,9 +10,9 @@
     If no more P<T> pointers point to a Pobject, the object is deleted. The object also has a destroyed flag, if the destroyed
     flag is set, the pointers pointing towards it act as NULL pointers from that point on.
     NOTE: This does not free circular references.
-    
+
     The Pobject is not copyable and should not be created on the stack, only on the heap (so with "new")
-    
+
     The Pvector class is a specialized version of the std::vector template. This vector holds an array of P<> pointers
     The "foreach" macro can be used to walk trough all the Pobjects in a list without needing to dive into details
     and automaticly removes any pointer from the list that points to an Pobject which has been destroyed.
@@ -22,7 +23,7 @@ class PObject: public sf::NonCopyable
 private:
     int refCount;
     bool destroyed;
-    
+
     //Make the P template a friend so it can access the private refCount and destroyed.
     template<typename> friend class P;
 public:
@@ -39,7 +40,7 @@ public:
         destroyed = false;
     }
     virtual ~PObject() {}
-    
+
     void destroy()
     {
         destroyed = true;
@@ -51,7 +52,7 @@ class P
 {
 private:
     T* ptr;
-    
+
 public:
     P()
     {
@@ -67,12 +68,12 @@ public:
         ptr = NULL;
         set(p);
     }
-    
+
     ~P()
     {
         release();
     }
-    
+
     P& operator = (T* p)
     {
         set(p);
@@ -84,7 +85,7 @@ public:
         if (&p != this) set(p.ptr);
         return *this;
     }
-    
+
     T* operator->()
     {
         check_release();
@@ -95,20 +96,20 @@ public:
         check_release();
         return ptr;
     }
-    
+
     operator bool()
     {
         check_release();
         return ptr != NULL;
     }
-    
+
 protected:
     void check_release()
     {
         if (ptr && ptr->destroyed)
             release();
     }
-    
+
     void release()
     {
         if (ptr)
@@ -143,7 +144,7 @@ public:
     {
        next();
     }
-    
+
     void next()
     {
         while(true)

@@ -114,7 +114,7 @@ public:
         enemyDirection = 0.2;
         enemyOffset = 0;
         diveCountdown = random(100, 300);
-        
+
         EnemyGroup* g = new EnemyGroup();
         groupList.push_back(g);
         for(int n=0; n<8; n++)
@@ -133,7 +133,7 @@ public:
             g->add(sf::Vector2f(160 + 4 * 20 - n * 20, 90));
     }
     virtual ~GameStage() {}
-    
+
     virtual void update()
     {
         if (enemyOffset > 30)
@@ -141,7 +141,7 @@ public:
         if (enemyOffset < -30)
             enemyDirection = fabs(enemyDirection);
         enemyOffset += enemyDirection;
-        
+
         bool allowDive = true;
         bool allowFlyIn = true;
         foreach(EnemyGroup, g, groupList)
@@ -159,7 +159,7 @@ public:
             destroy();
             return;
         }
-        
+
         if (allowFlyIn)
         {
             P<EnemyGroup> g = groupList[rand() % groupList.size()];
@@ -167,7 +167,7 @@ public:
                 //g->flyIn(sf::Vector2f(random(0, 320), -20));
                 g->flyIn(sf::Vector2f(random(0, 320), -20), sf::Vector2f(160, 160));
         }
-        
+
         if (allowDive)
         {
             if (diveCountdown)
@@ -196,7 +196,7 @@ public:
         bre = new BreEnemy();
     }
     virtual ~BreStage() {}
-    
+
     virtual void update()
     {
         if (!bre)
@@ -222,14 +222,14 @@ public:
         stageNr = 0;
         scoreCount = 0;
         lives = 4;
-        startStageDelay = 120;        
+        startStageDelay = 120;
         //Destroy all objects except ourselves.
         foreach(GameEntity, e, entityList)
             if (e != this)
                 e->destroy();
     }
     virtual ~GameState() {}
-    
+
     virtual void update()
     {
         if (!player)
@@ -247,7 +247,7 @@ public:
                 return;
             }
         }
-            
+
         if (!stage)
         {
             if (startStageDelay)
@@ -265,7 +265,7 @@ public:
             }
         }
     }
-    
+
     virtual void postRender(sf::RenderTarget& window)
     {
         sf::Sprite life;
@@ -281,7 +281,7 @@ public:
         char buf[8];
         sprintf(buf, "%i", scoreCount);
         drawText(window, 310, 220, buf, align_right);
-        
+
         if (!stage)
         {
             char buf[16];
@@ -300,31 +300,31 @@ public:
     sf::Sprite logoSprite;
     P<EnemyGroup> enemyGroup;
     bool startGame;
-    
+
     MainMenu()
     {
         startGame = false;
-        
+
         logoSprite.setTexture(logoTexture);
         logoSprite.setOrigin(logoTexture.getSize().x / 2, 0);
         logoSprite.setPosition(160, 40);
-        
+
         enemyGroup = new EnemyGroup();
         for(unsigned int n=0; n<10; n++)
             enemyGroup->add(sf::Vector2f(160+4*20 - n * 20, 100));
     }
-    
+
     virtual ~MainMenu()
     {
     }
-    
+
     virtual void update()
     {
         if (enemyGroup->isAll(ES_CenterField))
             enemyGroup->dive(sf::Vector2f(random(20, 300), 260));
         if (enemyGroup->isAll(ES_Outside))
             enemyGroup->flyIn(sf::Vector2f(random(0, 320), -20));
-        
+
         if (!startGame)
         {
             if (playerController[0].fire())
@@ -335,7 +335,7 @@ public:
             new GameState();
         }
     }
-    
+
     virtual void postRender(sf::RenderTarget& window)
     {
         window.draw(logoSprite);
@@ -360,7 +360,7 @@ void mainloop(sf::RenderWindow& window)
 {
     //new BreEnemy();
     new MainMenu();
-    
+
     StarBackground background;
     while (window.isOpen())
     {
@@ -369,14 +369,14 @@ void mainloop(sf::RenderWindow& window)
         while (window.pollEvent(event))
         {
             // Window closed or escape key pressed: exit
-            if ((event.type == sf::Event::Closed) || 
+            if ((event.type == sf::Event::Closed) ||
                ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Escape)))
             {
                 window.close();
                 break;
             }
         }
-        
+
         foreach(GameEntity, e, entityList)
         {
             e->update();
@@ -405,7 +405,7 @@ void mainloop(sf::RenderWindow& window)
             e->render(window);
         foreach(GameEntity, e, entityList)
             e->postRender(window);
-        
+
         // Display things on screen
         window.display();
     }

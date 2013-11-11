@@ -1,4 +1,6 @@
-
+#ifndef BRE_H
+#define BRE_H
+#include "gameEntity.h"
 class BreEnemy: public GameEntity
 {
 public:
@@ -8,7 +10,7 @@ public:
     float mouthPos;
     int invulnerability;
     static const int maxHealth = 100;
-    
+
     BreEnemy()
     : GameEntity(50)
     {
@@ -26,7 +28,7 @@ public:
     virtual ~BreEnemy()
     {
     }
-    
+
     virtual void update()
     {
         if (invulnerability)
@@ -59,7 +61,7 @@ public:
         if (mouthPos > 30) mouthPos = 60 - mouthPos;
         mouth.setPosition(sprite.getPosition() + sf::Vector2f(0, mouthPos));
     }
-    
+
     virtual void render(sf::RenderTarget& window)
     {
         if (invulnerability & 2)
@@ -74,7 +76,7 @@ public:
         }
         window.draw(sprite);
         window.draw(mouth);
-        
+
         /*
         sf::RectangleShape laser(sf::Vector2f(6, 240));
         laser.setOrigin(3, 0);
@@ -88,7 +90,7 @@ public:
         window.draw(laser);
         */
     }
-    
+
     virtual void postRender(sf::RenderTarget& window)
     {
         sf::RectangleShape healthBarBG(sf::Vector2f(280, 10));
@@ -97,13 +99,13 @@ public:
         healthBarBG.setOutlineThickness(1);
         healthBarBG.setPosition(20, 10);
         window.draw(healthBarBG);
-        
+
         sf::RectangleShape healthBar(sf::Vector2f(280 * health / maxHealth, 10));
         healthBar.setFillColor(sf::Color(212, 0, 0, 128));
         healthBar.setPosition(20, 10);
         window.draw(healthBar);
     }
-    
+
     virtual bool takeDamage(sf::Vector2f position, int damageType, int damageAmount)
     {
         if (damageType >= 0)
@@ -125,3 +127,4 @@ public:
         return true;
     }
 };
+#endif // BRE_H
