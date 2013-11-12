@@ -48,6 +48,7 @@
 			<Add directory="../SFML-2.1/lib" />
 		</Linker>
 		<Unit filename="P.h" />
+		<Unit filename="background.cpp" />
 		<Unit filename="background.h" />
 		<Unit filename="bre.h" />
 		<Unit filename="bullet.h" />
