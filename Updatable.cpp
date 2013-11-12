@@ -1,8 +1,8 @@
 #include "Updatable.h"
-//PVector<Upda> entityList;
+PVector<Updatable> updatableList;
 Updatable::Updatable()
 {
-    //ctor
+    updatableList.push_back(this);
 }
 
 Updatable::~Updatable()

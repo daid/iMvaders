@@ -1,8 +1,8 @@
 #include "Renderable.h"
-
+PVector<Renderable> renderableList;
 Renderable::Renderable()
 {
-    //ctor
+    renderableList.push_back(this);
 }
 
 Renderable::~Renderable()

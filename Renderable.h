@@ -2,7 +2,8 @@
 #define RENDERABLE_H
 #include <SFML/Graphics.hpp>
 #include "P.h"
-
+class Renderable;
+extern PVector<Renderable> renderableList;
 //Abstract class for entity that can be rendered.
 class Renderable: public virtual PObject
 {

@@ -5,20 +5,11 @@
 #include <ctime>
 #include <cstdlib>
 
-//#define DEBUG
-
-float random(float fmin, float fmax)
-{
-    return (float(rand()) / float(RAND_MAX)) * (fmax - fmin) + fmin;
-}
 
 int scoreCount;
 void addScore(int amount) { scoreCount += amount; }
 
-#include "vectorUtils.h"
-#include "curve.h"
-#include "background.h"
-#include "gameEntity.h"
+
 
 sf::Texture logoTexture;
 sf::Texture bulletTexture;
@@ -36,6 +27,29 @@ sf::Texture playerTexture;
 sf::Clock Clock;
 sf::SoundBuffer laserSound;
 sf::SoundBuffer explosionSound;
+float random(float fmin, float fmax)
+{
+    return (float(rand()) / float(RAND_MAX)) * (fmax - fmin) + fmin;
+}
+
+#include "vectorUtils.h"
+#include "curve.h"
+#include "background.h"
+#include "gameEntity.h"
+
+
+#include "explosion.h"
+#include "bullet.h"
+#include "player.h"
+#include "enemy.h"
+#include "bre.h"
+
+#include "Updatable.h"
+#include "Renderable.h"
+//#define DEBUG
+
+
+
 
 int textWidth(const char* str)
 {
@@ -96,11 +110,7 @@ void drawText(sf::RenderTarget& window, int x, int y, const char* str, textAlign
     }
 }
 
-#include "explosion.h"
-#include "bullet.h"
-#include "player.h"
-#include "enemy.h"
-#include "bre.h"
+
 
 PlayerController playerController[2];
 
@@ -378,9 +388,9 @@ void mainloop(sf::RenderWindow& window)
             }
         }
 
-        foreach(GameEntity, e, entityList)
+        foreach(Updatable, u, updatableList)
         {
-            e->update();
+            u->update();
         }
 
         // Clear the window
@@ -400,12 +410,14 @@ void mainloop(sf::RenderWindow& window)
                 window.draw(circle);
             }
 #endif
-            e->preRender(window);
+
         }
-        foreach(GameEntity, e, entityList)
-            e->render(window);
-        foreach(GameEntity, e, entityList)
-            e->postRender(window);
+        foreach(Renderable,r,renderableList)
+            r->preRender(window);
+        foreach(Renderable,r,renderableList)
+            r->render(window);
+        foreach(Renderable,r,renderableList)
+            r->postRender(window);
 
         // Display things on screen
         window.display();
