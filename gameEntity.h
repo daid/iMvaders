@@ -1,7 +1,6 @@
 #ifndef GAME_ENTITY_H
 #define GAME_ENTITY_H
 
-#include "P.h"
 #include "Updatable.h"
 #include "Renderable.h"
 /**
@@ -16,7 +15,7 @@
 
 class GameEntity;
 extern PVector<GameEntity> entityList;
-class GameEntity: public PObject, public Updatable
+class GameEntity: public Updatable, public Renderable
 {
 public:
     sf::Sprite sprite;

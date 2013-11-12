@@ -1,8 +1,8 @@
 #ifndef UPDATABLE_H
 #define UPDATABLE_H
-
+#include "P.h"
 //Abstract class for entity that can be updated.
-class Updatable
+class Updatable: public virtual PObject
 {
     public:
         Updatable();

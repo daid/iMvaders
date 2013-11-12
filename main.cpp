@@ -59,6 +59,7 @@ enum textAlign
     align_left = 1,
     align_right = 2
 };
+
 void drawText(sf::RenderTarget& window, int x, int y, const char* str, textAlign align = align_center)
 {
     sf::Sprite letter;

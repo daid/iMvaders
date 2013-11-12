@@ -1,9 +1,10 @@
 #ifndef RENDERABLE_H
 #define RENDERABLE_H
 #include <SFML/Graphics.hpp>
+#include "P.h"
 
 //Abstract class for entity that can be rendered.
-class Renderable
+class Renderable: public virtual PObject
 {
     public:
         Renderable();
