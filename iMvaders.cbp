@@ -50,12 +50,17 @@
 			<Add directory="../SFML-2.1/lib" />
 		</Linker>
 		<Unit filename="P.h" />
+		<Unit filename="Renderable.cpp" />
+		<Unit filename="Renderable.h" />
+		<Unit filename="Updatable.cpp" />
+		<Unit filename="Updatable.h" />
 		<Unit filename="background.cpp" />
 		<Unit filename="background.h" />
 		<Unit filename="bre.cpp" />
 		<Unit filename="bre.h" />
 		<Unit filename="bullet.h" />
 		<Unit filename="curve.h" />
+		<Unit filename="enemy.cpp" />
 		<Unit filename="enemy.h" />
 		<Unit filename="explosion.h" />
 		<Unit filename="gameEntity.cpp" />

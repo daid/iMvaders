@@ -1,4 +1,5 @@
-
+#include "curve.h"
+#include "gameEntity.h"
 enum EnemyState
 {
     ES_Wait,
@@ -23,13 +24,13 @@ public:
     int flyIncurveNr, flyIncurveCount;
     static const int shieldMaxPower = 30;
 
-public:    
+public:
     BasicEnemyBase(sf::Vector2f targetPosition)
     : GameEntity(8.0f), targetPosition(targetPosition)
     {
         state = ES_Outside;
         flyIncurveCount = 0;
-        
+
         sprite.setTexture(invaderTexture, true);
         sprite.setOrigin(invaderTexture.getSize().x/2, invaderTexture.getSize().y/2);
         sprite.setColor(sf::Color(212, 0, 0, 255));
@@ -39,7 +40,7 @@ public:
     virtual ~BasicEnemyBase()
     {
     }
-    
+
     virtual void update()
     {
         if (hasShield && shieldPower < shieldMaxPower)
@@ -48,7 +49,7 @@ public:
             if (shieldPower == shieldMaxPower)
                 giveShield();
         }
-        
+
         if (flyIncurveCount > 0)
             flyInCurve[flyIncurveCount-1].p1 = targetPosition + sf::Vector2f(enemyOffset, 0);
         diveCurve.p0 = targetPosition + sf::Vector2f(enemyOffset, 0);
@@ -94,7 +95,7 @@ public:
             break;
         }
     }
-    
+
     void dive(sf::Vector2f target)
     {
         diveCurve.p0 = sprite.getPosition();
@@ -104,7 +105,7 @@ public:
         diveCurve.delta = 0.0;
         state = ES_Diving;
     }
-    
+
     void wait(sf::Vector2f start)
     {
         state = ES_Wait;
@@ -121,12 +122,12 @@ public:
     void wait(sf::Vector2f start, sf::Vector2f flyByTarget)
     {
         state = ES_Wait;
-        
+
         sf::Vector2f normal = normalize(flyByTarget - start);
         sf::Vector2f dir(-normal.y, normal.x);
         if (start.x > flyByTarget.x)
             dir = -dir;
-        
+
         flyIncurveNr = 0;
         flyInCurve[0].delta = 0.0;
         flyInCurve[0].p0 = start;
@@ -146,7 +147,7 @@ public:
     {
         state = ES_FlyIn;
     }
-    
+
     void giveShield()
     {
         collisionRadius = 12.0f;
@@ -155,7 +156,7 @@ public:
         sprite.setTexture(invaderShieldedTexture, true);
         sprite.setOrigin(invaderShieldedTexture.getSize().x/2, invaderShieldedTexture.getSize().y/2);
     }
-    
+
     virtual void render(sf::RenderTarget& window)
     {
         window.draw(sprite);
@@ -166,12 +167,12 @@ public:
         diveCurve.draw(window);
 #endif
     }
-    
+
     bool shieldUp()
     {
         return hasShield && shieldPower == shieldMaxPower;
     }
-    
+
     virtual bool takeDamage(sf::Vector2f position, int damageType, int damageAmount)
     {
         if (damageType >= 0)
@@ -204,9 +205,9 @@ public:
     {
         shotDelay = random(50, 500);
     }
-    
+
     virtual ~BasicEnemy() {}
-    
+
     virtual void update()
     {
         if (shotDelay)
@@ -238,9 +239,9 @@ public:
         charge = 0;
         shots = 0;
     }
-    
+
     virtual ~BurstShotEnemy() {}
-    
+
     virtual void update()
     {
         if (shots)
@@ -281,7 +282,7 @@ public:
     EnemyGroup()
     {
     }
-    
+
     BasicEnemyBase* add(sf::Vector2f targetPoint)
     {
         BasicEnemyBase* e;
@@ -292,14 +293,14 @@ public:
         enemyList.push_back(e);
         return e;
     }
-    
+
     virtual ~EnemyGroup() {}
-    
+
     virtual void update()
     {
         if (enemyList.size() < 1)
             destroy();
-    
+
         P<BasicEnemyBase> prev;
         foreach(BasicEnemyBase, e, enemyList)
         {
@@ -318,7 +319,7 @@ public:
             prev = e;
         }
     }
-    
+
     bool isAll(EnemyState state)
     {
         foreach(BasicEnemyBase, e, enemyList)
@@ -326,7 +327,7 @@ public:
                 return false;
         return true;
     }
-    
+
     void dive(sf::Vector2f target)
     {
         foreach(BasicEnemyBase, e, enemyList)
@@ -335,7 +336,7 @@ public:
             break;
         }
     }
-    
+
     void flyIn(sf::Vector2f start)
     {
         foreach(BasicEnemyBase, e, enemyList)
