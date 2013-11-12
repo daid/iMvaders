@@ -1,9 +1,9 @@
 #ifndef GAME_ENTITY_H
 #define GAME_ENTITY_H
 
-#include <SFML/Graphics.hpp>
 #include "P.h"
-
+#include "Updatable.h"
+#include "Renderable.h"
 /**
     GameEntities are the base for each object in the game.
     They are automaticly added to the entityList, which means they get update() and render() calls.
@@ -16,7 +16,7 @@
 
 class GameEntity;
 extern PVector<GameEntity> entityList;
-class GameEntity: public PObject
+class GameEntity: public PObject, public Updatable
 {
 public:
     sf::Sprite sprite;

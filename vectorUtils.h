@@ -57,5 +57,4 @@ namespace sf
         return v / length(v);
     }
 }
-
 #endif//SFML_EXTRA_VECTOR_UTILS_H

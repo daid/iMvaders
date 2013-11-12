@@ -13,6 +13,7 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
+					<Add directory="../../SFML-2.1/include" />
 				</Compiler>
 				<Linker>
 					<Add library="sfml-window-d" />
@@ -20,6 +21,7 @@
 					<Add library="sfml-graphics-d" />
 					<Add library="sfml-main-d" />
 					<Add library="sfml-system-d" />
+					<Add directory="../../SFML-2.1/lib" />
 				</Linker>
 			</Target>
 			<Target title="Release">
@@ -48,7 +50,9 @@
 			<Add directory="../SFML-2.1/lib" />
 		</Linker>
 		<Unit filename="P.h" />
+		<Unit filename="background.cpp" />
 		<Unit filename="background.h" />
+		<Unit filename="bre.cpp" />
 		<Unit filename="bre.h" />
 		<Unit filename="bullet.h" />
 		<Unit filename="curve.h" />
