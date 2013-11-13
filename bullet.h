@@ -11,8 +11,7 @@ public:
     {
         sound.setPitch(random(0.8, 1.2));
         sound.play();
-        sprite.setTexture(bulletTexture);
-        sprite.setOrigin(bulletTexture.getSize().x/2, bulletTexture.getSize().y/10);
+        textureManager.setTexture(sprite, "bullet");
         sprite.setPosition(position);
         sprite.setRotation(angle);
         if (type == 0)
