@@ -48,12 +48,19 @@ public:
     
     virtual void postRender(sf::RenderTarget& window)
     {
-        sf::RectangleShape rect(sf::Vector2f(1, 1));
+        sf::VertexArray tmpArray(sf::Quads, particles.size() * 4);
+        sf::Color color(255, 255 * (1.0 - life), 0, 255 * life);
         for(unsigned int n=0; n<particles.size(); n++)
         {
-            rect.setPosition(particles[n].position);
-            rect.setFillColor(sf::Color(255, 255 * (1.0-life), 0, 255 * life));
-            window.draw(rect);
+            tmpArray[n*4+0].position = particles[n].position + sf::Vector2f( 0.5, 0.5);
+            tmpArray[n*4+1].position = particles[n].position + sf::Vector2f(-0.5, 0.5);
+            tmpArray[n*4+2].position = particles[n].position + sf::Vector2f(-0.5,-0.5);
+            tmpArray[n*4+3].position = particles[n].position + sf::Vector2f( 0.5,-0.5);
+            tmpArray[n*4+0].color = color;
+            tmpArray[n*4+1].color = color;
+            tmpArray[n*4+2].color = color;
+            tmpArray[n*4+3].color = color;
         }
+        window.draw(tmpArray);
     }
 };
