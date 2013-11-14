@@ -11,12 +11,6 @@ void addScore(int amount) { scoreCount += amount; }
 
 
 sf::Clock Clock;
-sf::SoundBuffer laserSound;
-sf::SoundBuffer explosionSound;
-float random(float fmin, float fmax)
-{
-    return (float(rand()) / float(RAND_MAX)) * (fmax - fmin) + fmin;
-}
 
 #include "vectorUtils.h"
 #include "curve.h"

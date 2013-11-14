@@ -1,5 +1,7 @@
 #include "curve.h"
 #include "gameEntity.h"
+#include "random.h"
+
 enum EnemyState
 {
     ES_Wait,
