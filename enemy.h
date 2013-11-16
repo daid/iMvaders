@@ -1,5 +1,7 @@
 #include "curve.h"
 #include "gameEntity.h"
+#include "random.h"
+
 enum EnemyState
 {
     ES_Wait,
@@ -31,8 +33,7 @@ public:
         state = ES_Outside;
         flyIncurveCount = 0;
 
-        sprite.setTexture(invaderTexture, true);
-        sprite.setOrigin(invaderTexture.getSize().x/2, invaderTexture.getSize().y/2);
+        textureManager.setTexture(sprite, "BasicEnemy", 0);
         sprite.setColor(sf::Color(212, 0, 0, 255));
         sprite.setPosition(sf::Vector2f(-50, -50));
         hasShield = false;
@@ -153,8 +154,7 @@ public:
         collisionRadius = 12.0f;
         hasShield = true;
         shieldPower = shieldMaxPower;
-        sprite.setTexture(invaderShieldedTexture, true);
-        sprite.setOrigin(invaderShieldedTexture.getSize().x/2, invaderShieldedTexture.getSize().y/2);
+        textureManager.setTexture(sprite, "BasicEnemy", 1);
     }
 
     virtual void render(sf::RenderTarget& window)
@@ -181,8 +181,7 @@ public:
         {
             shieldPower = 0;
             collisionRadius = 8.0f;
-            sprite.setTexture(invaderTexture, true);
-            sprite.setOrigin(invaderTexture.getSize().x/2, invaderTexture.getSize().y/2);
+            textureManager.setTexture(sprite, "BasicEnemy", 0);
         }
         else
         {

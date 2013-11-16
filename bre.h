@@ -14,11 +14,9 @@ public:
     BreEnemy()
     : GameEntity(50)
     {
-        sprite.setTexture(bre1Texture, true);
-        sprite.setOrigin(bre1Texture.getSize().x/2, bre1Texture.getSize().y/2);
+        textureManager.setTexture(sprite, "bre1");
         sprite.setPosition(sf::Vector2f(160, -80));
-        mouth.setTexture(bre2Texture, true);
-        mouth.setOrigin(bre2Texture.getSize().x/2, bre2Texture.getSize().y/2);
+        textureManager.setTexture(mouth, "bre2");
         mouth.setPosition(sf::Vector2f(160, -80));
         state = 0;
         mouthPos = 0;

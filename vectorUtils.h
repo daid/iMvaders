@@ -1,6 +1,7 @@
 #ifndef SFML_EXTRA_VECTOR_UTILS_H
 #define SFML_EXTRA_VECTOR_UTILS_H
 
+#include <math.h>
 /**
     SFML is missing a few useful operators on the 2D vectors.
     These are the missing operators.

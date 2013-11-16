@@ -10,32 +10,13 @@ int scoreCount;
 void addScore(int amount) { scoreCount += amount; }
 
 
-
-sf::Texture logoTexture;
-sf::Texture bulletTexture;
-sf::Texture bre1Texture;
-sf::Texture bre2Texture;
-sf::Texture robotTexture;
-sf::Texture ultimakerTexture[9];
-sf::Texture numberTexture[10];
-int numberWidth[10] = {7, 4, 7, 7, 8, 7, 7, 7, 7, 7};
-sf::Texture abcTexture;
-int abcWidth[26] = {12, 10, 10, 11, 8, 8, 13, 12, 5, 8, 11, 8, 15, 13, 14, 9, 14, 10, 9, 9, 11, 11, 17, 11, 11, 10};
-sf::Texture invaderTexture;
-sf::Texture invaderShieldedTexture;
-sf::Texture playerTexture;
 sf::Clock Clock;
-sf::SoundBuffer laserSound;
-sf::SoundBuffer explosionSound;
-float random(float fmin, float fmax)
-{
-    return (float(rand()) / float(RAND_MAX)) * (fmax - fmin) + fmin;
-}
 
 #include "vectorUtils.h"
 #include "curve.h"
 #include "background.h"
 #include "gameEntity.h"
+#include "textureManager.h"
 
 
 #include "explosion.h"
@@ -58,9 +39,9 @@ int textWidth(const char* str)
     {
         int c = (*str++);
         if (c >= 'A' && c <= 'Z')
-            ret += abcWidth[c-'A'];
+            ret += textureManager.getSpriteRect("abc", c-'A').width;
         else if (c >= '0' && c <= '9')
-            ret += numberWidth[c-'0'];
+            ret += textureManager.getSpriteRect("nums", c-'0').width;
         else
             ret += 8;
     }
@@ -87,20 +68,18 @@ void drawText(sf::RenderTarget& window, int x, int y, const char* str, textAlign
         if (c >= 'A' && c <= 'Z')
         {
             c -= 'A';
-            int offset = 0;
-            for(int i=0; i<c; i++)
-                offset += abcWidth[i];
-            letter.setTexture(abcTexture);
-            letter.setTextureRect(sf::IntRect(offset, 0, abcWidth[c], 12));
+            textureManager.setTexture(letter, "abc", c);
+            letter.setOrigin(0, 0);
             letter.setPosition(x, y);
-            x += abcWidth[c];
+            x += letter.getTextureRect().width + 1;
             window.draw(letter);
         }
         else if (c >= '0' && c <= '9')
         {
-            letter.setTexture(numberTexture[c-'0'], true);
+            textureManager.setTexture(letter, "nums", c-'0');
+            letter.setOrigin(0, 0);
             letter.setPosition(x, y);
-            x += numberWidth[c-'0'];
+            x += letter.getTextureRect().width + 1;
             window.draw(letter);
         }
         else
@@ -280,9 +259,8 @@ public:
     virtual void postRender(sf::RenderTarget& window)
     {
         sf::Sprite life;
-        life.setTexture(playerTexture);
+        textureManager.setTexture(life, "m");
         life.setScale(0.5, 0.5);
-        life.setOrigin(playerTexture.getSize().x / 2, playerTexture.getSize().y / 2);
         life.setColor(sf::Color(255,255,255,192));
         for(int n=0; n<lives; n++)
         {
@@ -316,9 +294,8 @@ public:
     {
         startGame = false;
 
-        logoSprite.setTexture(logoTexture);
-        logoSprite.setOrigin(logoTexture.getSize().x / 2, 0);
-        logoSprite.setPosition(160, 40);
+        textureManager.setTexture(logoSprite, "iMvader");
+        logoSprite.setPosition(160, 60);
 
         enemyGroup = new EnemyGroup();
         for(unsigned int n=0; n<10; n++)
@@ -437,37 +414,6 @@ int main()
     window.setFramerateLimit(60);
     window.setMouseCursorVisible(false);
     window.setView(sf::View(sf::Vector2f(160,120), sf::Vector2f(320, 240)));
-
-    logoTexture.loadFromFile("resources/iMvader.png");
-    bulletTexture.loadFromFile("resources/bullet.png");
-    bre1Texture.loadFromFile("resources/bre1.png");
-    bre2Texture.loadFromFile("resources/bre2.png");
-    robotTexture.loadFromFile("resources/robot.png");
-    ultimakerTexture[0].loadFromFile("resources/letter_u.png");
-    ultimakerTexture[1].loadFromFile("resources/letter_l.png");
-    ultimakerTexture[2].loadFromFile("resources/letter_t.png");
-    ultimakerTexture[3].loadFromFile("resources/letter_i.png");
-    ultimakerTexture[4].loadFromFile("resources/letter_m.png");
-    ultimakerTexture[5].loadFromFile("resources/letter_a.png");
-    ultimakerTexture[6].loadFromFile("resources/letter_k.png");
-    ultimakerTexture[7].loadFromFile("resources/letter_e.png");
-    ultimakerTexture[8].loadFromFile("resources/letter_r.png");
-    numberTexture[0].loadFromFile("resources/num0.png");
-    numberTexture[1].loadFromFile("resources/num1.png");
-    numberTexture[2].loadFromFile("resources/num2.png");
-    numberTexture[3].loadFromFile("resources/num3.png");
-    numberTexture[4].loadFromFile("resources/num4.png");
-    numberTexture[5].loadFromFile("resources/num5.png");
-    numberTexture[6].loadFromFile("resources/num6.png");
-    numberTexture[7].loadFromFile("resources/num7.png");
-    numberTexture[8].loadFromFile("resources/num8.png");
-    numberTexture[9].loadFromFile("resources/num9.png");
-    abcTexture.loadFromFile("resources/abc.png");
-    invaderTexture.loadFromFile("resources/MakerBotLogoMini.png");
-    invaderShieldedTexture.loadFromFile("resources/MakerBotLogoMiniShielded.png");
-    playerTexture.loadFromFile("resources/m.png");
-    laserSound.loadFromFile("resources/laser.wav");
-    explosionSound.loadFromFile("resources/explosion.wav");
 
     mainloop(window);
 

@@ -24,8 +24,7 @@ public:
     {
         invulnerability = 60;
         fireCooldown = 20;
-        sprite.setTexture(playerTexture);
-        sprite.setOrigin(playerTexture.getSize().x/2, playerTexture.getSize().y/2);
+        textureManager.setTexture(sprite, "m");
         sprite.setPosition(sf::Vector2f(160, 220));
     }
 
