@@ -1,0 +1,60 @@
+#ifndef BASICENEMYBASE_H
+#define BASICENEMYBASE_H
+#include "curve.h"
+#include "gameEntity.h"
+#include "random.h"
+#include "Collisionable.h"
+#include "textureManager.h"
+#include "explosion.h"
+#include "bullet.h"
+
+enum EnemyState
+{
+    ES_Wait,
+    ES_FlyIn,
+    ES_CenterField,
+    ES_Diving,
+    ES_Outside
+};
+
+class BasicEnemyBase: public GameEntity, public Collisionable
+{
+public:
+    EnemyState state;
+    Curve flyInCurve[2];
+    Curve diveCurve;
+    sf::Vector2f targetPosition;
+    bool hasShield;
+    int shieldPower;
+    int flyIncurveNr, flyIncurveCount;
+    static const int shieldMaxPower = 30;
+    float enemyOffset;
+    float enemyDirection;
+
+public:
+    BasicEnemyBase(sf::Vector2f targetPosition)
+    : GameEntity(8.0f), targetPosition(targetPosition)
+    {
+        state = ES_Outside;
+        flyIncurveCount = 0;
+
+        textureManager.setTexture(sprite, "BasicEnemy", 0);
+        sprite.setColor(sf::Color(212, 0, 0, 255));
+        sprite.setPosition(sf::Vector2f(-50, -50));
+        hasShield = false;
+    }
+    virtual ~BasicEnemyBase();
+    virtual void update();
+
+    void dive(sf::Vector2f target);
+    void wait(sf::Vector2f start);
+    void wait(sf::Vector2f start, sf::Vector2f flyByTarget);
+    void flyIn();
+    void giveShield();
+
+    virtual void render(sf::RenderTarget& window);
+    bool shieldUp();
+
+    virtual bool takeDamage(sf::Vector2f position, int damageType, int damageAmount);
+};
+#endif

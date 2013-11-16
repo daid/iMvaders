@@ -22,7 +22,11 @@ sf::Clock Clock;
 #include "explosion.h"
 #include "bullet.h"
 #include "player.h"
-#include "enemy.h"
+
+#include "EnemyGroup.h"
+#include "BasicEnemy.h"
+#include "BurstShotEnemy.h"
+
 #include "bre.h"
 
 #include "Updatable.h"
@@ -98,6 +102,8 @@ class GameStage : public GameEntity
 private:
     PVector<EnemyGroup> groupList;
     int diveCountdown;
+    float enemyOffset;
+    float enemyDirection;
 public:
     GameStage()
     {
