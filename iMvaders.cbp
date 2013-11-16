@@ -59,6 +59,7 @@
 		<Unit filename="bre.cpp" />
 		<Unit filename="bre.h" />
 		<Unit filename="bullet.h" />
+		<Unit filename="curve.cpp" />
 		<Unit filename="curve.h" />
 		<Unit filename="enemy.cpp" />
 		<Unit filename="enemy.h" />
