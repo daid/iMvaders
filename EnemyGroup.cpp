@@ -15,6 +15,14 @@ BasicEnemyBase* EnemyGroup::add(sf::Vector2f targetPoint)
     return e;
 }
 
+void EnemyGroup::setOffset(float offset)
+{
+    foreach(BasicEnemyBase, e, enemyList)
+    {
+        e->enemyOffset = offset;
+    }
+}
+
 void EnemyGroup::update()
 {
     if (enemyList.size() < 1)

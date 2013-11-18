@@ -18,7 +18,7 @@ void BasicEnemyBase::update()
     case ES_Wait:
         break;
     case ES_FlyIn:
-        if (flyInCurve[flyIncurveNr].delta < 1.0)
+         if (flyInCurve[flyIncurveNr].delta < 1.0)
         {
             flyInCurve[flyIncurveNr].moveDistance(2.0);
             sprite.setRotation(flyInCurve[flyIncurveNr].angle());

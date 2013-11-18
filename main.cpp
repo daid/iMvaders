@@ -142,6 +142,7 @@ public:
         bool allowFlyIn = true;
         foreach(EnemyGroup, g, groupList)
         {
+            g->setOffset(enemyOffset);
             if (!g->isAll(ES_CenterField))
             {
                 allowDive = false;

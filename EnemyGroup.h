@@ -16,8 +16,10 @@ public:
     BasicEnemyBase* add(sf::Vector2f targetPoint);
 
     virtual void update();
+    
+    void setOffset(float offset);
 
-    //Is all what?
+    //return true when all the enemies in this group in this state.
     bool isAll(EnemyState state);
 
     void dive(sf::Vector2f target);

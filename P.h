@@ -4,6 +4,7 @@
 #include <SFML/System.hpp>
 #include <vector>
 #include <assert.h>
+#include <stdio.h>
 
 /**
     P<T> is a reference counting pointer class. This class keeps track to the amount of P<T> pointers pointing to a Pobject.
