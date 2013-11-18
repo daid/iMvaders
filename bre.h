@@ -1,15 +1,29 @@
 #ifndef BRE_H
 #define BRE_H
+
 #include "gameEntity.h"
+
+enum BreState
+{
+    BS_FlyIn,
+    BS_MoveLeftRight,
+    BS_LaserCharge,
+    BS_LaserFire,
+};
+
 class BreEnemy: public GameEntity
 {
 public:
     sf::Sprite mouth;
-    int state;
+    BreState state;
+    int moveDir;
     int health;
+    int shotDelay;
     float mouthPos;
     int invulnerability;
     static const int maxHealth = 100;
+    static const int normalShotDelay = 120;
+    static const int laserChargeTime = 60;
 
     BreEnemy()
     : GameEntity(50)
@@ -18,11 +32,13 @@ public:
         sprite.setPosition(sf::Vector2f(160, -80));
         textureManager.setTexture(mouth, "bre2");
         mouth.setPosition(sf::Vector2f(160, -80));
-        state = 0;
+        state = BS_FlyIn;
         mouthPos = 0;
+        shotDelay = 0;
         invulnerability = 0;
         health = maxHealth;
     }
+    
     virtual ~BreEnemy()
     {
     }
@@ -31,38 +47,65 @@ public:
     {
         if (invulnerability)
             invulnerability--;
-        //new Bullet(sprite.getPosition() + sf::Vector2f(18, 7), 1, 180);
-        //new Bullet(sprite.getPosition() + sf::Vector2f(-18, 7), 0, 180);
         switch(state)
         {
-        case 0:
+        case BS_FlyIn:
             if (sprite.getPosition().y < 80.0)
                 sprite.setPosition(sprite.getPosition() + sf::Vector2f(0, 1));
-            else
-                state = 1;
+            else{
+                state = BS_MoveLeftRight;
+                moveDir = random(0, 100) < 50 ? 1 : -1;
+            }
             break;
-        case 1:
-            if (sprite.getPosition().x < 280.0)
-                sprite.setPosition(sprite.getPosition() + sf::Vector2f(1, 0));
-            else
-                state = 2;
+        case BS_MoveLeftRight:
+            sprite.setPosition(sprite.getPosition() + sf::Vector2f(moveDir, 0));
+            if (sprite.getPosition().x < 40.0)
+                moveDir = 1;
+            if (sprite.getPosition().x > 280.0)
+                moveDir = -1;
+            
+            if (shotDelay)
+            {
+                shotDelay--;
+            }else{
+                if (random(0, 100) < 20)
+                {
+                    state = BS_LaserCharge;
+                    shotDelay = laserChargeTime;
+                }else{
+                    for(int n=-15; n<=15; n+= 5)
+                        new Bullet(sprite.getPosition() + sf::Vector2f(-n*3, -50), 0, 180 + n, 1.5f);
+                    shotDelay = normalShotDelay;
+                }
+            }
             break;
-        case 2:
-            if (sprite.getPosition().x > 40.0)
-                sprite.setPosition(sprite.getPosition() + sf::Vector2f(-1, 0));
+        case BS_LaserCharge:
+            if (shotDelay)
+            {
+                shotDelay--;
+            }else{
+                state = BS_LaserFire;
+                shotDelay = 30;
+            }
+            break;
+        case BS_LaserFire:
+            if (shotDelay > -30)
+            {
+                shotDelay--;
+            }
             else
-                state = 1;
+            {
+                shotDelay = normalShotDelay;
+                state = BS_MoveLeftRight;
+            }
             break;
         }
-        mouthPos = sprite.getPosition().x - 40;
-        while(mouthPos > 60.0) mouthPos -= 60;
-        if (mouthPos > 30) mouthPos = 60 - mouthPos;
         mouth.setPosition(sprite.getPosition() + sf::Vector2f(0, mouthPos));
     }
 
     virtual void render(sf::RenderTarget& window)
     {
-        if (invulnerability & 2)
+        if ((invulnerability & 2) || (state == BS_LaserCharge && (shotDelay & 1)))
         {
             sprite.setColor(sf::Color(212, 0, 0));
             mouth.setColor(sf::Color(212, 0, 0));
@@ -75,18 +118,20 @@ public:
         window.draw(sprite);
         window.draw(mouth);
 
-        /*
-        sf::RectangleShape laser(sf::Vector2f(6, 240));
-        laser.setOrigin(3, 0);
-        laser.setFillColor(sf::Color(255,0,0,192));
-        laser.setRotation(mouthPos - 15);
-        laser.setPosition(sprite.getPosition() + sf::Vector2f(18, 7));
-        window.draw(laser);
+        if (state == BS_LaserFire)
+        {
+            sf::RectangleShape laser(sf::Vector2f(6, 240));
+            laser.setOrigin(3, 0);
+            laser.setFillColor(sf::Color(255,0,0,192));
+            laser.setRotation(-shotDelay/2);
+            laser.setPosition(sprite.getPosition() + sf::Vector2f(18, 7));
+            window.draw(laser);
 
-        laser.setFillColor(sf::Color(0,255,0,192));
-        laser.setPosition(sprite.getPosition() + sf::Vector2f(-18, 7));
-        window.draw(laser);
-        */
+            laser.setFillColor(sf::Color(0,255,0,192));
+            laser.setRotation(shotDelay/2);
+            laser.setPosition(sprite.getPosition() + sf::Vector2f(-18, 7));
+            window.draw(laser);
+        }
     }
 
     virtual void postRender(sf::RenderTarget& window)
@@ -110,7 +155,10 @@ public:
             return false;
         if (invulnerability)
             return true;
-        health -= damageAmount;
+        
+        if (state != BS_FlyIn)
+            health -= damageAmount;
+        
         if (health <= 0)
         {
             health = 0;

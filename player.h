@@ -62,6 +62,8 @@ public:
             new Bullet(sprite.getPosition(), -1, 0);
             fireCooldown = 20;
         }
+        if (!controller->fire() && fireCooldown > 5)
+            fireCooldown = 5;
     }
 
     virtual void render(sf::RenderTarget& window)

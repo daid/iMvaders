@@ -50,6 +50,16 @@
 		<Linker>
 			<Add directory="../SFML-2.1/lib" />
 		</Linker>
+		<Unit filename="BasicEnemy.cpp" />
+		<Unit filename="BasicEnemy.h" />
+		<Unit filename="BasicEnemyBase.cpp" />
+		<Unit filename="BasicEnemyBase.h" />
+		<Unit filename="BurstShotEnemy.cpp" />
+		<Unit filename="BurstShotEnemy.h" />
+		<Unit filename="Collisionable.cpp" />
+		<Unit filename="Collisionable.h" />
+		<Unit filename="EnemyGroup.cpp" />
+		<Unit filename="EnemyGroup.h" />
 		<Unit filename="P.h" />
 		<Unit filename="Renderable.cpp" />
 		<Unit filename="Renderable.h" />
@@ -63,8 +73,6 @@
 		<Unit filename="bullet.h" />
 		<Unit filename="curve.cpp" />
 		<Unit filename="curve.h" />
-		<Unit filename="enemy.cpp" />
-		<Unit filename="enemy.h" />
 		<Unit filename="explosion.cpp" />
 		<Unit filename="explosion.h" />
 		<Unit filename="gameEntity.cpp" />
