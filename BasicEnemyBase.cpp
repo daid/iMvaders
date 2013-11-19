@@ -1,4 +1,6 @@
 #include "basicEnemyBase.h"
+#include "scoreManager.h"
+
 BasicEnemyBase::~BasicEnemyBase(){}
 
 void BasicEnemyBase::update()
@@ -143,7 +145,7 @@ bool BasicEnemyBase::takeDamage(sf::Vector2f position, int damageType, int damag
     {
         new Explosion(sprite.getPosition(), 8);
         destroy();
-        //addScore(10); //A proper score manager is needed.
+        score.add(10);
     }
     return true;
 }

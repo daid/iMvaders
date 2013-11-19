@@ -163,7 +163,7 @@ public:
         {
             health = 0;
             destroy();
-            addScore(500);
+            score.add(500);
             for(unsigned int n=0; n<20; n++)
             {
                 new Explosion(sprite.getPosition() + sf::Vector2f(random(-50, 50), random(-80, 80)), 10);

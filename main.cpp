@@ -5,11 +5,6 @@
 #include <ctime>
 #include <cstdlib>
 
-
-int scoreCount;
-void addScore(int amount) { scoreCount += amount; }
-
-
 sf::Clock Clock;
 
 #include "vectorUtils.h"
@@ -18,6 +13,7 @@ sf::Clock Clock;
 #include "background.h"
 #include "gameEntity.h"
 #include "textureManager.h"
+#include "scoreManager.h"
 
 
 #include "explosion.h"
@@ -155,7 +151,6 @@ public:
     GameState()
     {
         stageNr = 0;
-        scoreCount = 0;
         lives = 4;
         startStageDelay = 120;
         //Destroy all objects except ourselves.
@@ -213,7 +208,7 @@ public:
             window.draw(life);
         }
         char buf[8];
-        sprintf(buf, "%i", scoreCount);
+        sprintf(buf, "%i", score.get());
         drawText(window, 310, 220, buf, align_right);
 
         if (!stage)
