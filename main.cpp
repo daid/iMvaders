@@ -413,14 +413,33 @@ int main()
     srand(time(NULL));
 
     // Create the window of the application
-    const int gameWidth = 320*3;
-    const int gameHeight = 240*3;
+    int gameWidth = 320*3;
+    int gameHeight = 240*3;
+    bool fullscreen = false;
+    
+    if (fullscreen)
+    {
+        sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
+        gameWidth = desktop.width;
+        gameHeight = desktop.height;
+    }
 
     sf::RenderWindow window(sf::VideoMode(gameWidth, gameHeight, 32), "iMvaders!", sf::Style::None);
     window.setVerticalSyncEnabled(false);
     window.setFramerateLimit(60);
     window.setMouseCursorVisible(false);
-    window.setView(sf::View(sf::Vector2f(160,120), sf::Vector2f(320, 240)));
+    sf::View view(sf::Vector2f(160,120), sf::Vector2f(320, 240));
+    if (gameWidth > gameHeight * 320 / 240)
+    {
+        float aspect = float(gameHeight) * 320 / 240 / float(gameWidth);
+        float offset = 0.5 - 0.5 * aspect;
+        view.setViewport(sf::FloatRect(offset, 0, aspect, 1));
+    }else{
+        float aspect = float(gameWidth) / float(gameHeight) * 240 / 320;
+        float offset = 0.5 - 0.5 * aspect;
+        view.setViewport(sf::FloatRect(0, offset, 1, aspect));
+    }
+    window.setView(view);
 
     mainloop(window);
 
