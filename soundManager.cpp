@@ -6,6 +6,8 @@ SoundManager soundManager;
 
 SoundManager::SoundManager()
 {
+    //By creating a SoundBuffer we force SFML to load the sound subsystem. Else this is done when the first sound is loaded, causing a delay.
+    sf::SoundBuffer forceLoadBuffer;
 }
 
 SoundManager::~SoundManager()

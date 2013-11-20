@@ -17,7 +17,7 @@ void BurstShotEnemy::update()
         if (charge & 2)
             sprite.setColor(sf::Color(255, 255, 255));
         else
-            sprite.setColor(sf::Color(212, 0, 0));
+            sprite.setColor(color);
         if (charge == 0)
             shots = shotsPerBurst;
     }

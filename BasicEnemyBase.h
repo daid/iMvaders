@@ -29,6 +29,7 @@ public:
     int flyIncurveNr, flyIncurveCount;
     static const int shieldMaxPower = 30;
     float enemyOffset;
+    sf::Color color;
 
 public:
     BasicEnemyBase(sf::Vector2f targetPosition)
@@ -39,7 +40,8 @@ public:
         enemyOffset = 0;
 
         textureManager.setTexture(sprite, "BasicEnemy", 0);
-        sprite.setColor(sf::Color(212, 0, 0, 255));
+        color = sf::Color(212, 0, 0, 255);
+        sprite.setColor(color);
         sprite.setPosition(sf::Vector2f(-50, -50));
         hasShield = false;
     }
