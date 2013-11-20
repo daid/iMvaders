@@ -205,18 +205,14 @@ public:
             life.setPosition(10 + 13 * n, 230);
             window.draw(life);
         }
-        char buf[8];
-        sprintf(buf, "%i", score.get());
-        drawText(window, 310, 220, buf, align_right);
+        drawText(window, 310, 220, to_string(score.get()), align_right);
 
         if (!stage)
         {
-            char buf[16];
-            sprintf(buf, "STAGE %i", stageNr + 1);
             if (startStageDelay > 60)
-                drawText(window, 160, 240 - startStageDelay * 2, buf);
+                drawText(window, 160, 240 - startStageDelay * 2, "STAGE " + to_string(stageNr+1));
             else
-                drawText(window, 160, 120, buf);
+                drawText(window, 160, 120, "STAGE " + to_string(stageNr+1));
         }
     }
 };
