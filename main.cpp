@@ -112,8 +112,6 @@ public:
                 g->dive(sf::Vector2f(random(20, 300), 300));
             }
         }
-        //foreach(Enemy, e, enemyList)
-        //    e->flightCurve.p1 += sf::Vector2f(enemyDirection, 0);
     }
 };
 
@@ -268,9 +266,10 @@ public:
     {
         window.draw(logoSprite);
         drawText(window, 160, 120, "HIGH SCORE");
-        drawText(window, 160, 120 + 16 * 1, "DAV 1337");
-        drawText(window, 160, 120 + 16 * 2, "DAV 1337");
-        drawText(window, 160, 120 + 16 * 3, "DAV 1337");
+        for(int i=0; i<score.highscoreListSize; i++)
+        {
+            drawText(window, 160, 120 + 16 * (i+1), score.getHighscoreName(i) + " " + to_string(score.getHighScore(i)));
+        }
         if (startGame)
         {
             if (Clock.getElapsedTime().asMilliseconds() % 200 < 100)

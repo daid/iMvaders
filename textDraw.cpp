@@ -1,12 +1,12 @@
 #include "textDraw.h"
 #include "textureManager.h"
 
-static int textWidth(const char* str)
+static int textWidth(sf::String str)
 {
     int ret = 0;
-    while(*str)
+    for(unsigned int i=0; i<str.getSize(); i++)
     {
-        int c = (*str++);
+        int c = str[i];
         if (c >= 'A' && c <= 'Z')
             ret += textureManager.getSpriteRect("abc", c-'A').width;
         else if (c >= '0' && c <= '9')
@@ -17,16 +17,16 @@ static int textWidth(const char* str)
     return ret;
 }
 
-void drawText(sf::RenderTarget& window, int x, int y, const char* str, textAlign align)
+void drawText(sf::RenderTarget& window, int x, int y, sf::String str, textAlign align)
 {
     sf::Sprite letter;
     if (align == align_center)
         x -= textWidth(str)/2;
     if (align == align_right)
         x -= textWidth(str);
-    while(*str)
+    for(unsigned int i=0; i<str.getSize(); i++)
     {
-        int c = (*str++);
+        int c = str[i];
         if (c >= 'A' && c <= 'Z')
         {
             c -= 'A';
