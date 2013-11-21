@@ -4,11 +4,11 @@ BasicEnemy::~BasicEnemy(){}
 
 void BasicEnemy::update(float delta)
 {
-    if (shotDelay)
+    if (shotDelay > 0)
     {
-        shotDelay--; //This is *bad* Never use frame based timing! The time should be Mili-seconds based.
+        shotDelay -= delta; //This is *bad* Never use frame based timing! The time should be Mili-seconds based.
     }else{
-        shotDelay = random(200, 400);
+        shotDelay = random(0.8, 8.0);
         float a = sprite.getRotation();
         if (a > 180 - shotAngle/2 && a < 180 + shotAngle/2)
             new Bullet(sprite.getPosition(), 0, a);

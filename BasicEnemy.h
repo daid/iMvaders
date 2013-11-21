@@ -5,13 +5,13 @@
 class BasicEnemy : public BasicEnemyBase
 {
 private:
-    int shotDelay;
+    float shotDelay;
     static const int shotAngle = 120;
 public:
     BasicEnemy(sf::Vector2f targetPosition)
     : BasicEnemyBase(targetPosition)
     {
-        shotDelay = random(50, 500);
+        shotDelay = random(0.8, 8.0);
     }
 
     virtual ~BasicEnemy();
