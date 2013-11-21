@@ -35,15 +35,15 @@ class GameStage : public GameEntity
 {
 private:
     PVector<EnemyGroup> groupList;
-    int diveCountdown;
+    float diveCountdown;
     float enemyOffset;
     float enemyDirection;
 public:
     GameStage()
     {
-        enemyDirection = 0.2;
+        enemyDirection = 12.0;
         enemyOffset = 0;
-        diveCountdown = random(100, 300);
+        diveCountdown = random(2.0, 5.0);
 
         EnemyGroup* g = new EnemyGroup();
         groupList.push_back(g);
@@ -70,7 +70,7 @@ public:
             enemyDirection = -fabs(enemyDirection);
         if (enemyOffset < -30)
             enemyDirection = fabs(enemyDirection);
-        enemyOffset += enemyDirection;
+        enemyOffset += enemyDirection * delta;
 
         bool allowDive = true;
         bool allowFlyIn = true;
@@ -101,13 +101,13 @@ public:
 
         if (allowDive)
         {
-            if (diveCountdown)
+            if (diveCountdown > 0)
             {
-                diveCountdown--;
+                diveCountdown -= delta;
             }
             else
             {
-                diveCountdown = random(100, 300);
+                diveCountdown = random(2.0, 5.0);
                 P<EnemyGroup> g = groupList[rand() % groupList.size()];
                 g->dive(sf::Vector2f(random(20, 300), 300));
             }
@@ -144,13 +144,13 @@ private:
     P<GameEntity> stage;
     int lives;
     int stageNr;
-    int startStageDelay;
+    float startStageDelay;
 public:
     GameState()
     {
         stageNr = 0;
         lives = 4;
-        startStageDelay = 120;
+        startStageDelay = 2.0;
         //Destroy all objects except ourselves.
         foreach(GameEntity, e, entityList)
             if (e != this)
@@ -178,9 +178,9 @@ public:
 
         if (!stage)
         {
-            if (startStageDelay)
+            if (startStageDelay > 0)
             {
-                startStageDelay--;
+                startStageDelay -= delta;
             }
             else
             {
@@ -189,7 +189,7 @@ public:
                     stage = new BreStage();
                 else
                     stage = new GameStage();
-                startStageDelay = 120;
+                startStageDelay = 2.0;
             }
         }
     }
@@ -209,8 +209,8 @@ public:
 
         if (!stage)
         {
-            if (startStageDelay > 60)
-                drawText(window, 160, 240 - startStageDelay * 2, "STAGE " + to_string(stageNr+1));
+            if (startStageDelay > 1.0)
+                drawText(window, 160, 120 - (startStageDelay - 1.0) * 120, "STAGE " + to_string(stageNr+1));
             else
                 drawText(window, 160, 120, "STAGE " + to_string(stageNr+1));
         }
@@ -281,11 +281,10 @@ public:
 
 void mainloop(sf::RenderWindow& window)
 {
-    //new BreEnemy();
     new MainMenu();
 
     sf::Clock frameTimeClock;
-    StarBackground background;
+    new StarBackground();
     while (window.isOpen())
     {
         // Handle events
@@ -312,7 +311,6 @@ void mainloop(sf::RenderWindow& window)
 
         // Clear the window
         window.clear(sf::Color(0, 0, 0));
-        background.render(window);
         foreach(GameEntity, e, entityList)
         {
 #ifdef DEBUG

@@ -36,10 +36,13 @@ void BurstShotEnemy::update(float delta)
     {
         shotDelay -= delta;
     }else{
-        shotDelay = 0.0;
-        float a = sprite.getRotation();
-        if (a > 180 - shotAngle/2 && a < 180 + shotAngle/2)
+        if (state == ES_CenterField)
+        {
             charge = chargeUpTime;
+            shotDelay = 0.0;
+        }else{
+            shotDelay = random(1.0, 8.0);
+        }
     }
     BasicEnemyBase::update(delta);
 }
