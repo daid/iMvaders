@@ -80,8 +80,12 @@
 		<Unit filename="main.cpp" />
 		<Unit filename="player.h" />
 		<Unit filename="random.h" />
+		<Unit filename="scoreManager.cpp" />
+		<Unit filename="scoreManager.h" />
 		<Unit filename="soundManager.cpp" />
 		<Unit filename="soundManager.h" />
+		<Unit filename="textDraw.cpp" />
+		<Unit filename="textDraw.h" />
 		<Unit filename="textureManager.cpp" />
 		<Unit filename="textureManager.h" />
 		<Unit filename="vectorUtils.h" />

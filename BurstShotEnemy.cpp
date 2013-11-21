@@ -2,33 +2,44 @@
 
 BurstShotEnemy::~BurstShotEnemy() {}
 
-void BurstShotEnemy::update()
+void BurstShotEnemy::update(float delta)
 {
     if (shots)
     {
-        float a = sprite.getRotation();
-        if (a > 180 - shotAngle/2 && a < 180 + shotAngle/2)
-            new Bullet(sprite.getPosition() + sf::Vector2f(8.0f * sinf((shotsPerBurst - shots) / float(shotsPerBurst) * M_PI * 4), 4.0), 0, a, 6.0f);
-        shots--;
+        if (shotDelay > 0)
+            shotDelay -= delta;
+        if (shotDelay <= 0)
+        {
+            shotDelay += 1.0/60.0;
+            float a = sprite.getRotation();
+            if (a > 180 - shotAngle/2 && a < 180 + shotAngle/2)
+                new Bullet(sprite.getPosition() + sf::Vector2f(8.0f * sinf((shotsPerBurst - shots) / float(shotsPerBurst) * M_PI * 4), 4.0), 0, a, 360.0f);
+            shots--;
+            if (shots == 0)
+                shotDelay = random(1.0, 8.0);
+        }
     }
-    else if (charge)
+    else if (charge > 0)
     {
-        charge--;
-        if (charge & 2)
+        charge -= delta;
+        if (fmodf(charge, 4.0/60.0) > 2.0/60.0)
             sprite.setColor(sf::Color(255, 255, 255));
         else
             sprite.setColor(color);
-        if (charge == 0)
+        if (charge <= 0)
+        {
             shots = shotsPerBurst;
+            sprite.setColor(color);
+        }
     }
-    else if (shotDelay)
+    else if (shotDelay > 0)
     {
-        shotDelay--;
+        shotDelay -= delta;
     }else{
-        shotDelay = random(400, 600);
+        shotDelay = 0.0;
         float a = sprite.getRotation();
         if (a > 180 - shotAngle/2 && a < 180 + shotAngle/2)
-            charge = 60;
+            charge = chargeUpTime;
     }
-    BasicEnemyBase::update();
+    BasicEnemyBase::update(delta);
 }

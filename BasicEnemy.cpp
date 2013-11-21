@@ -2,7 +2,7 @@
 
 BasicEnemy::~BasicEnemy(){}
 
-void BasicEnemy::update()
+void BasicEnemy::update(float delta)
 {
     if (shotDelay)
     {
@@ -13,5 +13,5 @@ void BasicEnemy::update()
         if (a > 180 - shotAngle/2 && a < 180 + shotAngle/2)
             new Bullet(sprite.getPosition(), 0, a);
     }
-    BasicEnemyBase::update();
+    BasicEnemyBase::update(delta);
 }

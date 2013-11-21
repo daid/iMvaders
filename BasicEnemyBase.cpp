@@ -3,12 +3,12 @@
 
 BasicEnemyBase::~BasicEnemyBase(){}
 
-void BasicEnemyBase::update()
+void BasicEnemyBase::update(float delta)
 {
     if (hasShield && shieldPower < shieldMaxPower)
     {
-        shieldPower++;
-        if (shieldPower == shieldMaxPower)
+        shieldPower += delta;
+        if (shieldPower >= shieldMaxPower)
             giveShield();
     }
 
@@ -20,9 +20,9 @@ void BasicEnemyBase::update()
     case ES_Wait:
         break;
     case ES_FlyIn:
-         if (flyInCurve[flyIncurveNr].delta < 1.0)
+        if (flyInCurve[flyIncurveNr].delta < 1.0)
         {
-            flyInCurve[flyIncurveNr].moveDistance(2.0);
+            flyInCurve[flyIncurveNr].moveDistance(flySpeed * delta);
             sprite.setRotation(flyInCurve[flyIncurveNr].angle());
         }
         else
@@ -44,7 +44,7 @@ void BasicEnemyBase::update()
     case ES_Diving:
         if (diveCurve.delta < 1.0)
         {
-            diveCurve.moveDistance(2.0);
+            diveCurve.moveDistance(flySpeed * delta);
             sprite.setRotation(diveCurve.angle());
         }
         else

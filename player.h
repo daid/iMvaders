@@ -1,3 +1,4 @@
+
 class PlayerController: public sf::NonCopyable
 {
 public:
@@ -16,14 +17,15 @@ class PlayerCraft: public GameEntity
 {
 public:
     PlayerController* controller;
-    int fireCooldown;
-    int invulnerability;
+    sf::Vector2f velocity;
+    float fireCooldown;
+    float invulnerability;
 public:
     PlayerCraft(PlayerController* controller)
     : GameEntity(10.0f), controller(controller)
     {
-        invulnerability = 60;
-        fireCooldown = 20;
+        invulnerability = 1.0;
+        fireCooldown = 0.4;
         textureManager.setTexture(sprite, "m");
         sprite.setPosition(sf::Vector2f(160, 220));
     }
@@ -32,21 +34,24 @@ public:
     {
     }
 
-    virtual void update()
+    virtual void update(float delta)
     {
-        if (fireCooldown)
-            fireCooldown--;
-        if (invulnerability)
-            invulnerability--;
+        if (fireCooldown > 0)
+            fireCooldown -= delta;
+        if (invulnerability > 0)
+            invulnerability -= delta;
 
+        velocity = velocity * 0.85f;//TODO: Proper dampening with use of delta.
         if (controller->left())
-            sprite.setPosition(sprite.getPosition().x - 2.0f, sprite.getPosition().y);
+            velocity = sf::Vector2f(-100.0, velocity.y);
         if (controller->right())
-            sprite.setPosition(sprite.getPosition().x + 2.0f, sprite.getPosition().y);
+            velocity = sf::Vector2f( 100.0, velocity.y);
         if (controller->up())
-            sprite.setPosition(sprite.getPosition().x, sprite.getPosition().y - 2.0f);
+            velocity = sf::Vector2f(velocity.x, -100);
         if (controller->down())
-            sprite.setPosition(sprite.getPosition().x, sprite.getPosition().y + 2.0f);
+            velocity = sf::Vector2f(velocity.x,  100);
+        
+        sprite.setPosition(sprite.getPosition() + velocity * delta);
 
         if (sprite.getPosition().x < 20)
             sprite.setPosition(20, sprite.getPosition().y);
@@ -57,25 +62,26 @@ public:
         if (sprite.getPosition().y > 230)
             sprite.setPosition(sprite.getPosition().x, 230);
 
-        if (controller->fire() && !fireCooldown && !invulnerability)
+        if (controller->fire() && fireCooldown <= 0 && invulnerability <= 0)
         {
             new Bullet(sprite.getPosition(), -1, 0);
-            fireCooldown = 20;
+            fireCooldown = 0.4;
         }
-        if (!controller->fire() && fireCooldown > 5)
-            fireCooldown = 5;
+        if (!controller->fire() && fireCooldown > 0.1)
+            fireCooldown = 0.1;
     }
 
     virtual void render(sf::RenderTarget& window)
     {
-        if (invulnerability & 2)
+        if (fmod(invulnerability, 4.0/60.0) > 2.0/60.0)
             return;
+        sprite.setRotation(velocity.x / 10.0);
         window.draw(sprite);
     }
 
     virtual bool takeDamage(sf::Vector2f position, int damageType, int damageAmount)
     {
-        if (damageType < 0 || invulnerability)
+        if (damageType < 0 || invulnerability > 0)
             return false;
         destroy();
         new Explosion(sprite.getPosition(), 12);

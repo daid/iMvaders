@@ -16,7 +16,7 @@ public:
 
     virtual ~BasicEnemy();
 
-    virtual void update();
+    virtual void update(float delta);
 };
 
 #endif // BASICENEMY_H

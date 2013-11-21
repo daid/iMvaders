@@ -23,7 +23,7 @@ void EnemyGroup::setOffset(float offset)
     }
 }
 
-void EnemyGroup::update()
+void EnemyGroup::update(float delta)
 {
     if (enemyList.size() < 1)
         destroy();

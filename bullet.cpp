@@ -22,9 +22,9 @@ Bullet::Bullet(sf::Vector2f position, int type, float angle, float speed)
         sprite.setColor(sf::Color(24, 161, 212));
 }
     
-void Bullet::update()
+void Bullet::update(float delta)
 {
-    sprite.setPosition(sprite.getPosition() + sf::vector2FromAngle(sprite.getRotation()) * speed);
+    sprite.setPosition(sprite.getPosition() + sf::vector2FromAngle(sprite.getRotation()) * speed * delta);
     if (sprite.getPosition().x < -10) destroy();
     if (sprite.getPosition().y < -10) destroy();
     if (sprite.getPosition().x > 330) destroy();

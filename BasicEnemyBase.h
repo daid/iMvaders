@@ -25,9 +25,10 @@ public:
     Curve diveCurve;
     sf::Vector2f targetPosition;
     bool hasShield;
-    int shieldPower;
+    float shieldPower;
     int flyIncurveNr, flyIncurveCount;
-    static const int shieldMaxPower = 30;
+    static const float shieldMaxPower = 0.5;
+    static const float flySpeed = 120.0;
     float enemyOffset;
     sf::Color color;
 
@@ -46,7 +47,7 @@ public:
         hasShield = false;
     }
     virtual ~BasicEnemyBase();
-    virtual void update();
+    virtual void update(float delta);
 
     void dive(sf::Vector2f target);
     void wait(sf::Vector2f start);

@@ -14,20 +14,20 @@ Explosion::Explosion(sf::Vector2f position, float radius)
     {
         float a = random(0, 360);
         sf::Vector2f p = position + sf::vector2FromAngle(random(0, 360)) * random(0, radius);
-        sf::Vector2f v = sf::vector2FromAngle(a) * random(0.5, 1.2) * radius / 10.0f;
+        sf::Vector2f v = sf::vector2FromAngle(a) * random(30, 80) * radius / 10.0f;
         particles.push_back(Particle(p, v));
     }
     life = 1.0;
 }
 Explosion::~Explosion() {}
     
-void Explosion::update()
+void Explosion::update(float delta)
 {
     for(unsigned int n=0; n<particles.size(); n++)
     {
-        particles[n].position += particles[n].velocity;
+        particles[n].position += particles[n].velocity * delta;
     }
-    life -= 0.03;
+    life -= 1.0 / lifeTime * delta;
     if (life < 0.0)
         destroy();
 }

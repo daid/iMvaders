@@ -12,9 +12,9 @@ private:
     float speed;
     int type;
 public:
-    Bullet(sf::Vector2f position, int type, float angle, float speed = 3.0f);
+    Bullet(sf::Vector2f position, int type, float angle, float speed = 180.0f);
     
-    virtual void update();
+    virtual void update(float delta);
     
     virtual void render(sf::RenderTarget& window);
 };

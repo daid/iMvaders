@@ -9,7 +9,7 @@ class Updatable: public virtual PObject
     public:
         Updatable();
         virtual ~Updatable();
-        virtual void update() = 0;
+        virtual void update(float delta) = 0;
     protected:
     private:
 };

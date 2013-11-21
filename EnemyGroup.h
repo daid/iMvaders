@@ -15,7 +15,7 @@ public:
 
     BasicEnemyBase* add(sf::Vector2f targetPoint);
 
-    virtual void update();
+    virtual void update(float delta);
     
     void setOffset(float offset);
 

@@ -22,11 +22,12 @@ private:
     sf::Sound sound;
     std::vector<Particle> particles;
     float life;
+    static const float lifeTime = 0.5;
 public:
     Explosion(sf::Vector2f position, float radius);
     virtual ~Explosion();
     
-    virtual void update();
+    virtual void update(float delta);
     
     virtual void postRender(sf::RenderTarget& window);
 };

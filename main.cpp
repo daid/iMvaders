@@ -64,7 +64,7 @@ public:
     }
     virtual ~GameStage() {}
 
-    virtual void update()
+    virtual void update(float delta)
     {
         if (enemyOffset > 30)
             enemyDirection = -fabs(enemyDirection);
@@ -126,7 +126,7 @@ public:
     }
     virtual ~BreStage() {}
 
-    virtual void update()
+    virtual void update(float delta)
     {
         if (!bre)
         {
@@ -158,7 +158,7 @@ public:
     }
     virtual ~GameState() {}
 
-    virtual void update()
+    virtual void update(float delta)
     {
         if (!player)
         {
@@ -240,7 +240,7 @@ public:
     {
     }
 
-    virtual void update()
+    virtual void update(float delta)
     {
         if (enemyGroup->isAll(ES_CenterField))
             enemyGroup->dive(sf::Vector2f(random(20, 300), 260));
@@ -284,6 +284,7 @@ void mainloop(sf::RenderWindow& window)
     //new BreEnemy();
     new MainMenu();
 
+    sf::Clock frameTimeClock;
     StarBackground background;
     while (window.isOpen())
     {
@@ -300,9 +301,13 @@ void mainloop(sf::RenderWindow& window)
             }
         }
 
+        float delta = frameTimeClock.getElapsedTime().asSeconds();
+        frameTimeClock.restart();
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
+            delta /= 5.0;
         foreach(Updatable, u, updatableList)
         {
-            u->update();
+            u->update(delta);
         }
 
         // Clear the window

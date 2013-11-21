@@ -2,7 +2,7 @@
 
 PVector<GameEntity> entityList;
 GameEntity::~GameEntity(){}
-void GameEntity::update(){}
+void GameEntity::update(float delta){}
 void GameEntity::preRender(sf::RenderTarget& window) {}
 void GameEntity::render(sf::RenderTarget& window) {}
 void GameEntity::postRender(sf::RenderTarget& window) {}

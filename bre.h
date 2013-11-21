@@ -43,7 +43,7 @@ public:
     {
     }
 
-    virtual void update()
+    virtual void update(float delta)
     {
         if (invulnerability)
             invulnerability--;
@@ -74,7 +74,7 @@ public:
                     shotDelay = laserChargeTime;
                 }else{
                     for(int n=-15; n<=15; n+= 5)
-                        new Bullet(sprite.getPosition() + sf::Vector2f(-n*3, -50), 0, 180 + n, 1.5f);
+                        new Bullet(sprite.getPosition() + sf::Vector2f(-n*3, -50), 0, 180 + n, 90.0);
                     shotDelay = normalShotDelay;
                 }
             }

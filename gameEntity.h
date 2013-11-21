@@ -30,7 +30,7 @@ public:
 
     virtual ~GameEntity();
 
-    virtual void update();
+    virtual void update(float delta);
 
     virtual void preRender(sf::RenderTarget& window);
     virtual void render(sf::RenderTarget& window);
