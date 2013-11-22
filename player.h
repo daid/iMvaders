@@ -2,12 +2,16 @@
 class PlayerController: public sf::NonCopyable
 {
 public:
+    sf::Keyboard::Key leftKey;
+    sf::Keyboard::Key rightKey;
+    
     PlayerController()
+    : leftKey(sf::Keyboard::Left), rightKey(sf::Keyboard::Right)
     {
     }
 
-    bool left() { return sf::Keyboard::isKeyPressed(sf::Keyboard::Left); }
-    bool right() { return sf::Keyboard::isKeyPressed(sf::Keyboard::Right); }
+    bool left() { return sf::Keyboard::isKeyPressed(leftKey); }
+    bool right() { return sf::Keyboard::isKeyPressed(rightKey); }
     bool up() { return sf::Keyboard::isKeyPressed(sf::Keyboard::Up); }
     bool down() { return sf::Keyboard::isKeyPressed(sf::Keyboard::Down); }
     bool fire() { return sf::Keyboard::isKeyPressed(sf::Keyboard::Space); }
