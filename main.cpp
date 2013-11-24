@@ -14,7 +14,7 @@ sf::Clock Clock;
 #include "gameEntity.h"
 #include "textureManager.h"
 #include "scoreManager.h"
-
+#include "postProcessManager.h"
 
 #include "explosion.h"
 #include "bullet.h"
@@ -166,6 +166,7 @@ public:
             {
                 lives --;
                 player = new PlayerCraft(&playerController[0]);
+                postProcessorManager.triggerPostProcess("pixel", 1.0);
             }
             else
             {
@@ -254,6 +255,7 @@ public:
         }
         if (startGame)
         {
+            postProcessorManager.triggerPostProcess("pixel", 1.0);
             new GameState();
         }
     }
@@ -305,15 +307,22 @@ void mainloop(sf::RenderWindow& window)
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
             delta /= 5.0;
         foreach(Updatable, u, updatableList)
-        {
             u->update(delta);
-        }
 
         // Clear the window
         window.clear(sf::Color(0, 0, 0));
+        sf::RenderTarget& renderTarget = postProcessorManager.getPrimaryRenderTarget(window);
+        renderTarget.clear(sf::Color(0, 0, 0));
+        foreach(Renderable,r,renderableList)
+            r->preRender(renderTarget);
+        foreach(Renderable,r,renderableList)
+            r->render(renderTarget);
+        foreach(Renderable,r,renderableList)
+            r->postRender(renderTarget);
+
+#ifdef DEBUG
         foreach(GameEntity, e, entityList)
         {
-#ifdef DEBUG
             if (e->collisionRadius > 0.0)
             {
                 sf::CircleShape circle(e->collisionRadius, 30);
@@ -322,17 +331,12 @@ void mainloop(sf::RenderWindow& window)
                 circle.setFillColor(sf::Color::Transparent);
                 circle.setOutlineColor(sf::Color(255,255,255,128));
                 circle.setOutlineThickness(1);
-                window.draw(circle);
+                renderTarget.draw(circle);
             }
-#endif
-
         }
-        foreach(Renderable,r,renderableList)
-            r->preRender(window);
-        foreach(Renderable,r,renderableList)
-            r->render(window);
-        foreach(Renderable,r,renderableList)
-            r->postRender(window);
+#endif
+        
+        postProcessorManager.postProcessRendering(window);
 
         // Display things on screen
         window.display();
