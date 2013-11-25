@@ -6,6 +6,8 @@ PostProcessorManager postProcessorManager;
 
 void PostProcessorManager::triggerPostProcess(const char* name, float value)
 {
+    if (!sf::Shader::isAvailable())
+        return;
     if (postProcessorMap.find(name) == postProcessorMap.end())
         postProcessorMap[name] = new PostProcessor(name);
     postProcessorMap[name]->trigger(value);
