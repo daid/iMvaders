@@ -58,6 +58,7 @@ PostProcessor::PostProcessor(const char* name)
         printf("Failed to load post-processor: %s\n", name);
     }
     value = 0.0;
+    speedFactor = 1.0;
 }
 
 void PostProcessor::trigger(float value)
@@ -73,5 +74,5 @@ bool PostProcessor::active()
 void PostProcessor::update(float delta)
 {
     if (value > 0.0)
-        value -= delta;
+        value -= delta * speedFactor;
 }

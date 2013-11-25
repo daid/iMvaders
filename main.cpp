@@ -41,7 +41,7 @@ private:
 public:
     GameStage()
     {
-        enemyDirection = 12.0;
+        enemyDirection = 20.0;
         enemyOffset = 0;
         diveCountdown = random(2.0, 5.0);
 

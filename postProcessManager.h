@@ -26,6 +26,7 @@ class PostProcessor : public Updatable
 private:
     sf::Shader shader;
     float value;
+    float speedFactor;
 
     PostProcessor(const char* name);
     
