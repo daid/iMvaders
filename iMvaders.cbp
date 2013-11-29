@@ -79,6 +79,8 @@
 		<Unit filename="gameEntity.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="player.h" />
+		<Unit filename="postProcessManager.cpp" />
+		<Unit filename="postProcessManager.h" />
 		<Unit filename="random.h" />
 		<Unit filename="scoreManager.cpp" />
 		<Unit filename="scoreManager.h" />
