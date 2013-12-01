@@ -20,6 +20,8 @@ Bullet::Bullet(sf::Vector2f position, int type, float angle, float speed)
         sprite.setColor(sf::Color::Green);
     else if (type == -1)
         sprite.setColor(sf::Color(24, 161, 212));
+    else if (type == -2)
+        sprite.setColor(sf::Color(231, 24, 118));
 }
     
 void Bullet::update(float delta)

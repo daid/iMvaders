@@ -140,16 +140,19 @@ public:
 class GameState : public GameEntity
 {
 private:
-    P<PlayerCraft> player;
+    P<PlayerCraft> player[MAX_PLAYERS];
     P<GameEntity> stage;
-    int lives;
+    int lives[MAX_PLAYERS];
     int stageNr;
+    int playerCount;
     float startStageDelay;
 public:
-    GameState()
+    GameState(int playerCount)
+    : playerCount(playerCount)
     {
         stageNr = 0;
-        lives = 4;
+        for(int n=0; n<playerCount; n++)
+            lives[n] = 4;
         startStageDelay = 2.0;
         //Destroy all objects except ourselves.
         foreach(GameEntity, e, entityList)
@@ -160,20 +163,23 @@ public:
 
     virtual void update(float delta)
     {
-        if (!player)
+        for(int n=0; n<playerCount; n++)
         {
-            if (lives)
+            if (!player[n])
             {
-                lives --;
-                player = new PlayerCraft(&playerController[0]);
-                postProcessorManager.triggerPostProcess("pixel", 1.0);
-            }
-            else
-            {
-                //foreach(GameEntity, e, entityList)
-                //    e->destroy();
-                //new MainMenu();
-                return;
+                if (lives[n])
+                {
+                    lives[n] --;
+                    player[n] = new PlayerCraft(&playerController[n], n);
+                    postProcessorManager.triggerPostProcess("pixel", 1.0);
+                }
+                else
+                {
+                    //foreach(GameEntity, e, entityList)
+                    //    e->destroy();
+                    //new MainMenu();
+                    //return;
+                }
             }
         }
 
@@ -198,14 +204,21 @@ public:
     virtual void postRender(sf::RenderTarget& window)
     {
         sf::Sprite life;
-        textureManager.setTexture(life, "m");
-        life.setScale(0.5, 0.5);
-        life.setColor(sf::Color(255,255,255,192));
-        for(int n=0; n<lives; n++)
+        for(int p=0; p<playerCount; p++)
         {
-            life.setPosition(10 + 13 * n, 230);
-            window.draw(life);
+            if (p == 0)
+                textureManager.setTexture(life, "player1");
+            else
+                textureManager.setTexture(life, "player2");
+            life.setScale(0.5, 0.5);
+            life.setColor(sf::Color(255,255,255,192));
+            for(int n=0; n<lives[p]; n++)
+            {
+                life.setPosition(10 + 13 * n, 230 - p * 10);
+                window.draw(life);
+            }
         }
+        
         drawText(window, 310, 220, to_string(score.get()), align_right);
 
         if (!stage)
@@ -251,12 +264,16 @@ public:
         if (!startGame)
         {
             if (playerController[0].fire())
-                startGame = true;
+            {
+                new GameState(1);
+            }
+            if (playerController[1].fire())
+            {
+                new GameState(2);
+            }
         }
         if (startGame)
         {
-            postProcessorManager.triggerPostProcess("pixel", 1.0);
-            new GameState();
         }
     }
 
@@ -293,6 +310,8 @@ void mainloop(sf::RenderWindow& window)
         sf::Event event;
         while (window.pollEvent(event))
         {
+            if (event.type == sf::Event::KeyPressed)
+                printf("%i\n", event.key.code);
             // Window closed or escape key pressed: exit
             if ((event.type == sf::Event::Closed) ||
                ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Escape)))
@@ -304,7 +323,7 @@ void mainloop(sf::RenderWindow& window)
 
         float delta = frameTimeClock.getElapsedTime().asSeconds();
         frameTimeClock.restart();
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab))
             delta /= 5.0;
         foreach(Updatable, u, updatableList)
             u->update(delta);
@@ -346,6 +365,12 @@ void mainloop(sf::RenderWindow& window)
 int main()
 {
     srand(time(NULL));
+
+    playerController[1].keyBind[0] = sf::Keyboard::A;
+    playerController[1].keyBind[1] = sf::Keyboard::D;
+    playerController[1].keyBind[2] = sf::Keyboard::W;
+    playerController[1].keyBind[3] = sf::Keyboard::S;
+    playerController[1].keyBind[4] = sf::Keyboard::Q;
 
     // Create the window of the application
     int gameWidth = 320*3;

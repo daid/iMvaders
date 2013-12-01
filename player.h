@@ -1,20 +1,25 @@
 
+#define MAX_PLAYERS 2
+
 class PlayerController: public sf::NonCopyable
 {
 public:
-    sf::Keyboard::Key leftKey;
-    sf::Keyboard::Key rightKey;
+    sf::Keyboard::Key keyBind[5];
     
     PlayerController()
-    : leftKey(sf::Keyboard::Left), rightKey(sf::Keyboard::Right)
     {
+        keyBind[0] = sf::Keyboard::Left;
+        keyBind[1] = sf::Keyboard::Right;
+        keyBind[2] = sf::Keyboard::Up;
+        keyBind[3] = sf::Keyboard::Down;
+        keyBind[4] = sf::Keyboard::Space;
     }
 
-    bool left() { return sf::Keyboard::isKeyPressed(leftKey); }
-    bool right() { return sf::Keyboard::isKeyPressed(rightKey); }
-    bool up() { return sf::Keyboard::isKeyPressed(sf::Keyboard::Up); }
-    bool down() { return sf::Keyboard::isKeyPressed(sf::Keyboard::Down); }
-    bool fire() { return sf::Keyboard::isKeyPressed(sf::Keyboard::Space); }
+    bool left() { return sf::Keyboard::isKeyPressed(keyBind[0]); }
+    bool right() { return sf::Keyboard::isKeyPressed(keyBind[1]); }
+    bool up() { return sf::Keyboard::isKeyPressed(keyBind[2]); }
+    bool down() { return sf::Keyboard::isKeyPressed(keyBind[3]); }
+    bool fire() { return sf::Keyboard::isKeyPressed(keyBind[4]); }
 };
 
 class PlayerCraft: public GameEntity
@@ -22,15 +27,19 @@ class PlayerCraft: public GameEntity
 public:
     PlayerController* controller;
     sf::Vector2f velocity;
+    int type;
     float fireCooldown;
     float invulnerability;
 public:
-    PlayerCraft(PlayerController* controller)
-    : GameEntity(10.0f), controller(controller)
+    PlayerCraft(PlayerController* controller, int type)
+    : GameEntity(10.0f), controller(controller), type(type)
     {
         invulnerability = 1.0;
         fireCooldown = 0.4;
-        textureManager.setTexture(sprite, "m");
+        if (type == 0)
+            textureManager.setTexture(sprite, "player1");
+        else
+            textureManager.setTexture(sprite, "player2");
         sprite.setPosition(sf::Vector2f(160, 220));
     }
 
@@ -68,11 +77,25 @@ public:
 
         if (controller->fire() && fireCooldown <= 0 && invulnerability <= 0)
         {
-            new Bullet(sprite.getPosition(), -1, 0);
-            fireCooldown = 0.4;
+            if (type == 0)
+            {
+                new Bullet(sprite.getPosition(), -1, 0);
+                fireCooldown = 0.4;
+            }
+            if (type == 1)
+            {
+                new Bullet(sprite.getPosition() + sf::Vector2f(7, 0), -2, 0);
+                new Bullet(sprite.getPosition() + sf::Vector2f(-4, 0), -2, 0);
+                fireCooldown = 0.8;
+            }
         }
-        if (!controller->fire() && fireCooldown > 0.1)
-            fireCooldown = 0.1;
+        if (!controller->fire())
+        {
+            if (type == 0 && fireCooldown > 0.1)
+                fireCooldown = 0.1;
+            if (type == 1 && fireCooldown > 0.25)
+                fireCooldown = 0.25;
+        }
     }
 
     virtual void render(sf::RenderTarget& window)
