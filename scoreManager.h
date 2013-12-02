@@ -28,6 +28,7 @@ public:
     
     void add(int points);
     int get();
+    void reset();
     
     int getHighScore(int idx);
     sf::String getHighscoreName(int idx);

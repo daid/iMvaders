@@ -29,6 +29,11 @@ int ScoreManager::get()
     return displayScore;
 }
 
+void ScoreManager::reset()
+{
+    currentScore = 0;
+}
+
 int ScoreManager::getHighScore(int idx)
 {
     if (idx < 0 || idx >= highscoreListSize)

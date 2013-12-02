@@ -77,7 +77,12 @@
 		<Unit filename="explosion.h" />
 		<Unit filename="gameEntity.cpp" />
 		<Unit filename="gameEntity.h" />
+		<Unit filename="gameState.cpp" />
+		<Unit filename="gameState.h" />
 		<Unit filename="main.cpp" />
+		<Unit filename="mainMenu.cpp" />
+		<Unit filename="mainMenu.h" />
+		<Unit filename="player.cpp" />
 		<Unit filename="player.h" />
 		<Unit filename="postProcessManager.cpp" />
 		<Unit filename="postProcessManager.h" />
