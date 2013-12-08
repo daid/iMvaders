@@ -57,8 +57,8 @@ void PostProcessorManager::postProcessRendering(sf::RenderTarget& window)
         if (it->second->active())
         {
             backBuffer.display();
-            sf::Sprite backBufferSprite(backBuffer.getTexture(), sf::IntRect(0,0, window.getSize().x, window.getSize().y));
-            backBufferSprite.setScale(320.0/window.getSize().x, 240.0/window.getSize().y);
+            sf::Sprite backBufferSprite(backBuffer.getTexture(), sf::IntRect(0,0, window.getView().getViewport().width * window.getSize().x, window.getView().getViewport().height * window.getSize().y));
+            backBufferSprite.setScale(320.0/float(backBuffer.getSize().x)/backBuffer.getView().getViewport().width, 240.0/float(backBuffer.getSize().y)/backBuffer.getView().getViewport().height);
             it->second->shader.setParameter("value", it->second->value);
             window.draw(backBufferSprite, &it->second->shader);
         }
