@@ -110,7 +110,6 @@ void BreEnemy::render(sf::RenderTarget& window)
         laser.setPosition(sprite.getPosition() + sf::Vector2f(18, 7));
         window.draw(laser);
 
-        laser.setFillColor(sf::Color(0,255,0,192));
         laser.setRotation(shotDelay*30.0);
         laser.setPosition(sprite.getPosition() + sf::Vector2f(-18, 7));
         window.draw(laser);
