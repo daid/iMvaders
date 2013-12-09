@@ -51,6 +51,8 @@
 		<Linker>
 			<Add directory="../SFML-2.1/lib" />
 		</Linker>
+		<Unit filename="src/engine/Collisionable.cpp" />
+		<Unit filename="src/engine/Collisionable.h" />
 		<Unit filename="src/engine/P.h" />
 		<Unit filename="src/engine/Renderable.cpp" />
 		<Unit filename="src/engine/Renderable.h" />
@@ -74,8 +76,6 @@
 		<Unit filename="src/iMvader/BasicEnemyBase.h" />
 		<Unit filename="src/iMvader/BurstShotEnemy.cpp" />
 		<Unit filename="src/iMvader/BurstShotEnemy.h" />
-		<Unit filename="src/iMvader/Collisionable.cpp" />
-		<Unit filename="src/iMvader/Collisionable.h" />
 		<Unit filename="src/iMvader/EnemyGroup.cpp" />
 		<Unit filename="src/iMvader/EnemyGroup.h" />
 		<Unit filename="src/iMvader/background.cpp" />
