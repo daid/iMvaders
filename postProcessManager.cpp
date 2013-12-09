@@ -40,7 +40,7 @@ sf::RenderTarget& PostProcessorManager::getPrimaryRenderTarget(sf::RenderTarget&
                 int th = powerOfTwo(h);
                 backBuffer.create(tw, th, false);
                 backBuffer.setRepeated(true);
-                sf::View view(sf::Vector2f(160,120), sf::Vector2f(320, 240));
+                sf::View view(sf::Vector2f(virtualSize.x/2,virtualSize.y/2), sf::Vector2f(virtualSize));
                 view.setViewport(sf::FloatRect(0, 0, float(w) / float(tw), float(h) / float(th)));
                 backBuffer.setView(view);
             }
@@ -58,7 +58,7 @@ void PostProcessorManager::postProcessRendering(sf::RenderTarget& window)
         {
             backBuffer.display();
             sf::Sprite backBufferSprite(backBuffer.getTexture(), sf::IntRect(0,0, window.getView().getViewport().width * window.getSize().x, window.getView().getViewport().height * window.getSize().y));
-            backBufferSprite.setScale(320.0/float(backBuffer.getSize().x)/backBuffer.getView().getViewport().width, 240.0/float(backBuffer.getSize().y)/backBuffer.getView().getViewport().height);
+            backBufferSprite.setScale(virtualSize.x/float(backBuffer.getSize().x)/backBuffer.getView().getViewport().width, virtualSize.y/float(backBuffer.getSize().y)/backBuffer.getView().getViewport().height);
             it->second->shader.setParameter("value", it->second->value);
             window.draw(backBufferSprite, &it->second->shader);
         }

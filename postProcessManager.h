@@ -13,11 +13,14 @@ class PostProcessorManager
 private:
     std::map<sf::String, PostProcessor*> postProcessorMap;
     sf::RenderTexture backBuffer;
+    sf::Vector2i virtualSize;
 public:
     sf::RenderTarget& getPrimaryRenderTarget(sf::RenderTarget& window);
     void postProcessRendering(sf::RenderTarget& window);
     
     void triggerPostProcess(const char* name, float value);
+    
+    void setVirtualSize(sf::Vector2i virtualSize) { this->virtualSize = virtualSize; }
 };
 
 class PostProcessor : public Updatable
