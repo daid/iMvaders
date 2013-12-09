@@ -96,6 +96,8 @@
 		<Unit filename="textureManager.cpp" />
 		<Unit filename="textureManager.h" />
 		<Unit filename="vectorUtils.h" />
+		<Unit filename="windowManager.cpp" />
+		<Unit filename="windowManager.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />
