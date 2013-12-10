@@ -1,5 +1,10 @@
 #include "BurstShotEnemy.h"
 
+#include "scriptInterface.h"
+REGISTER_SCRIPT_SUBCLASS(BurstShotEnemy, BasicEnemyBase)
+{
+}
+
 BurstShotEnemy::~BurstShotEnemy() {}
 
 void BurstShotEnemy::update(float delta)

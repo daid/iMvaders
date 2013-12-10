@@ -33,8 +33,8 @@ public:
     sf::Color color;
 
 public:
-    BasicEnemyBase(sf::Vector2f targetPosition)
-    : GameEntity(8.0f), targetPosition(targetPosition)
+    BasicEnemyBase()
+    : GameEntity(8.0f)
     {
         state = ES_Outside;
         flyIncurveCount = 0;
@@ -48,6 +48,7 @@ public:
     }
     virtual ~BasicEnemyBase();
     virtual void update(float delta);
+    void setTargetPosition(sf::Vector2f targetPosition) { this->targetPosition = targetPosition; }
 
     void dive(sf::Vector2f target);
     void wait(sf::Vector2f start);

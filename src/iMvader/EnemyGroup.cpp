@@ -1,18 +1,20 @@
 #include "EnemyGroup.h"
 
+#include "scriptInterface.h"
+REGISTER_SCRIPT_CLASS(EnemyGroup)
+{
+    REGISTER_SCRIPT_CLASS_FUNCTION(EnemyGroup, add);
+    REGISTER_SCRIPT_CLASS_FUNCTION(EnemyGroup, dive);
+    REGISTER_SCRIPT_CLASS_FUNCTION(EnemyGroup, flyIn);
+}
+
 EnemyGroup::EnemyGroup(){}
 
 EnemyGroup::~EnemyGroup(){}
 
-BasicEnemyBase* EnemyGroup::add(sf::Vector2f targetPoint)
+void EnemyGroup::add(BasicEnemyBase* e)
 {
-    BasicEnemyBase* e;
-    if (random(0, 100) < 80)
-        e = new BasicEnemy(targetPoint);
-    else
-        e = new BurstShotEnemy(targetPoint);
     enemyList.push_back(e);
-    return e;
 }
 
 void EnemyGroup::setOffset(float offset)
@@ -71,7 +73,8 @@ void EnemyGroup::flyIn(sf::Vector2f start)
     if (enemyList.size() > 0)
         enemyList[0]->flyIn();
 }
-void EnemyGroup::flyIn(sf::Vector2f start, sf::Vector2f flyByPoint)
+
+void EnemyGroup::flyInBy(sf::Vector2f start, sf::Vector2f flyByPoint)
 {
     foreach(BasicEnemyBase, e, enemyList)
         e->wait(start, flyByPoint);

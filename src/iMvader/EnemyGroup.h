@@ -5,6 +5,7 @@
 #include "BasicEnemyBase.h"
 #include "BasicEnemy.h"
 #include "BurstShotEnemy.h"
+
 class EnemyGroup : public GameEntity
 {
 private:
@@ -13,7 +14,7 @@ public:
     EnemyGroup();
     virtual ~EnemyGroup();
 
-    BasicEnemyBase* add(sf::Vector2f targetPoint);
+    void add(BasicEnemyBase* e);
 
     virtual void update(float delta);
     
@@ -26,8 +27,7 @@ public:
 
     void flyIn(sf::Vector2f start);
 
-    void flyIn(sf::Vector2f start, sf::Vector2f flyByPoint);
+    void flyInBy(sf::Vector2f start, sf::Vector2f flyByPoint);
 };
-
 
 #endif // ENEMYGROUP_H

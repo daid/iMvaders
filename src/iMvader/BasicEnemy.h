@@ -8,8 +8,7 @@ private:
     float shotDelay;
     static const int shotAngle = 120;
 public:
-    BasicEnemy(sf::Vector2f targetPosition)
-    : BasicEnemyBase(targetPosition)
+    BasicEnemy()
     {
         shotDelay = random(0.8, 8.0);
     }

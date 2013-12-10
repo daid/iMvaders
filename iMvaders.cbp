@@ -60,9 +60,132 @@
 		<Unit filename="src/engine/Updatable.h" />
 		<Unit filename="src/engine/gameEntity.cpp" />
 		<Unit filename="src/engine/gameEntity.h" />
+		<Unit filename="src/engine/lua/lapi.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/engine/lua/lapi.h" />
+		<Unit filename="src/engine/lua/lauxlib.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/engine/lua/lauxlib.h" />
+		<Unit filename="src/engine/lua/lbaselib.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/engine/lua/lbitlib.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/engine/lua/lcode.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/engine/lua/lcode.h" />
+		<Unit filename="src/engine/lua/lcorolib.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/engine/lua/lctype.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/engine/lua/lctype.h" />
+		<Unit filename="src/engine/lua/ldblib.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/engine/lua/ldebug.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/engine/lua/ldebug.h" />
+		<Unit filename="src/engine/lua/ldo.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/engine/lua/ldo.h" />
+		<Unit filename="src/engine/lua/ldump.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/engine/lua/lfunc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/engine/lua/lfunc.h" />
+		<Unit filename="src/engine/lua/lgc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/engine/lua/lgc.h" />
+		<Unit filename="src/engine/lua/linit.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/engine/lua/liolib.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/engine/lua/llex.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/engine/lua/llex.h" />
+		<Unit filename="src/engine/lua/llimits.h" />
+		<Unit filename="src/engine/lua/lmathlib.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/engine/lua/lmem.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/engine/lua/lmem.h" />
+		<Unit filename="src/engine/lua/loadlib.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/engine/lua/lobject.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/engine/lua/lobject.h" />
+		<Unit filename="src/engine/lua/lopcodes.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/engine/lua/lopcodes.h" />
+		<Unit filename="src/engine/lua/loslib.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/engine/lua/lparser.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/engine/lua/lparser.h" />
+		<Unit filename="src/engine/lua/lstate.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/engine/lua/lstate.h" />
+		<Unit filename="src/engine/lua/lstring.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/engine/lua/lstring.h" />
+		<Unit filename="src/engine/lua/lstrlib.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/engine/lua/ltable.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/engine/lua/ltable.h" />
+		<Unit filename="src/engine/lua/ltablib.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/engine/lua/ltm.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/engine/lua/ltm.h" />
+		<Unit filename="src/engine/lua/lua.h" />
+		<Unit filename="src/engine/lua/lua.hpp" />
+		<Unit filename="src/engine/lua/luaconf.h" />
+		<Unit filename="src/engine/lua/lualib.h" />
+		<Unit filename="src/engine/lua/lundump.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/engine/lua/lundump.h" />
+		<Unit filename="src/engine/lua/lvm.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/engine/lua/lvm.h" />
+		<Unit filename="src/engine/lua/lzio.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/engine/lua/lzio.h" />
 		<Unit filename="src/engine/postProcessManager.cpp" />
 		<Unit filename="src/engine/postProcessManager.h" />
 		<Unit filename="src/engine/random.h" />
+		<Unit filename="src/engine/scriptInterface.cpp" />
+		<Unit filename="src/engine/scriptInterface.h" />
 		<Unit filename="src/engine/soundManager.cpp" />
 		<Unit filename="src/engine/soundManager.h" />
 		<Unit filename="src/engine/textureManager.cpp" />

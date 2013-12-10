@@ -1,5 +1,13 @@
 #include "basicEnemyBase.h"
 #include "scoreManager.h"
+#include "scriptInterface.h"
+
+#include "scriptInterface.h"
+REGISTER_SCRIPT_CLASS(BasicEnemyBase)
+{
+    REGISTER_SCRIPT_CLASS_FUNCTION(BasicEnemyBase, giveShield);
+    REGISTER_SCRIPT_CLASS_FUNCTION(BasicEnemyBase, setTargetPosition);
+}
 
 BasicEnemyBase::~BasicEnemyBase(){}
 

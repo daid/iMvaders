@@ -5,6 +5,7 @@
 #include "postProcessManager.h"
 #include "scoreManager.h"
 #include "mainMenu.h"
+#include "scriptInterface.h"
 
 class GameStage : public GameEntity
 {
@@ -23,19 +24,36 @@ public:
         EnemyGroup* g = new EnemyGroup();
         groupList.push_back(g);
         for(int n=0; n<8; n++)
-            g->add(sf::Vector2f(160 - 4 * 20 + n * 20, 50))->giveShield();
+        {
+            BasicEnemyBase* e = new BasicEnemy();
+            e->setTargetPosition(sf::Vector2f(160 - 4 * 20 + n * 20, 50));
+            e->giveShield();
+            g->add(e);
+        }
         g = new EnemyGroup();
         groupList.push_back(g);
         for(int n=0; n<10; n++)
-            g->add(sf::Vector2f(160 - 5 * 20 + n * 20, 70));
+        {
+            BasicEnemyBase* e = new BasicEnemy();
+            e->setTargetPosition(sf::Vector2f(160 - 5 * 20 + n * 20, 70));
+            g->add(e);
+        }
         g = new EnemyGroup();
         groupList.push_back(g);
         for(int n=0; n<4; n++)
-            g->add(sf::Vector2f(160 - 5 * 20 + n * 20, 90));
+        {
+            BasicEnemyBase* e = new BasicEnemy();
+            e->setTargetPosition(sf::Vector2f(160 - 5 * 20 + n * 20, 90));
+            g->add(e);
+        }
         g = new EnemyGroup();
         groupList.push_back(g);
         for(int n=0; n<4; n++)
-            g->add(sf::Vector2f(160 + 4 * 20 - n * 20, 90));
+        {
+            BasicEnemyBase* e = new BasicEnemy();
+            e->setTargetPosition(sf::Vector2f(160 + 4 * 20 - n * 20, 90));
+            g->add(e);
+        }
     }
     virtual ~GameStage() {}
 
@@ -71,7 +89,7 @@ public:
             P<EnemyGroup> g = groupList[rand() % groupList.size()];
             if (g->isAll(ES_Outside))
                 //g->flyIn(sf::Vector2f(random(0, 320), -20));
-                g->flyIn(sf::Vector2f(random(0, 320), -20), sf::Vector2f(160, 160));
+                g->flyInBy(sf::Vector2f(random(0, 320), -20), sf::Vector2f(160, 160));
         }
 
         if (allowDive)

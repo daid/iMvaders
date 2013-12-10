@@ -12,8 +12,7 @@ private:
     static const int shotsPerBurst = 60;
     static const float chargeUpTime = 1.0f;
 public:
-    BurstShotEnemy(sf::Vector2f targetPosition)
-    : BasicEnemyBase(targetPosition)
+    BurstShotEnemy()
     {
         shotDelay = random(1.0, 8.0);
         charge = 0;

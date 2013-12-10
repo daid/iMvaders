@@ -12,7 +12,11 @@ MainMenu::MainMenu()
 
     enemyGroup = new EnemyGroup();
     for(unsigned int n=0; n<10; n++)
-        enemyGroup->add(sf::Vector2f(160+4*20 - n * 20, 100));
+    {
+        BasicEnemyBase* e = new BasicEnemy();
+        e->setTargetPosition(sf::Vector2f(160+4*20 - n * 20, 100));
+        enemyGroup->add(e);
+    }
 
     sf::Listener::setGlobalVolume(0);
 }
