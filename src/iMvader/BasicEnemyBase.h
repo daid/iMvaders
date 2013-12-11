@@ -7,6 +7,7 @@
 #include "textureManager.h"
 #include "explosion.h"
 #include "bullet.h"
+#include "scriptInterface.h"
 
 enum EnemyState
 {
@@ -16,6 +17,9 @@ enum EnemyState
     ES_Diving,
     ES_Outside
 };
+
+/* Define script conversion function for the EnemyState enum. */
+template<> void convert<EnemyState>::param(lua_State* L, int& idx, EnemyState& es);
 
 class BasicEnemyBase: public GameEntity, public Collisionable
 {

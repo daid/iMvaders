@@ -1,3 +1,4 @@
+#include <string.h>
 #include "EnemyGroup.h"
 
 #include "scriptInterface.h"
@@ -6,6 +7,9 @@ REGISTER_SCRIPT_CLASS(EnemyGroup)
     REGISTER_SCRIPT_CLASS_FUNCTION(EnemyGroup, add);
     REGISTER_SCRIPT_CLASS_FUNCTION(EnemyGroup, dive);
     REGISTER_SCRIPT_CLASS_FUNCTION(EnemyGroup, flyIn);
+    REGISTER_SCRIPT_CLASS_FUNCTION(EnemyGroup, flyInBy);
+    REGISTER_SCRIPT_CLASS_FUNCTION(EnemyGroup, isAll);
+    REGISTER_SCRIPT_CLASS_FUNCTION(EnemyGroup, setOffset);
 }
 
 EnemyGroup::EnemyGroup(){}

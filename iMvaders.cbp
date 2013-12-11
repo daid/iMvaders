@@ -186,6 +186,8 @@
 		<Unit filename="src/engine/random.h" />
 		<Unit filename="src/engine/scriptInterface.cpp" />
 		<Unit filename="src/engine/scriptInterface.h" />
+		<Unit filename="src/engine/scriptInterfaceMagic.cpp" />
+		<Unit filename="src/engine/scriptInterfaceMagic.h" />
 		<Unit filename="src/engine/soundManager.cpp" />
 		<Unit filename="src/engine/soundManager.h" />
 		<Unit filename="src/engine/textureManager.cpp" />

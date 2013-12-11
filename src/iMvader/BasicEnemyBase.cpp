@@ -1,12 +1,43 @@
+#include <string.h>
 #include "basicEnemyBase.h"
 #include "scoreManager.h"
-#include "scriptInterface.h"
 
 #include "scriptInterface.h"
 REGISTER_SCRIPT_CLASS(BasicEnemyBase)
 {
     REGISTER_SCRIPT_CLASS_FUNCTION(BasicEnemyBase, giveShield);
     REGISTER_SCRIPT_CLASS_FUNCTION(BasicEnemyBase, setTargetPosition);
+}
+
+/* Define script conversion function for the EnemyState enum. */
+template<> void convert<EnemyState>::param(lua_State* L, int& idx, EnemyState& es)
+{
+    if (lua_isnumber(L, idx))
+    {
+        int n = int(luaL_checknumber(L, idx++) + 0.5);
+        if (n == 0)
+            es = ES_Wait;
+        else if (n == 1)
+            es = ES_FlyIn;
+        else if (n == 2)
+            es = ES_CenterField;
+        else if (n == 3)
+            es = ES_Diving;
+        else
+            es = ES_Outside;
+    }else{
+        const char* str = luaL_checkstring(L, idx++);
+        if (strcasecmp(str, "Wait") == 0)
+            es = ES_Wait;
+        else if (strcasecmp(str, "FlyIn") == 0)
+            es = ES_FlyIn;
+        else if (strcasecmp(str, "CenterField") == 0)
+            es = ES_CenterField;
+        else if (strcasecmp(str, "Diving") == 0)
+            es = ES_Diving;
+        else
+            es = ES_Outside;
+    }
 }
 
 BasicEnemyBase::~BasicEnemyBase(){}

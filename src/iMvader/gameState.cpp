@@ -10,6 +10,7 @@
 class GameStage : public GameEntity
 {
 private:
+    P<ScriptObject> script;
     PVector<EnemyGroup> groupList;
     float diveCountdown;
     float enemyOffset;
@@ -17,93 +18,18 @@ private:
 public:
     GameStage()
     {
-        enemyDirection = 20.0;
-        enemyOffset = 0;
-        diveCountdown = random(2.0, 5.0);
+        script = new ScriptObject("resources/stage.lua");
 
-        EnemyGroup* g = new EnemyGroup();
-        groupList.push_back(g);
-        for(int n=0; n<8; n++)
-        {
-            BasicEnemyBase* e = new BasicEnemy();
-            e->setTargetPosition(sf::Vector2f(160 - 4 * 20 + n * 20, 50));
-            e->giveShield();
-            g->add(e);
-        }
-        g = new EnemyGroup();
-        groupList.push_back(g);
-        for(int n=0; n<10; n++)
-        {
-            BasicEnemyBase* e = new BasicEnemy();
-            e->setTargetPosition(sf::Vector2f(160 - 5 * 20 + n * 20, 70));
-            g->add(e);
-        }
-        g = new EnemyGroup();
-        groupList.push_back(g);
-        for(int n=0; n<4; n++)
-        {
-            BasicEnemyBase* e = new BasicEnemy();
-            e->setTargetPosition(sf::Vector2f(160 - 5 * 20 + n * 20, 90));
-            g->add(e);
-        }
-        g = new EnemyGroup();
-        groupList.push_back(g);
-        for(int n=0; n<4; n++)
-        {
-            BasicEnemyBase* e = new BasicEnemy();
-            e->setTargetPosition(sf::Vector2f(160 + 4 * 20 - n * 20, 90));
-            g->add(e);
-        }
     }
     virtual ~GameStage() {}
 
     virtual void update(float delta)
     {
-        if (enemyOffset > 30)
-            enemyDirection = -fabs(enemyDirection);
-        if (enemyOffset < -30)
-            enemyDirection = fabs(enemyDirection);
-        enemyOffset += enemyDirection * delta;
-
-        bool allowDive = true;
-        bool allowFlyIn = true;
-        foreach(EnemyGroup, g, groupList)
+        if (!script)
         {
-            g->setOffset(enemyOffset);
-            if (!g->isAll(ES_CenterField))
-            {
-                allowDive = false;
-                if (!g->isAll(ES_Outside))
-                    allowFlyIn = false;
-            }
-        }
-        if (groupList.size() < 1)
-        {
-            //Destroy ourselves if all our groups are destroyed, to indicate the round is done.
+            //Destroy ourselves if our script destroyed itself.
             destroy();
             return;
-        }
-
-        if (allowFlyIn)
-        {
-            P<EnemyGroup> g = groupList[rand() % groupList.size()];
-            if (g->isAll(ES_Outside))
-                //g->flyIn(sf::Vector2f(random(0, 320), -20));
-                g->flyInBy(sf::Vector2f(random(0, 320), -20), sf::Vector2f(160, 160));
-        }
-
-        if (allowDive)
-        {
-            if (diveCountdown > 0)
-            {
-                diveCountdown -= delta;
-            }
-            else
-            {
-                diveCountdown = random(2.0, 5.0);
-                P<EnemyGroup> g = groupList[rand() % groupList.size()];
-                g->dive(sf::Vector2f(random(20, 300), 300));
-            }
         }
     }
 };

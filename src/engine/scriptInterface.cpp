@@ -11,12 +11,23 @@ int lua_random(lua_State* L)
     return 1;
 }
 
-void runScript(const char* filename)
+int lua_destroyScript(lua_State* L)
 {
-    lua_State* L = luaL_newstate();
+    lua_getglobal(L, "__ScriptObjectPointer");
+    ScriptObject* obj = static_cast<ScriptObject*>(lua_touserdata(L, -1));
+    obj->destroy();
+    return 0;
+}
+
+ScriptObject::ScriptObject(const char* filename)
+{
+    L = luaL_newstate();
     
+    lua_pushlightuserdata(L, this);
+    lua_setglobal(L, "__ScriptObjectPointer");
     luaL_openlibs(L);
     lua_register(L, "random", lua_random);
+    lua_register(L, "destroyScript", lua_destroyScript);
     
     int maxPrio = 0;
     for(int prio=0; prio<=maxPrio; prio++)
@@ -32,21 +43,40 @@ void runScript(const char* filename)
     
     if (luaL_loadfile(L, filename))
     {
-        printf("ERROR: %s\n", luaL_checkstring(L, -1));
-        lua_close(L);
+        printf("ERROR(load): %s\n", luaL_checkstring(L, -1));
+        destroy();
         return;
     }
     if (lua_pcall(L, 0, 0, 0))
     {
-        printf("ERROR: %s\n", luaL_checkstring(L, -1));
-        lua_close(L);
+        printf("ERROR(run): %s\n", luaL_checkstring(L, -1));
+        destroy();
         return;
     }
+    
+    lua_getglobal(L, "init");
+    if (lua_pcall(L, 0, 0, 0))
+    {
+        printf("ERROR(init): %s\n", luaL_checkstring(L, -1));
+        destroy();
+        return;
+    }
+}
+
+ScriptObject::~ScriptObject()
+{
     lua_close(L);
 }
 
-template<> void convert<sf::Vector2f>::param(lua_State* L, int& idx, sf::Vector2f& v)
+void ScriptObject::update(float delta)
 {
-    v.x = luaL_checknumber(L, idx++);
-    v.y = luaL_checknumber(L, idx++);
+    lua_getglobal(L, "update");
+    lua_pushnumber(L, delta);
+    if (lua_pcall(L, 1, 1, 0))
+    {
+        printf("ERROR(update): %s\n", luaL_checkstring(L, -1));
+        destroy();
+        return;
+    }
+    lua_pop(L, 1);
 }
