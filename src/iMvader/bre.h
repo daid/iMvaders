@@ -2,6 +2,7 @@
 #define BRE_H
 
 #include "gameEntity.h"
+#include "BasicEnemy.h"
 
 enum BreState
 {
@@ -9,6 +10,8 @@ enum BreState
     BS_MoveLeftRight,
     BS_LaserCharge,
     BS_LaserFire,
+    BS_MouthOpen,
+    BS_MouthClose,
 };
 
 class BreEnemy: public GameEntity
@@ -22,8 +25,11 @@ public:
     float moveSpeed;
     float mouthPos;
     float invulnerability;
+    int enemySpawnCount;
+    PVector<BasicEnemyBase> enemyList;
+
     static const int maxHealth = 100;
-    static const int normalShotDelay = 2.0;
+    static const int normalShotDelay = 1.2;
     static const int laserChargeTime = 1.0;
 
     BreEnemy();

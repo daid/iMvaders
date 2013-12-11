@@ -21,7 +21,7 @@ BreEnemy::BreEnemy()
     moveSpeed = 60;
     health = maxHealth;
 }
-    
+
 BreEnemy::~BreEnemy()
 {
 }
@@ -51,13 +51,19 @@ void BreEnemy::update(float delta)
         {
             shotDelay -= delta;
         }else{
-            if (random(0, 100) < 20)
+            if (random(0, 100) < 30)
             {
-                state = BS_LaserCharge;
-                shotDelay = laserChargeTime;
+                if (random(0, 100) < 50)
+                {
+                    state = BS_LaserCharge;
+                    shotDelay = laserChargeTime;
+                }else{
+                    state = BS_MouthOpen;
+                    enemySpawnCount = 5;
+                }
             }else{
-                for(int n=-15; n<=15; n+= 5)
-                    new Bullet(sprite.getPosition() + sf::Vector2f(-n*3, -50), 0, 180 + n, 90.0);
+                for(int n=-3; n<=3; n++)
+                    new Bullet(sprite.getPosition() + sf::Vector2f(-n*15, -50), 0, 180 + n * 7, 90.0);
                 shotDelay = normalShotDelay;
             }
         }
@@ -82,8 +88,53 @@ void BreEnemy::update(float delta)
             state = BS_MoveLeftRight;
         }
         break;
+    case BS_MouthOpen:
+        if (mouthPos < 30)
+        {
+            mouthPos += delta * 40;
+            shotDelay = 0.2;
+        }else if (shotDelay > 0)
+        {
+            shotDelay -= delta;
+        }else{
+            shotDelay = 0.2;
+            if (enemySpawnCount > 0)
+            {
+                BasicEnemyBase* e = new BasicEnemy();
+                e->setTargetPosition(sf::Vector2f(random(20, 300), random(20, 200)));
+                e->wait(sprite.getPosition() + sf::Vector2f(0, 50), sprite.getPosition() + sf::Vector2f(0, 100));
+                e->flyIn();
+                enemyList.push_back(e);
+                enemySpawnCount --;
+            }else{
+                state = BS_MouthClose;
+            }
+        }
+        break;
+    case BS_MouthClose:
+        if (mouthPos > 0)
+        {
+            mouthPos -= delta * 40;
+        }
+        else
+        {
+            mouthPos = 0;
+            shotDelay = normalShotDelay;
+            state = BS_MoveLeftRight;
+        }
     }
     mouth.setPosition(sprite.getPosition() + sf::Vector2f(0, mouthPos));
+    
+    foreach(BasicEnemyBase, e, enemyList)
+    {
+        if (e->state == ES_CenterField)
+            e->dive(sf::Vector2f(random(20, 300), 340));
+        if (e->state == ES_Outside)
+        {
+            e->wait(sf::Vector2f(random(20, 300), -40), sprite.getPosition() + sf::Vector2f(0, 100));
+            e->flyIn();
+        }
+    }
 }
 
 void BreEnemy::render(sf::RenderTarget& window)
