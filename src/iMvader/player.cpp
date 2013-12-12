@@ -51,7 +51,7 @@ void PlayerCraft::update(float delta)
     if (sprite.getPosition().y > 230)
         sprite.setPosition(sprite.getPosition().x, 230);
 
-    if (controller->fire() && fireCooldown <= 0 && invulnerability <= 0)
+    if (controller->button(fireButton) && fireCooldown <= 0 && invulnerability <= 0)
     {
         if (type == 0)
         {
@@ -65,7 +65,7 @@ void PlayerCraft::update(float delta)
             fireCooldown = 0.8;
         }
     }
-    if (!controller->fire())
+    if (!controller->button(fireButton))
     {
         if (type == 0 && fireCooldown > 0.1)
             fireCooldown = 0.1;

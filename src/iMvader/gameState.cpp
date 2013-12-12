@@ -68,7 +68,7 @@ public:
 
     virtual void update(float delta)
     {
-        if (gameOverDelay < gameOverWait - 1.0 && (playerController[0].fire() || playerController[1].fire()))
+        if (gameOverDelay < gameOverWait - 1.0 && (playerController[0].button(fireButton) || playerController[1].button(fireButton)))
             gameOverDelay = 0;
         if (gameOverDelay > 0)
             gameOverDelay -= delta;

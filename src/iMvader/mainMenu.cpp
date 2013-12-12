@@ -33,12 +33,12 @@ void MainMenu::update(float delta)
     if (enemyGroup->isAll(ES_Outside))
         enemyGroup->flyIn(sf::Vector2f(random(0, 320), -20));
 
-    if (playerController[0].fire())
+    if (playerController[0].button(fireButton))
     {
         new GameState(1);
         sf::Listener::setGlobalVolume(100);
     }
-    else if (playerController[1].fire())
+    else if (playerController[1].button(fireButton))
     {
         new GameState(2);
         sf::Listener::setGlobalVolume(100);

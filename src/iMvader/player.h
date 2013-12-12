@@ -8,10 +8,13 @@
 class PlayerController;
 extern PlayerController playerController[MAX_PLAYERS];
 
+const int fireButton = 0;
+
 class PlayerController: public sf::NonCopyable
 {
 public:
-    sf::Keyboard::Key keyBind[5];
+    static const int buttonCount = 6;
+    sf::Keyboard::Key keyBind[4 + buttonCount];
     
     PlayerController()
     {
@@ -26,7 +29,7 @@ public:
     bool right() { return sf::Keyboard::isKeyPressed(keyBind[1]); }
     bool up() { return sf::Keyboard::isKeyPressed(keyBind[2]); }
     bool down() { return sf::Keyboard::isKeyPressed(keyBind[3]); }
-    bool fire() { return sf::Keyboard::isKeyPressed(keyBind[4]); }
+    bool button(int idx) { return sf::Keyboard::isKeyPressed(keyBind[4 + idx]); }
 };
 
 class PlayerCraft: public GameEntity

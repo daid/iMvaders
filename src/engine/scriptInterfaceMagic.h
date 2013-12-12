@@ -44,6 +44,7 @@ template<typename T> struct convert
         lua_pushnumber(L, t);
     }
 };
+//Specialized template for the bool return type, so we return a lua boolean.
 template<> void convert<bool>::returnType(lua_State* L, bool b);
 
 /* Convert parameters to PObject pointers */
@@ -57,6 +58,8 @@ template<class T> struct convert<T*>
         //printf("ObjParam: %p\n", ptr);
     }
 };
+//Specialized template for const char* so we can convert lua strings to C strings. This overrules the general T* template for const char*
+template<> void convert<const char*>::param(lua_State* L, int& idx, const char*& str);
 
 /* Convert parameters to sf::Vector2 objects. */
 template<typename T> struct convert<sf::Vector2<T> >
