@@ -10,6 +10,7 @@ class PlayerController;
 extern PlayerController playerController[MAX_PLAYERS];
 
 const int fireButton = 0;
+const int nukeButton = 1;
 
 class PlayerController: public sf::NonCopyable
 {
@@ -24,6 +25,11 @@ public:
         keyBind[2] = sf::Keyboard::Up;
         keyBind[3] = sf::Keyboard::Down;
         keyBind[4] = sf::Keyboard::Space;
+        keyBind[5] = sf::Keyboard::Z;
+        keyBind[6] = sf::Keyboard::X;
+        keyBind[7] = sf::Keyboard::C;
+        keyBind[8] = sf::Keyboard::V;
+        keyBind[9] = sf::Keyboard::B;
     }
 
     bool left() { return sf::Keyboard::isKeyPressed(keyBind[0]); }
@@ -36,11 +42,14 @@ public:
 class PlayerCraft: public GameEntity, public Collisionable
 {
 public:
+    sf::Sprite nukeIcon;
+
     PlayerController* controller;
     sf::Vector2f velocity;
     int type;
     float fireCooldown;
     float invulnerability;
+    int nukeCount;
 public:
     PlayerCraft(PlayerController* controller, int type);
 

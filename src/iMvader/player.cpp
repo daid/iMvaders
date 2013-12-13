@@ -4,6 +4,7 @@
 #include "textureManager.h"
 #include "bullet.h"
 #include "explosion.h"
+#include "nuke.h"
 
 PlayerController playerController[2];
 
@@ -17,6 +18,10 @@ PlayerCraft::PlayerCraft(PlayerController* controller, int type)
     else
         textureManager.setTexture(sprite, "player2");
     setPosition(sf::Vector2f(160, 220));
+    
+    textureManager.setTexture(nukeIcon, "robot");
+    nukeIcon.setScale(0.12, 0.12);
+    nukeCount = 2;
 }
 
 PlayerCraft::~PlayerCraft()
@@ -72,10 +77,25 @@ void PlayerCraft::update(float delta)
         if (type == 1 && fireCooldown > 0.2)
             fireCooldown = 0.2;
     }
+    if (fireCooldown <= 0 && controller->button(nukeButton) && nukeCount > 0)
+    {
+        fireCooldown = 2.0;
+        nukeCount -= 1;
+        new Nuke(getPosition(), sf::Vector2f(0.0, -150.0), 10.0);
+    }
 }
 
 void PlayerCraft::render(sf::RenderTarget& window)
 {
+    if (nukeCount)
+    {
+        for(int n=0; n<nukeCount; n++)
+        {
+            nukeIcon.setPosition(50 + 10 * n, 230 - type * 10);
+            window.draw(nukeIcon);
+        }
+    }
+    
     if (fmod(invulnerability, 4.0/60.0) > 2.0/60.0)
         return;
     sprite.setPosition(getPosition());
