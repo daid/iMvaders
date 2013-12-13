@@ -52,6 +52,8 @@ public:
     }
     virtual ~BasicEnemyBase();
     virtual void update(float delta);
+    virtual void collision(Collisionable* target);
+    
     void setTargetPosition(sf::Vector2f targetPosition) { this->targetPosition = targetPosition; }
 
     void dive(sf::Vector2f target);

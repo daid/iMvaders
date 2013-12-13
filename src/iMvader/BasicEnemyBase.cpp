@@ -166,6 +166,13 @@ void BasicEnemyBase::render(sf::RenderTarget& window)
     diveCurve.draw(window);
 #endif
 }
+void BasicEnemyBase::collision(Collisionable* target)
+{
+    GameEntity* e = dynamic_cast<GameEntity*>(target);
+    if (e)
+        e->takeDamage(getPosition(), 0, 1);
+}
+
 bool BasicEnemyBase::shieldUp()
 {
     return hasShield && shieldPower == shieldMaxPower;

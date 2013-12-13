@@ -220,6 +220,8 @@
 		<Unit filename="src/iMvader/mainMenu.h" />
 		<Unit filename="src/iMvader/player.cpp" />
 		<Unit filename="src/iMvader/player.h" />
+		<Unit filename="src/iMvader/powerupCarrier.cpp" />
+		<Unit filename="src/iMvader/powerupCarrier.h" />
 		<Unit filename="src/iMvader/scoreManager.cpp" />
 		<Unit filename="src/iMvader/scoreManager.h" />
 		<Unit filename="src/iMvader/textDraw.cpp" />
