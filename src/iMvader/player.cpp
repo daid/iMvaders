@@ -8,7 +8,7 @@
 PlayerController playerController[2];
 
 PlayerCraft::PlayerCraft(PlayerController* controller, int type)
-: GameEntity(10.0f), controller(controller), type(type)
+: GameEntity(), Collisionable(10.0), controller(controller), type(type)
 {
     invulnerability = 1.0;
     fireCooldown = 0.4;
@@ -16,7 +16,7 @@ PlayerCraft::PlayerCraft(PlayerController* controller, int type)
         textureManager.setTexture(sprite, "player1");
     else
         textureManager.setTexture(sprite, "player2");
-    sprite.setPosition(sf::Vector2f(160, 220));
+    setPosition(sf::Vector2f(160, 220));
 }
 
 PlayerCraft::~PlayerCraft()
@@ -40,28 +40,28 @@ void PlayerCraft::update(float delta)
     if (controller->down())
         velocity = sf::Vector2f(velocity.x,  100);
     
-    sprite.setPosition(sprite.getPosition() + velocity * delta);
+    setPosition(getPosition() + velocity * delta);
 
-    if (sprite.getPosition().x < 20)
-        sprite.setPosition(20, sprite.getPosition().y);
-    if (sprite.getPosition().x > 300)
-        sprite.setPosition(300, sprite.getPosition().y);
-    if (sprite.getPosition().y < 10)
-        sprite.setPosition(sprite.getPosition().x, 10);
-    if (sprite.getPosition().y > 230)
-        sprite.setPosition(sprite.getPosition().x, 230);
+    if (getPosition().x < 20)
+        setPosition(sf::Vector2f(20, getPosition().y));
+    if (getPosition().x > 300)
+        setPosition(sf::Vector2f(300, getPosition().y));
+    if (getPosition().y < 10)
+        setPosition(sf::Vector2f(getPosition().x, 10));
+    if (getPosition().y > 230)
+        setPosition(sf::Vector2f(getPosition().x, 230));
 
     if (controller->button(fireButton) && fireCooldown <= 0 && invulnerability <= 0)
     {
         if (type == 0)
         {
-            new Bullet(sprite.getPosition(), -1, 0);
+            new Bullet(getPosition(), -1, 0);
             fireCooldown = 0.4;
         }
         if (type == 1)
         {
-            new Bullet(sprite.getPosition() + sf::Vector2f(7, 0), -2, 0);
-            new Bullet(sprite.getPosition() + sf::Vector2f(-4, 0), -2, 0);
+            new Bullet(getPosition() + sf::Vector2f(7, 0), -2, 0);
+            new Bullet(getPosition() + sf::Vector2f(-4, 0), -2, 0);
             fireCooldown = 0.8;
         }
     }
@@ -78,6 +78,7 @@ void PlayerCraft::render(sf::RenderTarget& window)
 {
     if (fmod(invulnerability, 4.0/60.0) > 2.0/60.0)
         return;
+    sprite.setPosition(getPosition());
     sprite.setRotation(velocity.x / 10.0);
     window.draw(sprite);
 }
@@ -87,6 +88,6 @@ bool PlayerCraft::takeDamage(sf::Vector2f position, int damageType, int damageAm
     if (damageType < 0 || invulnerability > 0)
         return false;
     destroy();
-    new Explosion(sprite.getPosition(), 12);
+    new Explosion(getPosition(), 12);
     return true;
 }

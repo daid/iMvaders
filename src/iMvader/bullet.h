@@ -4,8 +4,9 @@
 #include <SFML/Audio.hpp>
 
 #include "gameEntity.h"
+#include "Collisionable.h"
 
-class Bullet: public GameEntity
+class Bullet: public GameEntity, public Collisionable
 {
 private:
     sf::Sound sound;
@@ -17,6 +18,8 @@ public:
     virtual void update(float delta);
     
     virtual void render(sf::RenderTarget& window);
+    
+    virtual void collision(Collisionable* other);
 };
 
 #endif//BULLET_H

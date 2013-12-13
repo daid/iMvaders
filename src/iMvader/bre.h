@@ -14,7 +14,7 @@ enum BreState
     BS_MouthClose,
 };
 
-class BreEnemy: public GameEntity
+class BreEnemy: public GameEntity, public Collisionable
 {
 public:
     sf::Sprite mouth;
@@ -30,7 +30,7 @@ public:
 
     static const int maxHealth = 100;
     static const int normalShotDelay = 1.2;
-    static const int laserChargeTime = 1.0;
+    static const int laserChargeTime = 2.0;
 
     BreEnemy();
     

@@ -18,7 +18,7 @@ void BurstShotEnemy::update(float delta)
             shotDelay += 1.0/60.0;
             float a = sprite.getRotation();
             if (a > 180 - shotAngle/2 && a < 180 + shotAngle/2)
-                new Bullet(sprite.getPosition() + sf::Vector2f(8.0f * sinf((shotsPerBurst - shots) / float(shotsPerBurst) * M_PI * 4), 4.0), 0, a, 360.0f);
+                new Bullet(getPosition() + sf::Vector2f(8.0f * sinf((shotsPerBurst - shots) / float(shotsPerBurst) * M_PI * 4), 4.0), 0, a, 360.0f);
             shots--;
             if (shots == 0)
                 shotDelay = random(1.0, 8.0);

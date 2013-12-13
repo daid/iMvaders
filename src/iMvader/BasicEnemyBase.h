@@ -38,7 +38,7 @@ public:
 
 public:
     BasicEnemyBase()
-    : GameEntity(8.0f)
+    : GameEntity(), Collisionable(8.0f)
     {
         state = ES_Outside;
         flyIncurveCount = 0;
@@ -47,7 +47,7 @@ public:
         textureManager.setTexture(sprite, "BasicEnemy", 0);
         color = sf::Color(212, 0, 0, 255);
         sprite.setColor(color);
-        sprite.setPosition(sf::Vector2f(-50, -50));
+        setPosition(sf::Vector2f(-50, -50));
         hasShield = false;
     }
     virtual ~BasicEnemyBase();

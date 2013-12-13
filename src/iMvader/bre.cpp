@@ -8,7 +8,7 @@
 #include "explosion.h"
 
 BreEnemy::BreEnemy()
-: GameEntity(50)
+: GameEntity(), Collisionable(50.0)
 {
     textureManager.setTexture(sprite, "bre1");
     sprite.setPosition(sf::Vector2f(160, -80));
@@ -62,7 +62,7 @@ void BreEnemy::update(float delta)
                     enemySpawnCount = 5;
                 }
             }else{
-                for(int n=-3; n<=3; n++)
+                for(int n=-2; n<=2; n++)
                     new Bullet(sprite.getPosition() + sf::Vector2f(-n*15, -50), 0, 180 + n * 7, 90.0);
                 shotDelay = normalShotDelay;
             }

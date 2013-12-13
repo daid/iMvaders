@@ -6,13 +6,13 @@
 #include "explosion.h"
 
 Bullet::Bullet(sf::Vector2f position, int type, float angle, float speed)
-: GameEntity(1.0f), speed(speed), type(type)
+: GameEntity(), Collisionable(1.0), speed(speed), type(type)
 {
     soundManager.setSound(sound, "laser");
-    sound.setPitch(random(0.8, 1.2));
+    sound.setPitch(random(0.75, 1.25));
     sound.play();
     textureManager.setTexture(sprite, "bullet");
-    sprite.setPosition(position);
+    setPosition(position);
     sprite.setRotation(angle);
     if (type == 0)
         sprite.setColor(sf::Color::Red);
@@ -26,23 +26,25 @@ Bullet::Bullet(sf::Vector2f position, int type, float angle, float speed)
     
 void Bullet::update(float delta)
 {
-    sprite.setPosition(sprite.getPosition() + sf::vector2FromAngle(sprite.getRotation()) * speed * delta);
-    if (sprite.getPosition().x < -10) destroy();
-    if (sprite.getPosition().y < -10) destroy();
-    if (sprite.getPosition().x > 330) destroy();
-    if (sprite.getPosition().y > 250) destroy();
+    setPosition(getPosition() + sf::vector2FromAngle(sprite.getRotation()) * speed * delta);
+    if (getPosition().x < -10) destroy();
+    if (getPosition().y < -10) destroy();
+    if (getPosition().x > 330) destroy();
+    if (getPosition().y > 250) destroy();
+}
 
-    foreach_hit(e, this)
+void Bullet::collision(Collisionable* other)
+{
+    GameEntity* e = dynamic_cast<GameEntity*>(other);
+    if (e && e->takeDamage(getPosition(), type, 1))
     {
-        if (e->takeDamage(sprite.getPosition(), type, 1))
-        {
-            destroy();
-            new Explosion(sprite.getPosition(), 3);
-        }
+        destroy();
+        new Explosion(getPosition(), 3);
     }
 }
 
 void Bullet::render(sf::RenderTarget& window)
 {
+    sprite.setPosition(getPosition());
     window.draw(sprite);
 }

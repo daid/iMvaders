@@ -75,10 +75,10 @@ void BasicEnemyBase::update(float delta)
                 state = ES_CenterField;
             }
         }
-        sprite.setPosition(flyInCurve[flyIncurveNr].getPosition());
+        setPosition(flyInCurve[flyIncurveNr].getPosition());
         break;
     case ES_CenterField:
-        sprite.setPosition(targetPosition + sf::Vector2f(enemyOffset, 0));
+        setPosition(targetPosition + sf::Vector2f(enemyOffset, 0));
         break;
     case ES_Diving:
         if (diveCurve.delta < 1.0)
@@ -90,7 +90,7 @@ void BasicEnemyBase::update(float delta)
         {
             state = ES_Outside;
         }
-        sprite.setPosition(diveCurve.getPosition());
+        setPosition(diveCurve.getPosition());
         break;
     case ES_Outside:
         break;
@@ -98,7 +98,7 @@ void BasicEnemyBase::update(float delta)
 }
 void BasicEnemyBase::dive(sf::Vector2f target)
 {
-    diveCurve.p0 = sprite.getPosition();
+    diveCurve.p0 = getPosition();
     diveCurve.cp0 = diveCurve.p0 + sf::vector2FromAngle(sprite.getRotation()) * 30.0f;
     diveCurve.p1 = target;
     diveCurve.cp1 = sf::Vector2f(target.x, 180);
@@ -116,7 +116,7 @@ void BasicEnemyBase::wait(sf::Vector2f start)
     flyInCurve[0].p1 = targetPosition;
     flyInCurve[0].cp1 = flyInCurve[0].p1 - sf::Vector2f(0, 30);
     flyIncurveCount = 1;
-    sprite.setPosition(flyInCurve[0].p0);
+    setPosition(flyInCurve[0].p0);
 }
 void BasicEnemyBase::wait(sf::Vector2f start, sf::Vector2f flyByTarget)
 {
@@ -139,7 +139,7 @@ void BasicEnemyBase::wait(sf::Vector2f start, sf::Vector2f flyByTarget)
     flyInCurve[1].p1 = targetPosition;
     flyInCurve[1].cp1 = flyInCurve[1].p1 - sf::Vector2f(0, 50);
     flyIncurveCount = 2;
-    sprite.setPosition(flyInCurve[0].p0);
+    setPosition(flyInCurve[0].p0);
 }
 
 void BasicEnemyBase::flyIn()
@@ -149,7 +149,7 @@ void BasicEnemyBase::flyIn()
 
 void BasicEnemyBase::giveShield()
 {
-    collisionRadius = 12.0f;
+    setCollisionRadius(12.0f);
     hasShield = true;
     shieldPower = shieldMaxPower;
     textureManager.setTexture(sprite, "BasicEnemy", 1);
@@ -157,6 +157,7 @@ void BasicEnemyBase::giveShield()
 
 void BasicEnemyBase::render(sf::RenderTarget& window)
 {
+    sprite.setPosition(getPosition());
     window.draw(sprite);
 
 #ifdef DEBUG
@@ -177,12 +178,12 @@ bool BasicEnemyBase::takeDamage(sf::Vector2f position, int damageType, int damag
     if (shieldUp())
     {
         shieldPower = 0;
-        collisionRadius = 8.0f;
+        setCollisionRadius(8.0f);
         textureManager.setTexture(sprite, "BasicEnemy", 0);
     }
     else
     {
-        new Explosion(sprite.getPosition(), 8);
+        new Explosion(getPosition(), 8);
         destroy();
         score.add(10);
     }

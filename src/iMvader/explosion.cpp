@@ -7,6 +7,7 @@ Explosion::Explosion(sf::Vector2f position, float radius)
 {
     soundManager.setSound(sound, "explosion");
     sound.setVolume(radius * 10.0);
+    sound.setPitch(random(0.75, 1.25));
     sound.play();
     unsigned int count = int(radius*radius*8);
     particles.reserve(count);

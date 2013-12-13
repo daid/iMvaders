@@ -4,6 +4,7 @@
 #define MAX_PLAYERS 2
 
 #include "gameEntity.h"
+#include "Collisionable.h"
 
 class PlayerController;
 extern PlayerController playerController[MAX_PLAYERS];
@@ -32,7 +33,7 @@ public:
     bool button(int idx) { return sf::Keyboard::isKeyPressed(keyBind[4 + idx]); }
 };
 
-class PlayerCraft: public GameEntity
+class PlayerCraft: public GameEntity, public Collisionable
 {
 public:
     PlayerController* controller;

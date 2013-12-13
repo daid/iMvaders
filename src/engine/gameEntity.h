@@ -19,10 +19,8 @@ class GameEntity: public Updatable, public Renderable
 {
 public:
     sf::Sprite sprite;
-    float collisionRadius;
 
-    GameEntity(float collisionRadius = 0.0f)
-    : collisionRadius(collisionRadius)
+    GameEntity()
     {
         entityList.push_back(this);
         //printf("Created: %p\n", this);
@@ -38,9 +36,5 @@ public:
 
     virtual bool takeDamage(sf::Vector2f position, int damageType, int damageAmount);
 };
-
-#define foreach_hit(var, source) \
-    foreach(GameEntity, var, entityList) \
-        if (var->collisionRadius > 0.0 && *var != source && (var->sprite.getPosition() - source->sprite.getPosition()) <= var->collisionRadius + source->collisionRadius)
 
 #endif//GAME_ENTITY_H

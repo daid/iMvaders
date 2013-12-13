@@ -6,6 +6,7 @@
 #include "scoreManager.h"
 #include "mainMenu.h"
 #include "scriptInterface.h"
+#include "powerupCarrier.h"
 
 class GameStage : public GameEntity
 {
@@ -19,7 +20,6 @@ public:
     GameStage()
     {
         script = new ScriptObject("resources/stage.lua");
-
     }
     virtual ~GameStage() {}
 

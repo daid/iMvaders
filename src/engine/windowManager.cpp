@@ -1,6 +1,7 @@
 #include "windowManager.h"
 #include "Updatable.h"
 #include "Renderable.h"
+#include "Collisionable.h"
 #include "PostProcessManager.h"
 
 WindowManager::WindowManager(int virtualWidth, int virtualHeight, bool fullScreen)
@@ -73,6 +74,7 @@ void WindowManager::mainLoop()
             delta /= 5.0;
         foreach(Updatable, u, updatableList)
             u->update(delta);
+        Collisionable::handleCollisions();
 
         // Clear the window
         window.clear(sf::Color(0, 0, 0));
@@ -84,22 +86,6 @@ void WindowManager::mainLoop()
             r->render(renderTarget);
         foreach(Renderable,r,renderableList)
             r->postRender(renderTarget);
-
-#ifdef DEBUG
-        foreach(GameEntity, e, entityList)
-        {
-            if (e->collisionRadius > 0.0)
-            {
-                sf::CircleShape circle(e->collisionRadius, 30);
-                circle.setOrigin(e->collisionRadius, e->collisionRadius);
-                circle.setPosition(e->sprite.getPosition());
-                circle.setFillColor(sf::Color::Transparent);
-                circle.setOutlineColor(sf::Color(255,255,255,128));
-                circle.setOutlineThickness(1);
-                renderTarget.draw(circle);
-            }
-        }
-#endif
         
         postProcessorManager.postProcessRendering(window);
 

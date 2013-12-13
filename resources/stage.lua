@@ -6,8 +6,7 @@ function init()
 
 	g = EnemyGroup();
 	for n=0,7 do
-		e = BasicEnemy():giveShield():setTargetPosition(160 - 4 * 20 + n * 20, 50);
-		g:add(e);
+		g:add(BasicEnemy():giveShield():setTargetPosition(160 - 4 * 20 + n * 20, 50));
 	end
 	table.insert(groupList, g)
 
@@ -56,6 +55,7 @@ function update(delta)
 		end
 	end
 	if count < 1 then
+		PowerupCarrier()
 		destroyScript()
 		return
 	end
