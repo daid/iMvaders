@@ -218,6 +218,8 @@
 		<Unit filename="src/iMvader/main.cpp" />
 		<Unit filename="src/iMvader/mainMenu.cpp" />
 		<Unit filename="src/iMvader/mainMenu.h" />
+		<Unit filename="src/iMvader/nuke.cpp" />
+		<Unit filename="src/iMvader/nuke.h" />
 		<Unit filename="src/iMvader/player.cpp" />
 		<Unit filename="src/iMvader/player.h" />
 		<Unit filename="src/iMvader/powerupCarrier.cpp" />
