@@ -57,5 +57,11 @@ namespace sf
     {
         return v / length(v);
     }
+    
+    template <typename T>
+    T dot(const Vector2<T>& v0, const Vector2<T>& v1)
+    {
+        return v0.x * v1.x + v0.y * v1.y;
+    }
 }
 #endif//SFML_EXTRA_VECTOR_UTILS_H

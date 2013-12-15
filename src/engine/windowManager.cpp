@@ -67,6 +67,8 @@ void WindowManager::mainLoop()
                 break;
             }
         }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+            window.close();
 
         float delta = frameTimeClock.getElapsedTime().asSeconds();
         frameTimeClock.restart();

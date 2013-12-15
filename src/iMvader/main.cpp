@@ -12,6 +12,7 @@ int main()
     playerController[1].keyBind[2] = sf::Keyboard::W;
     playerController[1].keyBind[3] = sf::Keyboard::S;
     playerController[1].keyBind[4] = sf::Keyboard::Q;
+    playerController[1].keyBind[5] = sf::Keyboard::E;
     
     WindowManager window(320, 240, false);
     new StarBackground();

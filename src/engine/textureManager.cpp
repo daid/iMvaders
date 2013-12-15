@@ -75,6 +75,7 @@ void TextureManager::loadTexture(const char* name)
             }
         }
     }
+    data.texture.setRepeated(true);
     
     data.texture.loadFromImage(tmpImage);
     printf("Loaded: %s with %d sprites\n", buffer, data.sprites.size());
