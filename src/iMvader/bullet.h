@@ -9,7 +9,6 @@
 class Bullet: public GameEntity, public Collisionable
 {
 private:
-    sf::Sound sound;
     float speed;
     int type;
 public:

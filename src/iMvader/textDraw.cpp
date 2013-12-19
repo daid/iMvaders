@@ -24,6 +24,7 @@ void drawText(sf::RenderTarget& window, int x, int y, sf::String str, textAlign 
         x -= textWidth(str)/2;
     if (align == align_right)
         x -= textWidth(str);
+    int xStart = x;
     for(unsigned int i=0; i<str.getSize(); i++)
     {
         int c = str[i];
@@ -43,6 +44,11 @@ void drawText(sf::RenderTarget& window, int x, int y, sf::String str, textAlign 
             letter.setPosition(x, y);
             x += letter.getTextureRect().width + 1;
             window.draw(letter);
+        }
+        else if (c == '|')
+        {
+            x = xStart;
+            y += 15;
         }
         else
         {
