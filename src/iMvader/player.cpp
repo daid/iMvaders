@@ -13,12 +13,13 @@ PlayerCraft::PlayerCraft(PlayerController* controller, int type)
 {
     invulnerability = 1.0;
     fireCooldown = 0.4;
+    health = 2;
     if (type == 0)
         textureManager.setTexture(sprite, "player1");
     else
         textureManager.setTexture(sprite, "player2");
     setPosition(sf::Vector2f(160, 220));
-    
+
     textureManager.setTexture(nukeIcon, "robot");
     nukeIcon.setScale(0.12, 0.12);
     nukeCount = 2;
@@ -44,7 +45,7 @@ void PlayerCraft::update(float delta)
         velocity = sf::Vector2f(velocity.x, -100);
     if (controller->down())
         velocity = sf::Vector2f(velocity.x,  100);
-    
+
     setPosition(getPosition() + velocity * delta);
 
     if (getPosition().x < 20)
@@ -95,7 +96,7 @@ void PlayerCraft::render(sf::RenderTarget& window)
             window.draw(nukeIcon);
         }
     }
-    
+
     if (fmod(invulnerability, 4.0/60.0) > 2.0/60.0)
         return;
     sprite.setPosition(getPosition());
@@ -107,7 +108,16 @@ bool PlayerCraft::takeDamage(sf::Vector2f position, int damageType, int damageAm
 {
     if (damageType < 0 || invulnerability > 0)
         return false;
-    destroy();
-    new Explosion(getPosition(), 12);
+    health -= damageAmount;
+    if(health <= 0)
+    {
+
+        destroy();
+        for(unsigned int n=0; n<4; n++)
+        {
+            new Explosion(sprite.getPosition() + sf::Vector2f(random(-10, 10), random(-10, 10)), 10);
+        }
+        //new Explosion(getPosition(), 12);
+    }
     return true;
 }

@@ -5,6 +5,7 @@
 
 #include "gameEntity.h"
 #include "Collisionable.h"
+#include "random.h"
 
 class PlayerController;
 extern PlayerController playerController[MAX_PLAYERS];
@@ -17,7 +18,7 @@ class PlayerController: public sf::NonCopyable
 public:
     static const int buttonCount = 6;
     sf::Keyboard::Key keyBind[4 + buttonCount];
-    
+
     PlayerController()
     {
         keyBind[0] = sf::Keyboard::Left;
@@ -50,6 +51,7 @@ public:
     float fireCooldown;
     float invulnerability;
     int nukeCount;
+    int health;
 public:
     PlayerCraft(PlayerController* controller, int type);
 
