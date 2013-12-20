@@ -27,7 +27,7 @@ int powerOfTwo(int v)
 
 sf::RenderTarget& PostProcessorManager::getPrimaryRenderTarget(sf::RenderTarget& window)
 {
-    for(std::map<sf::String, PostProcessor*>::iterator it = postProcessorMap.begin(); it != postProcessorMap.end(); it++)
+    for(std::map<std::string, PostProcessor*>::iterator it = postProcessorMap.begin(); it != postProcessorMap.end(); it++)
     {
         if (it->second->active())
         {
@@ -52,7 +52,7 @@ sf::RenderTarget& PostProcessorManager::getPrimaryRenderTarget(sf::RenderTarget&
 
 void PostProcessorManager::postProcessRendering(sf::RenderTarget& window)
 {
-    for(std::map<sf::String, PostProcessor*>::iterator it = postProcessorMap.begin(); it != postProcessorMap.end(); it++)
+    for(std::map<std::string, PostProcessor*>::iterator it = postProcessorMap.begin(); it != postProcessorMap.end(); it++)
     {
         if (it->second->active())
         {

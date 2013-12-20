@@ -40,7 +40,7 @@ int ScoreManager::getHighScore(int idx)
         return 0;
     return highscoreList[idx].score;
 }
-sf::String ScoreManager::getHighscoreName(int idx)
+std::string ScoreManager::getHighscoreName(int idx)
 {
     if (idx < 0 || idx >= highscoreListSize)
         return "";

@@ -11,7 +11,7 @@ extern PostProcessorManager postProcessorManager;
 class PostProcessorManager
 {
 private:
-    std::map<sf::String, PostProcessor*> postProcessorMap;
+    std::map<std::string, PostProcessor*> postProcessorMap;
     sf::RenderTexture backBuffer;
     sf::Vector2i virtualSize;
 public:

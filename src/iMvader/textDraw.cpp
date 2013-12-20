@@ -1,11 +1,11 @@
 #include "textDraw.h"
 #include "textureManager.h"
 
-static int textWidth(sf::String str)
+static int textWidth(std::string str)
 {
     int width = 0;
     int ret = 0;
-    for(unsigned int i=0; i<str.getSize(); i++)
+    for(unsigned int i=0; i<str.size(); i++)
     {
         int c = str[i];
         if (c >= 'A' && c <= 'Z')
@@ -25,7 +25,7 @@ static int textWidth(sf::String str)
     return std::max(ret, width);
 }
 
-void drawText(sf::RenderTarget& window, float x, float y, sf::String str, textAlign align)
+void drawText(sf::RenderTarget& window, float x, float y, std::string str, textAlign align)
 {
     sf::Sprite letter;
     if (align == align_center)
@@ -33,7 +33,7 @@ void drawText(sf::RenderTarget& window, float x, float y, sf::String str, textAl
     if (align == align_right)
         x -= textWidth(str);
     float xStart = x;
-    for(unsigned int i=0; i<str.getSize(); i++)
+    for(unsigned int i=0; i<str.size(); i++)
     {
         int c = str[i];
         if (c >= 'A' && c <= 'Z')

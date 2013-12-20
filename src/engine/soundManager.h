@@ -11,7 +11,7 @@ extern SoundManager soundManager;
 class SoundManager
 {
 private:
-    std::map<sf::String, sf::SoundBuffer> soundMap;
+    std::map<std::string, sf::SoundBuffer> soundMap;
     std::vector<sf::Sound> activeSoundList;
 public:
     SoundManager();

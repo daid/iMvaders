@@ -21,7 +21,7 @@ private:
     
     struct {
         int score;
-        sf::String name;
+        std::string name;
     } highscoreList[highscoreListSize];
 public:
     ScoreManager();
@@ -31,7 +31,7 @@ public:
     void reset();
     
     int getHighScore(int idx);
-    sf::String getHighscoreName(int idx);
+    std::string getHighscoreName(int idx);
 };
 
 #endif//SCORE_MANAGER_H

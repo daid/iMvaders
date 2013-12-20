@@ -21,4 +21,12 @@ public:
     virtual void update(float delta);
 };
 
+class ScriptCallback
+{
+    P<ScriptObject> obj;
+    
+public:
+    void call();
+};
+
 #endif//SCRIPT_INTERFACE_H
