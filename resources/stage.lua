@@ -32,7 +32,10 @@ function init()
 	Transmission():setText("Test"):transmissionDone("intro2")
 end
 function intro2()
-	Transmission():setText("They have set us up the bomb!"):transmissionDone("intro3")
+	Transmission():setText("They have set us up|the bomb!"):transmissionDone("intro3")
+end
+function intro3()
+	Transmission():setFace("Daid1"):setText("How are you gentlemen"):transmissionDone("intro4")
 end
 
 function update(delta)
