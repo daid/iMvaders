@@ -6,12 +6,12 @@ ScoreManager::ScoreManager()
 {
     currentScore = 0;
     displayScore = 0;
-    highscoreList[0].score = 3000;
+    highscoreList[0].score = 9003;
     highscoreList[0].name = "DAV";
-    highscoreList[1].score = 2000;
-    highscoreList[1].name = "JMY";
-    highscoreList[2].score = 1000;
-    highscoreList[2].name = "BRT";
+    highscoreList[1].score = 9002;
+    highscoreList[1].name = "JME";
+    highscoreList[2].score = 9001;
+    highscoreList[2].name = "MRV";
 }
 
 void ScoreManager::add(int points)
