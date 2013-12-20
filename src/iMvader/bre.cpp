@@ -20,6 +20,7 @@ BreEnemy::BreEnemy()
     invulnerability = 0;
     moveSpeed = 60;
     health = maxHealth;
+    //setCollisionRadius(50.f);
 }
 
 BreEnemy::~BreEnemy()
@@ -34,8 +35,10 @@ void BreEnemy::update(float delta)
     {
     case BS_FlyIn:
         if (sprite.getPosition().y < 80.0)
+        {
             sprite.setPosition(sprite.getPosition() + sf::Vector2f(0, 1));
-        else{
+        }else
+        {
             state = BS_MoveLeftRight;
             moveDir = random(0, 100) < 50 ? 1 : -1;
         }
@@ -46,7 +49,7 @@ void BreEnemy::update(float delta)
             moveDir = 1;
         if (sprite.getPosition().x > 280.0)
             moveDir = -1;
-        
+
         if (shotDelay > 0)
         {
             shotDelay -= delta;
@@ -124,7 +127,7 @@ void BreEnemy::update(float delta)
         }
     }
     mouth.setPosition(sprite.getPosition() + sf::Vector2f(0, mouthPos));
-    
+    setPosition(sprite.getPosition()); // Set position for collision
     foreach(BasicEnemyBase, e, enemyList)
     {
         if (e->state == ES_CenterField)
@@ -188,10 +191,10 @@ bool BreEnemy::takeDamage(sf::Vector2f position, int damageType, int damageAmoun
         return false;
     if (invulnerability > 0)
         return true;
-    
+
     if (state != BS_FlyIn)
         health -= damageAmount;
-    
+
     if (health <= 0)
     {
         health = 0;
