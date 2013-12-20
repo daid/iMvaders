@@ -4,11 +4,27 @@
 #include "textDraw.h"
 #include "textureManager.h"
 
+REGISTER_SCRIPT_CLASS(Transmission)
+{
+    REGISTER_SCRIPT_CLASS_FUNCTION(Transmission, setFace);
+    REGISTER_SCRIPT_CLASS_FUNCTION(Transmission, setText);
+    REGISTER_SCRIPT_CLASS_CALLBACK(Transmission, transmissionDone);
+}
+
 Transmission::Transmission()
 {
     faceName = "Jaime1";
     text = "WARNING INCOMMING|MAKERBOTS";
     transmissionTime = 0;
+}
+void Transmission::setFace(const char* faceName)
+{
+    this->faceName = faceName;
+}
+
+void Transmission::setText(const char* text)
+{
+    this->text = text;
 }
 
 void Transmission::postRender(sf::RenderTarget& window)
@@ -32,4 +48,10 @@ void Transmission::update(float delta)
         textureManager.setTexture(face, faceName.c_str(), fmodf(transmissionTime * charsPerSecond, 2.0f) < 1.0f ? 1 : 0);
     else
         textureManager.setTexture(face, faceName.c_str(), 0);
+
+    if (transmissionTime * charsPerSecond > text.length() * 2)
+    {
+        transmissionDone();
+        destroy();
+    }
 }

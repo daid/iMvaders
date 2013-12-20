@@ -141,3 +141,18 @@ void ScriptObject::update(float delta)
         lua_pop(L, 1);
     }
 }
+
+void ScriptCallback::operator() ()
+{
+    if (functionName.size() < 1 || !script)
+        return;
+    lua_State* L = script->L;
+    
+    lua_getglobal(L, functionName.c_str());
+    if (lua_pcall(L, 0, 0, 0))
+    {
+        printf("ERROR(%s): %s\n", functionName.c_str(), luaL_checkstring(L, -1));
+        lua_pop(L, 1);
+        return;
+    }
+}

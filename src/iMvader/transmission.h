@@ -3,6 +3,7 @@
 
 #include "Updatable.h"
 #include "Renderable.h"
+#include "ScriptInterface.h"
 
 class Transmission : public Updatable, public Renderable
 {
@@ -13,8 +14,13 @@ class Transmission : public Updatable, public Renderable
     
     const static float charsPerSecond = 10.0f;
 public:
+    ScriptCallback transmissionDone;
+
     Transmission();
     virtual ~Transmission() {}
+    
+    void setFace(const char* faceName);
+    void setText(const char* text);
     
     virtual void preRender(sf::RenderTarget& window) {}
     virtual void render(sf::RenderTarget& window) {}

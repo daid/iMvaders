@@ -28,6 +28,11 @@ function init()
 	end
 
 	table.insert(groupList, g)
+	
+	Transmission():setText("Test"):transmissionDone("intro2")
+end
+function intro2()
+	Transmission():setText("They have set us up the bomb!"):transmissionDone("intro3")
 end
 
 function update(delta)
