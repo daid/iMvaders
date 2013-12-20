@@ -11,7 +11,7 @@ enum textAlign
     align_right = 2
 };
 
-void drawText(sf::RenderTarget& window, int x, int y, sf::String str, textAlign align = align_center);
+void drawText(sf::RenderTarget& window, float x, float y, sf::String str, textAlign align = align_center);
 
 /* Utility function in assisting to convert numbers to strings */
 static inline sf::String to_string(int number)
