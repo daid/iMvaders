@@ -36,7 +36,7 @@ void BreEnemy::update(float delta)
     case BS_FlyIn:
         if (sprite.getPosition().y < 80.0)
         {
-            sprite.setPosition(sprite.getPosition() + sf::Vector2f(0, 1));
+            sprite.setPosition(sprite.getPosition() + sf::Vector2f(0, moveSpeed * delta));
         }else
         {
             state = BS_MoveLeftRight;
@@ -81,7 +81,7 @@ void BreEnemy::update(float delta)
         }
         break;
     case BS_LaserFire:
-        if (shotDelay > -0.5)
+        if (shotDelay > -0.5) //Why -0.5?
         {
             shotDelay -= delta;
         }
