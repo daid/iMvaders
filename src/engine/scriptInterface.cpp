@@ -33,6 +33,7 @@ ScriptObject::ScriptObject()
 
 ScriptObject::ScriptObject(const char* filename)
 {
+    L = NULL;
     run(filename);
 }
 
