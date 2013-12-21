@@ -38,23 +38,26 @@ ScriptObject::ScriptObject(const char* filename)
 
 void ScriptObject::run(const char* filename)
 {
-    L = luaL_newstate();
-    
-    lua_pushlightuserdata(L, this);
-    lua_setglobal(L, "__ScriptObjectPointer");
-    luaL_openlibs(L);
-    lua_register(L, "random", lua_random);
-    lua_register(L, "destroyScript", lua_destroyScript);
-    
-    int maxPrio = 0;
-    for(int prio=0; prio<=maxPrio; prio++)
+    if (L == NULL)
     {
-        for(registerObjectFunctionListItem* item = registerObjectFunctionListStart; item != NULL; item = item->next)
+        L = luaL_newstate();
+    
+        lua_pushlightuserdata(L, this);
+        lua_setglobal(L, "__ScriptObjectPointer");
+        luaL_openlibs(L);
+        lua_register(L, "random", lua_random);
+        lua_register(L, "destroyScript", lua_destroyScript);
+        
+        int maxPrio = 0;
+        for(int prio=0; prio<=maxPrio; prio++)
         {
-            if (item->prio == prio)
-                item->func(L);
-            if (item->prio > maxPrio)
-                maxPrio = item->prio;
+            for(registerObjectFunctionListItem* item = registerObjectFunctionListStart; item != NULL; item = item->next)
+            {
+                if (item->prio == prio)
+                    item->func(L);
+                if (item->prio > maxPrio)
+                    maxPrio = item->prio;
+            }
         }
     }
 
@@ -103,27 +106,30 @@ ScriptObject::~ScriptObject()
 void ScriptObject::update(float delta)
 {
 #if AUTO_RELOAD_SCRIPT
-    lua_getglobal(L, "__ScriptFilename");
-    const char* filename = luaL_checkstring(L, -1);
-    lua_pop(L, 1);
-    
-    struct stat fileInfo;
-    stat(filename, &fileInfo);
-    if (scriptModifyTime != fileInfo.st_mtime)
+    if (L)
     {
-        scriptModifyTime = fileInfo.st_mtime;
-        printf("Reload: %s\n", filename);
-        if (luaL_loadfile(L, filename))
+        lua_getglobal(L, "__ScriptFilename");
+        const char* filename = luaL_checkstring(L, -1);
+        lua_pop(L, 1);
+        
+        struct stat fileInfo;
+        stat(filename, &fileInfo);
+        if (scriptModifyTime != fileInfo.st_mtime)
         {
-            printf("ERROR(load): %s\n", luaL_checkstring(L, -1));
-            destroy();
-            return;
-        }
-        if (lua_pcall(L, 0, 0, 0))
-        {
-            printf("ERROR(run): %s\n", luaL_checkstring(L, -1));
-            destroy();
-            return;
+            scriptModifyTime = fileInfo.st_mtime;
+            printf("Reload: %s\n", filename);
+            if (luaL_loadfile(L, filename))
+            {
+                printf("ERROR(load): %s\n", luaL_checkstring(L, -1));
+                destroy();
+                return;
+            }
+            if (lua_pcall(L, 0, 0, 0))
+            {
+                printf("ERROR(run): %s\n", luaL_checkstring(L, -1));
+                destroy();
+                return;
+            }
         }
     }
 #endif
