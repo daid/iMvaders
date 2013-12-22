@@ -87,9 +87,10 @@ public:
         return *this;
     }
 
-    T* operator->()
+    T* operator->() const
     {
-        check_release();
+        assert(ptr);
+        assert(!ptr->destroyed);
         return ptr;
     }
     T* operator*()

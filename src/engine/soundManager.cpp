@@ -14,13 +14,34 @@ SoundManager::~SoundManager()
 {
 }
 
-void SoundManager::setSound(sf::Sound& sound, const char* name)
+void SoundManager::playSound(const char* name, float pitch, float volume)
 {
+    for(unsigned int n=0; n<activeSoundList.size(); n++)
+    {
+        sf::Sound& sound = activeSoundList[n];
+        if (sound.getStatus() == sf::Sound::Stopped)
+        {
+            sf::SoundBuffer& data = soundMap[name];
+            if (data.getSampleCount() < 1)
+                loadSound(name);
+            
+            sound.setBuffer(data);
+            sound.setPitch(pitch);
+            sound.setVolume(volume);
+            sound.play();
+            return;
+        }
+    }
+    activeSoundList.push_back(sf::Sound());
+    sf::Sound& sound = activeSoundList[activeSoundList.size() - 1];
     sf::SoundBuffer& data = soundMap[name];
     if (data.getSampleCount() < 1)
         loadSound(name);
-    
+
     sound.setBuffer(data);
+    sound.setPitch(pitch);
+    sound.setVolume(volume);
+    sound.play();
 }
 
 void SoundManager::loadSound(const char* name)

@@ -8,9 +8,7 @@
 Bullet::Bullet(sf::Vector2f position, int type, float angle, float speed)
 : GameEntity(), Collisionable(1.0), speed(speed), type(type)
 {
-    soundManager.setSound(sound, "laser");
-    sound.setPitch(random(0.75, 1.25));
-    sound.play();
+    soundManager.playSound("laser", random(0.75, 1.25));
     textureManager.setTexture(sprite, "bullet");
     setPosition(position);
     sprite.setRotation(angle);

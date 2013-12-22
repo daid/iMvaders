@@ -86,9 +86,46 @@ template<class T> struct call<T, void(T::*)() >
         FuncProto* func_ptr = reinterpret_cast<FuncProto*>(lua_touserdata(L, lua_upvalueindex (1)));
         FuncProto func = *func_ptr;
         PT* p = static_cast< PT* >(lua_touserdata(L, 1));
+        if (p == NULL)
+        {
+            //Function called without object...
+            return 0;
+        }
         T* obj = dynamic_cast<T*>(***p);
         if (obj)
             (obj->*func)();
+        lua_pushvalue(L, 1);
+        return 1;
+    }
+};
+
+class ScriptCallback;
+class ScriptObject;
+template<class T> struct call<T, ScriptCallback T::* >
+{
+    typedef P<PObject>* PT;
+    typedef ScriptCallback T::* CallbackProto;
+    
+    static int setcallbackFunction(lua_State* L)
+    {
+        CallbackProto* callback_ptr = reinterpret_cast<CallbackProto*>(lua_touserdata(L, lua_upvalueindex (1)));
+        CallbackProto callback = *callback_ptr;
+        PT* p = static_cast< PT* >(lua_touserdata(L, 1));
+        if (p == NULL)
+        {
+            //Function called without object...
+            return 0;
+        }
+        T* obj = dynamic_cast<T*>(***p);
+        if (obj)
+        {
+            lua_getglobal(L, "__ScriptObjectPointer");
+            ScriptObject* script = static_cast<ScriptObject*>(lua_touserdata(L, -1));
+            lua_pop(L, 1);
+            
+            (obj->*callback).script = script;
+            (obj->*callback).functionName = luaL_checkstring(L, 2);
+        }
         lua_pushvalue(L, 1);
         return 1;
     }
@@ -259,6 +296,21 @@ public:
 		lua_pushcclosure(L, fptr, 1);
 		lua_settable(L, table);
     }
+
+    template<class TT, class FuncProto>
+    static void addCallback(lua_State* L, int table, const char* functionName, FuncProto func)
+    {
+        lua_pushstring(L, functionName);
+        FuncProto* ptr = reinterpret_cast<FuncProto*>(lua_newuserdata(L, sizeof(FuncProto)));
+        *ptr = func;
+        /// If the following line gives a compiler error, then the function you are registering with
+        /// REGISTER_SCRIPT_CLASS_FUNCTION has:
+        /// * A wrong class given with it (you should give the base class of the function, not a sub class)
+        /// * No call handler for the parameter/return type.
+        lua_CFunction fptr = &call<TT, FuncProto>::setcallbackFunction;
+		lua_pushcclosure(L, fptr, 1);
+		lua_settable(L, table);
+    }
 };
 
 #define REGISTER_SCRIPT_CLASS(T) \
@@ -273,5 +325,7 @@ public:
     template <> void scriptBindObject<T>::registerFunctions(lua_State* L, int table)
 #define REGISTER_SCRIPT_CLASS_FUNCTION(T, F) \
     addFunction<T> (L, table, # F , &T::F)
+#define REGISTER_SCRIPT_CLASS_CALLBACK(T, C) \
+    addCallback<T> (L, table, # C , &T::C)
 
 #endif//SCRIPT_INTERFACE_MAGIC_H

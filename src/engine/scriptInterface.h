@@ -19,6 +19,20 @@ public:
     
     void run(const char* filename);
     virtual void update(float delta);
+
+    //Make the ScriptCallback our friend, so we can access the lua_State from the callback class.
+    friend class ScriptCallback;
+};
+
+class ScriptCallback
+{
+public:
+    P<ScriptObject> script;
+    std::string functionName;
+
+    void operator() ();
+    
+    void setCallback(const char* functionName);
 };
 
 #endif//SCRIPT_INTERFACE_H

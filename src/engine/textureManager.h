@@ -16,7 +16,7 @@ struct TextureData
 class TextureManager
 {
 private:
-    std::map<sf::String, TextureData> textureMap;
+    std::map<std::string, TextureData> textureMap;
 public:
     TextureManager();
     ~TextureManager();

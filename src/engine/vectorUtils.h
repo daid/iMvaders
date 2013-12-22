@@ -43,7 +43,7 @@ namespace sf
     template <typename T>
     T vector2ToAngle(const Vector2<T>& v)
     {
-        return atan2(-v.x, v.y) / M_PI * 180;
+        return atan2(v.x, -v.y) / M_PI * 180;
     }
 
     template <typename T>

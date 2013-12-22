@@ -7,6 +7,7 @@
 #include "mainMenu.h"
 #include "scriptInterface.h"
 #include "powerupCarrier.h"
+#include "transmission.h"
 
 class GameStage : public GameEntity
 {
