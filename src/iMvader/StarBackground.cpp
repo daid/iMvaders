@@ -1,4 +1,4 @@
-#include "background.h"
+#include "StarBackground.h"
 #include "random.h"
 
 StarBackground::StarBackground()

@@ -13,6 +13,8 @@ public:
     ~WindowManager();
     
     void mainLoop();
+
+    friend class InputHandler;
 };
 
 #endif//WINDOW_MANAGER_H

@@ -3,8 +3,9 @@
 #include "Renderable.h"
 #include "Collisionable.h"
 #include "PostProcessManager.h"
+#include "input.h"
 
-WindowManager::WindowManager(int virtualWidth, int virtualHeight, bool fullScreen)
+WindowManager::WindowManager(int virtualWidth, int virtualHeight, bool fullscreen)
 : virtualSize(virtualWidth, virtualHeight)
 {
     srand(time(NULL));
@@ -12,7 +13,6 @@ WindowManager::WindowManager(int virtualWidth, int virtualHeight, bool fullScree
     // Create the window of the application
     int windowWidth = virtualWidth;
     int windowHeight = virtualHeight;
-    bool fullscreen = false;
     
     sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
     if (fullscreen)
@@ -44,6 +44,7 @@ WindowManager::WindowManager(int virtualWidth, int virtualHeight, bool fullScree
     }
     window.setView(view);
     postProcessorManager.setVirtualSize(virtualSize);
+    inputHandler.setWindow(this);
 }
 
 WindowManager::~WindowManager()

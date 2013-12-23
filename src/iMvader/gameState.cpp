@@ -1,6 +1,5 @@
 #include "gameState.h"
 #include "EnemyGroup.h"
-#include "bre.h"
 #include "textDraw.h"
 #include "postProcessManager.h"
 #include "scoreManager.h"
@@ -8,54 +7,6 @@
 #include "scriptInterface.h"
 #include "powerupCarrier.h"
 #include "transmission.h"
-
-class GameStage : public GameEntity
-{
-private:
-    P<ScriptObject> script;
-    PVector<EnemyGroup> groupList;
-    float diveCountdown;
-    float enemyOffset;
-    float enemyDirection;
-public:
-    GameStage()
-    {
-        script = new ScriptObject("resources/stage.lua");
-    }
-    virtual ~GameStage() {}
-
-    virtual void update(float delta)
-    {
-        if (!script)
-        {
-            //Destroy ourselves if our script destroyed itself.
-            destroy();
-            return;
-        }
-    }
-};
-
-class BreStage : public GameEntity
-{
-private:
-    P<BreEnemy> bre;
-public:
-    BreStage()
-    {
-        bre = new BreEnemy();
-    }
-    virtual ~BreStage() {}
-
-    virtual void update(float delta)
-    {
-        if (!bre)
-        {
-            //Destroy ourselves if bre is destroyed, to indicate the round is done.
-            destroy();
-            return;
-        }
-    }
-};
 
 class GameOverState : public GameEntity
 {
@@ -100,6 +51,8 @@ GameState::GameState(int playerCount)
     foreach(GameEntity, e, entityList)
         if (e != this)
             e->destroy();
+    
+    new ScriptObject("resources/stage.lua");
 }
 GameState::~GameState() {}
 
@@ -128,23 +81,6 @@ void GameState::update(float delta)
         destroy();
         new GameOverState();
     }
-
-    if (!stage)
-    {
-        if (startStageDelay > 0)
-        {
-            startStageDelay -= delta;
-        }
-        else
-        {
-            stageNr++;
-            if (stageNr % 3 == 0)
-                stage = new BreStage();
-            else
-                stage = new GameStage();
-            startStageDelay = 2.0;
-        }
-    }
 }
 
 void GameState::postRender(sf::RenderTarget& window)
@@ -166,12 +102,4 @@ void GameState::postRender(sf::RenderTarget& window)
     }
     
     drawText(window, 310, 220, to_string(score.get()), align_right);
-
-    if (!stage)
-    {
-        if (startStageDelay > 1.0)
-            drawText(window, 160, 120 - (startStageDelay - 1.0) * 120, "STAGE " + to_string(stageNr+1));
-        else
-            drawText(window, 160, 120, "STAGE " + to_string(stageNr+1));
-    }
 }

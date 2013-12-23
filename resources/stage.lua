@@ -1,4 +1,18 @@
 function init()
+	groupList = nil
+	Transmission():setFace("Daid1"):setText("Welcome heroes|of earth"):top():transmissionDone("intro2")
+end
+function intro2()
+	Transmission():setFace("Daid1"):setText("You misssion is to|destroy the|M corperation"):top():transmissionDone("intro3")
+end
+function intro3()
+	Transmission():setFace("Daid1"):setText("It will be hazardous|so take care"):top():transmissionDone("intro4")
+end
+function intro4()
+	Transmission():setFace("Jaime1"):setText("INCOMMING ENEMIES"):top():transmissionDone("launchRound")
+end
+
+function launchRound()
 	groupList = {}
 	enemyDirection = 20.0;
 	enemyOffset = 0;
@@ -28,60 +42,54 @@ function init()
 	end
 
 	table.insert(groupList, g)
-	
-	Transmission():setText("Test"):transmissionDone("intro2")
-end
-function intro2()
-	Transmission():setText("They have set us up|the bomb!"):transmissionDone("intro3")
-end
-function intro3()
-	Transmission():setFace("Daid1"):setText("How are you gentlemen"):transmissionDone("intro4")
 end
 
 function update(delta)
-	if enemyOffset > 30 then
-		enemyDirection = -math.abs(enemyDirection)
-	end
-	if enemyOffset < -30 then
-		enemyDirection = math.abs(enemyDirection);
-	end
-	enemyOffset = enemyOffset + enemyDirection * delta;
-	
-	allowDive = true;
-	allowFlyIn = true;
-	count = 0;
-	for _, g in ipairs(groupList) do
-		if g:isValid() then
-			count = count + 1
-			g:setOffset(enemyOffset)
-			if not g:isAll("CenterField") then
-				allowDive = false;
-				if not g:isAll("Outside") then
-                    allowFlyIn = false;
+
+	if groupList ~= nil then
+		if enemyOffset > 30 then
+			enemyDirection = -math.abs(enemyDirection)
+		end
+		if enemyOffset < -30 then
+			enemyDirection = math.abs(enemyDirection);
+		end
+		enemyOffset = enemyOffset + enemyDirection * delta;
+		
+		allowDive = true;
+		allowFlyIn = true;
+		count = 0;
+		for _, g in ipairs(groupList) do
+			if g:isValid() then
+				count = count + 1
+				g:setOffset(enemyOffset)
+				if not g:isAll("CenterField") then
+					allowDive = false;
+					if not g:isAll("Outside") then
+						allowFlyIn = false;
+					end
 				end
 			end
 		end
-	end
-	if count < 1 then
-		PowerupCarrier()
-		destroyScript()
-		return
-	end
-	if allowFlyIn then
-		g = groupList[math.random(#groupList)];
-		if g:isValid() and g:isAll("Outside") then
-		 	g:flyInBy(random(0, 320), -20, 160, 160);
+		if count < 1 then
+			PowerupCarrier()
+			groupList = nil
 		end
-	end
-
-	if allowDive then
-		if diveCountdown > 0 then
-			diveCountdown = diveCountdown - delta;
-		else
+		if allowFlyIn then
 			g = groupList[math.random(#groupList)];
-			if g:isValid() then
-				diveCountdown = random(2.0, 5.0);
-				g:dive(random(20, 300), 300);
+			if g:isValid() and g:isAll("Outside") then
+				g:flyInBy(random(0, 320), -20, 160, 160);
+			end
+		end
+
+		if allowDive then
+			if diveCountdown > 0 then
+				diveCountdown = diveCountdown - delta;
+			else
+				g = groupList[math.random(#groupList)];
+				if g:isValid() then
+					diveCountdown = random(2.0, 5.0);
+					g:dive(random(20, 300), 300);
+				end
 			end
 		end
 	end

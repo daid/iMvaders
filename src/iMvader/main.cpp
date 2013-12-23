@@ -1,5 +1,5 @@
 #include "windowManager.h"
-#include "background.h"
+#include "StarBackground.h"
 #include "MainMenu.h"
 #include "player.h"
 

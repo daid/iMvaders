@@ -11,8 +11,10 @@ class Transmission : public Updatable, public Renderable
     std::string faceName;
     std::string text;
     float transmissionTime;
-    
+    float positionY;
+
     const static float charsPerSecond = 10.0f;
+    const static float extraDelayBeforeDone = 2.0f;
 public:
     ScriptCallback transmissionDone;
 
@@ -21,6 +23,8 @@ public:
     
     void setFace(const char* faceName);
     void setText(const char* text);
+    void top();
+    void bottom();
     
     virtual void preRender(sf::RenderTarget& window) {}
     virtual void render(sf::RenderTarget& window) {}

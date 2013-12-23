@@ -60,6 +60,8 @@
 		<Unit filename="src/engine/Updatable.h" />
 		<Unit filename="src/engine/gameEntity.cpp" />
 		<Unit filename="src/engine/gameEntity.h" />
+		<Unit filename="src/engine/input.cpp" />
+		<Unit filename="src/engine/input.h" />
 		<Unit filename="src/engine/lua/lapi.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -203,8 +205,8 @@
 		<Unit filename="src/iMvader/BurstShotEnemy.h" />
 		<Unit filename="src/iMvader/EnemyGroup.cpp" />
 		<Unit filename="src/iMvader/EnemyGroup.h" />
-		<Unit filename="src/iMvader/background.cpp" />
-		<Unit filename="src/iMvader/background.h" />
+		<Unit filename="src/iMvader/StarBackground.cpp" />
+		<Unit filename="src/iMvader/StarBackground.h" />
 		<Unit filename="src/iMvader/bre.cpp" />
 		<Unit filename="src/iMvader/bre.h" />
 		<Unit filename="src/iMvader/bullet.cpp" />
@@ -228,6 +230,8 @@
 		<Unit filename="src/iMvader/scoreManager.h" />
 		<Unit filename="src/iMvader/textDraw.cpp" />
 		<Unit filename="src/iMvader/textDraw.h" />
+		<Unit filename="src/iMvader/transmission.cpp" />
+		<Unit filename="src/iMvader/transmission.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />

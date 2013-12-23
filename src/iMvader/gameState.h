@@ -8,7 +8,6 @@ class GameState : public GameEntity
 {
 private:
     P<PlayerCraft> player[MAX_PLAYERS];
-    P<GameEntity> stage;
     int lives[MAX_PLAYERS];
     int stageNr;
     int playerCount;
