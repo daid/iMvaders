@@ -1,3 +1,4 @@
+#include "stringUtils.h"
 #include "gameState.h"
 #include "EnemyGroup.h"
 #include "textDraw.h"
@@ -7,6 +8,7 @@
 #include "scriptInterface.h"
 #include "powerupCarrier.h"
 #include "transmission.h"
+#include "engine.h"
 
 class GameOverState : public GameEntity
 {
@@ -20,7 +22,10 @@ public:
 
     virtual void update(float delta)
     {
-        if (gameOverDelay < gameOverWait - 1.0 && (playerController[0].button(fireButton) || playerController[1].button(fireButton)))
+        P<PlayerController> pc1 = engine->getObject("playerController1");
+        P<PlayerController> pc2 = engine->getObject("playerController2");
+    
+        if (gameOverDelay < gameOverWait - 1.0 && (pc1->button(fireButton) || pc2->button(fireButton)))
             gameOverDelay = 0;
         if (gameOverDelay > 0)
             gameOverDelay -= delta;
@@ -29,7 +34,7 @@ public:
             //Clean out the game world.
             foreach(GameEntity, e, entityList)
                 e->destroy();
-            score.reset();
+            P<ScoreManager>(engine->getObject("score"))->reset();
             new MainMenu();
         }
     }
@@ -52,7 +57,7 @@ GameState::GameState(int playerCount)
         if (e != this)
             e->destroy();
     
-    new ScriptObject("resources/stage.lua");
+    script = new ScriptObject("resources/stage.lua");
 }
 GameState::~GameState() {}
 
@@ -70,7 +75,10 @@ void GameState::update(float delta)
             if (lives[n])
             {
                 lives[n] --;
-                player[n] = new PlayerCraft(&playerController[n], n);
+                P<PlayerController> pc = engine->getObject("playerController1");
+                if (n)
+                    pc = engine->getObject("playerController2");
+                player[n] = new PlayerCraft(*pc, n);
                 postProcessorManager.triggerPostProcess("pixel", 1.0);
                 gameOver = false;
             }
@@ -78,6 +86,7 @@ void GameState::update(float delta)
     }
     if (gameOver)
     {
+        if (script) script->destroy();
         destroy();
         new GameOverState();
     }
@@ -101,5 +110,5 @@ void GameState::postRender(sf::RenderTarget& window)
         }
     }
     
-    drawText(window, 310, 220, to_string(score.get()), align_right);
+    drawText(window, 310, 220, to_string(P<ScoreManager>(engine->getObject("score"))->get()), align_right);
 }

@@ -2,6 +2,7 @@
 #define SCORE_MANAGER_H
 
 #include <SFML/System.hpp>
+#include "Updatable.h"
 /**
     The score manager manages the score and high-score for the game. You can add points with
         score.add(10);
@@ -9,9 +10,7 @@
         score.get();
 */
 
-class ScoreManager;
-extern ScoreManager score;
-class ScoreManager
+class ScoreManager : public Updatable
 {
 public:
     static const int highscoreListSize = 3;
@@ -32,6 +31,8 @@ public:
     
     int getHighScore(int idx);
     std::string getHighscoreName(int idx);
+    
+    virtual void update(float delta);
 };
 
 #endif//SCORE_MANAGER_H

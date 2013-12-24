@@ -2,7 +2,9 @@
 #include "player.h"
 #include "gameState.h"
 #include "textDraw.h"
+#include "stringUtils.h"
 #include "scoreManager.h"
+#include "engine.h"
 
 MainMenu::MainMenu()
 {
@@ -38,12 +40,14 @@ void MainMenu::update(float delta)
             enemyGroup->flyIn(sf::Vector2f(random(0, 320), -20));
     }
 
-    if (playerController[0].button(fireButton))
+    P<PlayerController> pc1 = engine->getObject("playerController1");
+    P<PlayerController> pc2 = engine->getObject("playerController2");
+    if (pc1->button(fireButton))
     {
         new GameState(1);
         sf::Listener::setGlobalVolume(100);
     }
-    else if (playerController[1].button(fireButton))
+    else if (pc2->button(fireButton))
     {
         new GameState(2);
         sf::Listener::setGlobalVolume(100);
@@ -52,12 +56,13 @@ void MainMenu::update(float delta)
 
 void MainMenu::postRender(sf::RenderTarget& window)
 {
+    P<ScoreManager> score = engine->getObject("score");
     if (introTextPosition < introTextDelay)
     {
         drawText(window, 160, 120, "HIGH SCORE");
-        for(int i=0; i<score.highscoreListSize; i++)
+        for(int i=0; i<score->highscoreListSize; i++)
         {
-            drawText(window, 160, 120 + 16 * (i+1), score.getHighscoreName(i) + " " + to_string(score.getHighScore(i)));
+            drawText(window, 160, 120 + 16 * (i+1), score->getHighscoreName(i) + " " + to_string(score->getHighScore(i)));
         }
         if (int(blink * 1000) % 1000 < 500)
             drawText(window, 160, 200, "INSERT COIN");

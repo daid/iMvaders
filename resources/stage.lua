@@ -73,6 +73,7 @@ function update(delta)
 		if count < 1 then
 			PowerupCarrier()
 			groupList = nil
+			launchRound()
 		end
 		if allowFlyIn then
 			g = groupList[math.random(#groupList)];

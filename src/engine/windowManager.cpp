@@ -51,48 +51,21 @@ WindowManager::~WindowManager()
 {
 }
 
-void WindowManager::mainLoop()
+void WindowManager::render()
 {
-    sf::Clock frameTimeClock;
-    while (window.isOpen())
-    {
-        // Handle events
-        sf::Event event;
-        while (window.pollEvent(event))
-        {
-            // Window closed or escape key pressed: exit
-            if ((event.type == sf::Event::Closed) ||
-               ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Escape)))
-            {
-                window.close();
-                break;
-            }
-        }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
-            window.close();
+    // Clear the window
+    window.clear(sf::Color(0, 0, 0));
+    sf::RenderTarget& renderTarget = postProcessorManager.getPrimaryRenderTarget(window);
+    renderTarget.clear(sf::Color(0, 0, 0));
+    foreach(Renderable,r,renderableList)
+        r->preRender(renderTarget);
+    foreach(Renderable,r,renderableList)
+        r->render(renderTarget);
+    foreach(Renderable,r,renderableList)
+        r->postRender(renderTarget);
+    
+    postProcessorManager.postProcessRendering(window);
 
-        float delta = frameTimeClock.getElapsedTime().asSeconds();
-        frameTimeClock.restart();
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab))
-            delta /= 5.0;
-        foreach(Updatable, u, updatableList)
-            u->update(delta);
-        Collisionable::handleCollisions();
-
-        // Clear the window
-        window.clear(sf::Color(0, 0, 0));
-        sf::RenderTarget& renderTarget = postProcessorManager.getPrimaryRenderTarget(window);
-        renderTarget.clear(sf::Color(0, 0, 0));
-        foreach(Renderable,r,renderableList)
-            r->preRender(renderTarget);
-        foreach(Renderable,r,renderableList)
-            r->render(renderTarget);
-        foreach(Renderable,r,renderableList)
-            r->postRender(renderTarget);
-        
-        postProcessorManager.postProcessRendering(window);
-
-        // Display things on screen
-        window.display();
-    }
+    // Display things on screen
+    window.display();
 }

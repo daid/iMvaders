@@ -104,6 +104,11 @@ public:
         check_release();
         return ptr != NULL;
     }
+    
+    template<class T2> operator P<T2>()
+    {
+        return dynamic_cast<T2*>(**this);
+    }
 
 protected:
     void check_release()

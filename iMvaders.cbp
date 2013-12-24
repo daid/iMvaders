@@ -58,6 +58,8 @@
 		<Unit filename="src/engine/Renderable.h" />
 		<Unit filename="src/engine/Updatable.cpp" />
 		<Unit filename="src/engine/Updatable.h" />
+		<Unit filename="src/engine/engine.cpp" />
+		<Unit filename="src/engine/engine.h" />
 		<Unit filename="src/engine/gameEntity.cpp" />
 		<Unit filename="src/engine/gameEntity.h" />
 		<Unit filename="src/engine/input.cpp" />
@@ -192,6 +194,7 @@
 		<Unit filename="src/engine/scriptInterfaceMagic.h" />
 		<Unit filename="src/engine/soundManager.cpp" />
 		<Unit filename="src/engine/soundManager.h" />
+		<Unit filename="src/engine/stringUtils.h" />
 		<Unit filename="src/engine/textureManager.cpp" />
 		<Unit filename="src/engine/textureManager.h" />
 		<Unit filename="src/engine/vectorUtils.h" />

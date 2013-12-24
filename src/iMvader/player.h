@@ -7,13 +7,10 @@
 #include "Collisionable.h"
 #include "random.h"
 
-class PlayerController;
-extern PlayerController playerController[MAX_PLAYERS];
-
 const int fireButton = 0;
 const int nukeButton = 1;
 
-class PlayerController: public sf::NonCopyable
+class PlayerController: public virtual PObject
 {
 public:
     static const int buttonCount = 6;

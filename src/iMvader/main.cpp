@@ -1,22 +1,36 @@
+#include "Engine.h"
 #include "windowManager.h"
 #include "StarBackground.h"
 #include "MainMenu.h"
 #include "player.h"
+#include "ScoreManager.h"
 
 #include "scriptInterface.h"
 
 int main()
 {
-    playerController[1].keyBind[0] = sf::Keyboard::A;
-    playerController[1].keyBind[1] = sf::Keyboard::D;
-    playerController[1].keyBind[2] = sf::Keyboard::W;
-    playerController[1].keyBind[3] = sf::Keyboard::S;
-    playerController[1].keyBind[4] = sf::Keyboard::Q;
-    playerController[1].keyBind[5] = sf::Keyboard::E;
+    new Engine();
     
-    WindowManager window(320, 240, false);
+    P<PlayerController> pc1 = new PlayerController();
+    P<PlayerController> pc2 = new PlayerController();
+    engine->registerObject("playerController1", pc1);
+    engine->registerObject("playerController2", pc2);
+    engine->registerObject("score", new ScoreManager());
+    
+    pc2->keyBind[0] = sf::Keyboard::A;
+    pc2->keyBind[1] = sf::Keyboard::D;
+    pc2->keyBind[2] = sf::Keyboard::W;
+    pc2->keyBind[3] = sf::Keyboard::S;
+    pc2->keyBind[4] = sf::Keyboard::Q;
+    pc2->keyBind[5] = sf::Keyboard::E;
+    
+    engine->windowManager = new WindowManager(320, 240, true);
+    
     new StarBackground();
     new MainMenu();
-    window.mainLoop();
+    engine->runMainLoop();
+    
+    delete engine;
     return 0;
 }
+ 

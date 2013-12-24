@@ -46,3 +46,8 @@ std::string ScoreManager::getHighscoreName(int idx)
         return "";
     return highscoreList[idx].name;
 }
+
+void ScoreManager::update(float delta)
+{
+    
+}

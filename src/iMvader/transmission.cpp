@@ -4,6 +4,7 @@
 #include "textDraw.h"
 #include "player.h"
 #include "textureManager.h"
+#include "engine.h"
 
 REGISTER_SCRIPT_CLASS(Transmission)
 {
@@ -57,8 +58,11 @@ void Transmission::postRender(sf::RenderTarget& window)
 
 void Transmission::update(float delta)
 {
+    P<PlayerController> pc1 = engine->getObject("playerController1");
+    P<PlayerController> pc2 = engine->getObject("playerController2");
+    
     transmissionTime += delta;
-    if (playerController[0].button(fireButton) || playerController[1].button(fireButton))
+    if (pc1->button(fireButton) || pc2->button(fireButton))
         transmissionTime += delta * 4;
     
     if (transmissionTime * charsPerSecond < text.length())

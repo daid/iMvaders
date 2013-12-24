@@ -6,6 +6,7 @@
 #include "textureManager.h"
 #include "scoreManager.h"
 #include "explosion.h"
+#include "engine.h"
 
 BreEnemy::BreEnemy()
 : GameEntity(), Collisionable(50.0)
@@ -199,7 +200,7 @@ bool BreEnemy::takeDamage(sf::Vector2f position, int damageType, int damageAmoun
     {
         health = 0;
         destroy();
-        score.add(500);
+        P<ScoreManager>(engine->getObject("score"))->add(500);
         for(unsigned int n=0; n<20; n++)
         {
             new Explosion(sprite.getPosition() + sf::Vector2f(random(-50, 50), random(-80, 80)), 10);

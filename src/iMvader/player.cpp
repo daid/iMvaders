@@ -109,6 +109,7 @@ bool PlayerCraft::takeDamage(sf::Vector2f position, int damageType, int damageAm
     if (damageType < 0 || invulnerability > 0)
         return false;
     health -= damageAmount;
+    invulnerability = 1.0;
     if(health <= 0)
     {
 

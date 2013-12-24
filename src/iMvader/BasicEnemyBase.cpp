@@ -1,6 +1,7 @@
 #include <string.h>
 #include "basicEnemyBase.h"
 #include "scoreManager.h"
+#include "Engine.h"
 
 #include "scriptInterface.h"
 REGISTER_SCRIPT_CLASS(BasicEnemyBase)
@@ -192,7 +193,7 @@ bool BasicEnemyBase::takeDamage(sf::Vector2f position, int damageType, int damag
     {
         new Explosion(getPosition(), 8);
         destroy();
-        score.add(10);
+        P<ScoreManager>(engine->getObject("score"))->add(10);
     }
     return true;
 }

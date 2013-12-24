@@ -2,12 +2,14 @@
 #define GAME_STATE_H
 
 #include "gameEntity.h"
+#include "scriptInterface.h"
 #include "player.h"
 
 class GameState : public GameEntity
 {
 private:
     P<PlayerCraft> player[MAX_PLAYERS];
+    P<ScriptObject> script;
     int lives[MAX_PLAYERS];
     int stageNr;
     int playerCount;

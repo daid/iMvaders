@@ -12,9 +12,10 @@ public:
     WindowManager(int virtualWidth, int virtualHeight, bool fullScreen);
     ~WindowManager();
     
-    void mainLoop();
+    void render();
 
     friend class InputHandler;
+    friend class Engine;
 };
 
 #endif//WINDOW_MANAGER_H
