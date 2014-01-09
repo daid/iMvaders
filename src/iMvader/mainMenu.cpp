@@ -60,7 +60,7 @@ void MainMenu::postRender(sf::RenderTarget& window)
     if (introTextPosition < introTextDelay)
     {
         drawText(window, 160, 120, "HIGH SCORE");
-        for(int i=0; i<score->highscoreListSize; i++)
+        for(int i=0; i<ScoreManager::highscoreListSize; i++)
         {
             drawText(window, 160, 120 + 16 * (i+1), score->getHighscoreName(i) + " " + to_string(score->getHighScore(i)));
         }

@@ -11,10 +11,10 @@ extern Engine* engine;
 
 class Engine
 {
+    WindowManager* windowManager;
+    
     std::map<std::string, P<PObject> > objectMap;
 public:
-    WindowManager* windowManager;
-
     Engine();
     ~Engine();
 

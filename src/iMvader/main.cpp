@@ -24,7 +24,7 @@ int main()
     pc2->keyBind[4] = sf::Keyboard::Q;
     pc2->keyBind[5] = sf::Keyboard::E;
     
-    engine->windowManager = new WindowManager(320, 240, true);
+    engine->registerObject("windowManager", new WindowManager(320, 240, true));
     
     new StarBackground();
     new MainMenu();

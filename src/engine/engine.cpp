@@ -28,6 +28,7 @@ P<PObject> Engine::getObject(std::string name)
 
 void Engine::runMainLoop()
 {
+    windowManager = dynamic_cast<WindowManager*>(*getObject("windowManager"));
     sf::Clock frameTimeClock;
     while (windowManager->window.isOpen())
     {

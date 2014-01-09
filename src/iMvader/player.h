@@ -10,6 +10,13 @@
 const int fireButton = 0;
 const int nukeButton = 1;
 
+class PlayerInfo
+{
+public:
+    int lives;
+    int nukes;
+};
+
 class PlayerController: public virtual PObject
 {
 public:
@@ -40,17 +47,15 @@ public:
 class PlayerCraft: public GameEntity, public Collisionable
 {
 public:
-    sf::Sprite nukeIcon;
-
     PlayerController* controller;
+    PlayerInfo* info;
     sf::Vector2f velocity;
     int type;
     float fireCooldown;
     float invulnerability;
-    int nukeCount;
     int health;
 public:
-    PlayerCraft(PlayerController* controller, int type);
+    PlayerCraft(PlayerController* controller, PlayerInfo* info, int type);
 
     virtual ~PlayerCraft();
 

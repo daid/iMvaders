@@ -10,7 +10,7 @@ class GameState : public GameEntity
 private:
     P<PlayerCraft> player[MAX_PLAYERS];
     P<ScriptObject> script;
-    int lives[MAX_PLAYERS];
+    PlayerInfo playerInfo[MAX_PLAYERS];
     int stageNr;
     int playerCount;
     float startStageDelay;

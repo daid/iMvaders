@@ -50,7 +50,10 @@ GameState::GameState(int playerCount)
 {
     stageNr = 0;
     for(int n=0; n<playerCount; n++)
-        lives[n] = 4;
+    {
+        playerInfo[n].lives = 4;
+        playerInfo[n].nukes = 1;
+    }
     startStageDelay = 2.0;
     //Destroy all objects except ourselves.
     foreach(GameEntity, e, entityList)
@@ -72,13 +75,13 @@ void GameState::update(float delta)
         }
         else
         {
-            if (lives[n])
+            if (playerInfo[n].lives)
             {
-                lives[n] --;
+                playerInfo[n].lives --;
                 P<PlayerController> pc = engine->getObject("playerController1");
                 if (n)
                     pc = engine->getObject("playerController2");
-                player[n] = new PlayerCraft(*pc, n);
+                player[n] = new PlayerCraft(*pc, &playerInfo[n], n);
                 postProcessorManager.triggerPostProcess("pixel", 1.0);
                 gameOver = false;
             }
@@ -94,6 +97,11 @@ void GameState::update(float delta)
 
 void GameState::postRender(sf::RenderTarget& window)
 {
+    sf::Sprite nukeIcon;
+    
+    textureManager.setTexture(nukeIcon, "robot");
+    nukeIcon.setScale(0.12, 0.12);
+    
     sf::Sprite life;
     for(int p=0; p<playerCount; p++)
     {
@@ -103,10 +111,16 @@ void GameState::postRender(sf::RenderTarget& window)
             textureManager.setTexture(life, "player2");
         life.setScale(0.5, 0.5);
         life.setColor(sf::Color(255,255,255,192));
-        for(int n=0; n<lives[p]; n++)
+        for(int n=0; n<playerInfo[p].lives; n++)
         {
             life.setPosition(10 + 13 * n, 230 - p * 10);
             window.draw(life);
+        }
+
+        for(int n=0; n<playerInfo[p].nukes; n++)
+        {
+            nukeIcon.setPosition(50 + 10 * n, 230 - p * 10);
+            window.draw(nukeIcon);
         }
     }
     

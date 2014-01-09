@@ -2,8 +2,9 @@
 #define WINDOW_MANAGER_H
 
 #include <SFML/Graphics.hpp>
+#include "P.h"
 
-class WindowManager : public sf::NonCopyable
+class WindowManager : public virtual PObject
 {
 private:
     sf::Vector2i virtualSize;

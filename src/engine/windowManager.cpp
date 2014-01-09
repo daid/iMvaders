@@ -44,7 +44,6 @@ WindowManager::WindowManager(int virtualWidth, int virtualHeight, bool fullscree
     }
     window.setView(view);
     postProcessorManager.setVirtualSize(virtualSize);
-    inputHandler.setWindow(this);
 }
 
 WindowManager::~WindowManager()
