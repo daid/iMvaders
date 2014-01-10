@@ -1,6 +1,6 @@
 #ifndef BURSTSHOTENEMY_H
 #define BURSTSHOTENEMY_H
-#include "basicEnemyBase.h"
+#include "BasicEnemyBase.h"
 
 class BurstShotEnemy : public BasicEnemyBase
 {

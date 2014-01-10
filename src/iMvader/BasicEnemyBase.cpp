@@ -1,7 +1,7 @@
 #include <string.h>
-#include "basicEnemyBase.h"
+#include "BasicEnemyBase.h"
 #include "scoreManager.h"
-#include "Engine.h"
+#include "engine.h"
 
 #include "scriptInterface.h"
 REGISTER_SCRIPT_CLASS(BasicEnemyBase)

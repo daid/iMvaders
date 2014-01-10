@@ -1,4 +1,4 @@
-#include "basicEnemy.h"
+#include "BasicEnemy.h"
 
 #include "scriptInterface.h"
 REGISTER_SCRIPT_SUBCLASS(BasicEnemy, BasicEnemyBase)
