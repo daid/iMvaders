@@ -38,7 +38,6 @@
 					<Add option="-s" />
 					<Add library="sfml-audio" />
 					<Add library="sfml-graphics" />
-					<Add library="sfml-main" />
 					<Add library="sfml-system" />
 					<Add library="sfml-window" />
 				</Linker>

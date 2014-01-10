@@ -27,7 +27,10 @@ WindowManager::WindowManager(int virtualWidth, int virtualHeight, bool fullscree
         windowHeight *= scale - 1;
     }
 
-    window.create(sf::VideoMode(windowWidth, windowHeight, 32), "iMvaders!", sf::Style::None);
+    if (fullscreen)
+        window.create(sf::VideoMode(windowWidth, windowHeight, 32), "iMvaders!", sf::Style::Fullscreen);
+    else
+        window.create(sf::VideoMode(windowWidth, windowHeight, 32), "iMvaders!", sf::Style::None);
     window.setVerticalSyncEnabled(false);
     window.setFramerateLimit(60);
     window.setMouseCursorVisible(false);

@@ -41,6 +41,10 @@ end
 function round2Finished4()
 	PowerupCarrier():destroyed("round2Finished5")
 end
+function round2Finished5()
+	launchBasicRound();
+	OnRoundDone = launchBasicRound;
+end
 
 function setupNewRound()
 	groupList = {}
