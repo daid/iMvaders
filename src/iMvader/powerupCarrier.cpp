@@ -1,5 +1,6 @@
 #include <math.h>
 
+#include "powerup.h"
 #include "powerupCarrier.h"
 #include "explosion.h"
 #include "textureManager.h"
@@ -39,7 +40,9 @@ bool PowerupCarrier::takeDamage(sf::Vector2f position, int damageType, int damag
         return false;
     destroyed();
     destroy();
-    new Explosion(getPosition(), 20);
+    new Explosion(getPosition(), 12);
+    P<Powerup> powerup = new Powerup();
+    powerup->setPosition(getPosition());
     return true;
 }
 
@@ -48,6 +51,7 @@ void PowerupCarrier::render(sf::RenderTarget& window)
     sf::Sprite powerupSprite;
     textureManager.setTexture(powerupSprite, "robot", 0);
     powerupSprite.setPosition(getPosition());
+    powerupSprite.setScale(0.1, 0.1);
     window.draw(powerupSprite);
 
     sprite.setPosition(getPosition());

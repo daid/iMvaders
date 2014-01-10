@@ -77,7 +77,6 @@ function launchBasicRound()
 	for n=0,3 do
 		g:add(BurstShotEnemy():setTargetPosition(160 + 4 * 20 - n * 20, 90));
 	end
-
 	table.insert(groupList, g)
 end
 

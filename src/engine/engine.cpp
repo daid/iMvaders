@@ -11,7 +11,6 @@ Engine::Engine()
 }
 Engine::~Engine()
 {
-    delete windowManager;
 }
 
 void Engine::registerObject(std::string name, P<PObject> obj)

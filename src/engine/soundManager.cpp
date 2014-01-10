@@ -32,7 +32,7 @@ void SoundManager::playSound(const char* name, float pitch, float volume)
             return;
         }
     }
-    if (activeSoundList.size() >= 16)
+    if (activeSoundList.size() >= 8)
         return;
     activeSoundList.push_back(sf::Sound());
     sf::Sound& sound = activeSoundList[activeSoundList.size() - 1];

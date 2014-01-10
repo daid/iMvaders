@@ -7,12 +7,16 @@
 #include "vectorUtils.h"
 #include "explosion.h"
 
-Nuke::Nuke(sf::Vector2f position, sf::Vector2f velocity, float size)
-: GameEntity(), Collisionable(size), velocity(velocity), size(size)
+Nuke::Nuke(sf::Vector2f position, sf::Vector2f velocity, float size, int owner)
+: GameEntity(), Collisionable(size), velocity(velocity), size(size), owner(owner)
 {
     textureManager.setTexture(sprite, "robot");
     sprite.setRotation(0);
     sprite.setScale(size / 30.0, size / 30.0);
+    if (owner == 0)
+        sprite.setColor(sf::Color(24, 161, 212));
+    else
+        sprite.setColor(sf::Color(231, 24, 118));
     setPosition(position);
 }
     
@@ -43,7 +47,7 @@ void Nuke::explode()
     if (size > 5.0)
     {
         for(unsigned int n=0; n<10;n++)
-            new Nuke(getPosition(), sf::vector2FromAngle(random(0, 360)) * size * 8.0f, size / 1.5f);
+            new Nuke(getPosition(), sf::vector2FromAngle(random(0, 360)) * size * 8.0f, size / 1.5f, owner);
     }
     new Explosion(getPosition(), size);
     destroy();

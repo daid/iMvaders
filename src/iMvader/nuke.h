@@ -11,8 +11,9 @@ class Nuke: public GameEntity, public Collisionable
 private:
     sf::Vector2f velocity;
     float size;
+    int owner;
 public:
-    Nuke(sf::Vector2f position, sf::Vector2f velocity, float size);
+    Nuke(sf::Vector2f position, sf::Vector2f velocity, float size, int owner);
     
     virtual void update(float delta);
     

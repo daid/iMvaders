@@ -69,14 +69,14 @@ void PlayerCraft::update(float delta)
     {
         if (type == 0 && fireCooldown > 0.1)
             fireCooldown = 0.1;
-        if (type == 1 && fireCooldown > 0.2)
-            fireCooldown = 0.2;
+        if (type == 1 && fireCooldown > 0.25)
+            fireCooldown = 0.25;
     }
     if (fireCooldown <= 0 && controller->button(nukeButton) && info->nukes > 0)
     {
         fireCooldown = 2.0;
         info->nukes -= 1;
-        new Nuke(getPosition(), sf::Vector2f(0.0, -150.0), 10.0);
+        new Nuke(getPosition(), sf::Vector2f(0.0, -150.0), 10.0, type);
     }
 }
 

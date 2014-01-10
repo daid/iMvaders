@@ -261,6 +261,10 @@ void GameState::postRender(sf::RenderTarget& window)
             window.draw(life);
         }
 
+        if (p == 0)
+            nukeIcon.setColor(sf::Color(24, 161, 212));
+        else
+            nukeIcon.setColor(sf::Color(231, 24, 118));
         for(int n=0; n<playerInfo[p].nukes; n++)
         {
             nukeIcon.setPosition(50 + 10 * n, 230 - p * 10);
