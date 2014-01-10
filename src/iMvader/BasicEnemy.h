@@ -1,6 +1,6 @@
 #ifndef BASICENEMY_H
 #define BASICENEMY_H
-#include "basicEnemyBase.h"
+#include "BasicEnemyBase.h"
 
 class BasicEnemy : public BasicEnemyBase
 {

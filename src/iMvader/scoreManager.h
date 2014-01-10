@@ -3,7 +3,7 @@
 
 #include <SFML/System.hpp>
 #include "Updatable.h"
-#include "Player.h"
+#include "player.h"
 /**
     The score manager manages the score and high-score for the game. You can add points with
         score.add(10);

@@ -2,7 +2,7 @@
 #include "Updatable.h"
 #include "Renderable.h"
 #include "Collisionable.h"
-#include "PostProcessManager.h"
+#include "postProcessManager.h"
 #include "input.h"
 
 WindowManager::WindowManager(int virtualWidth, int virtualHeight, bool fullscreen)
