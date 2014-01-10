@@ -1,11 +1,10 @@
 #ifndef TRANSMISSION_H
 #define TRANSMISSION_H
 
-#include "Updatable.h"
-#include "Renderable.h"
+#include "GameEntity.h"
 #include "ScriptInterface.h"
 
-class Transmission : public Updatable, public Renderable
+class Transmission : public GameEntity
 {
     sf::Sprite face;
     std::string faceName;
@@ -26,8 +25,6 @@ public:
     void top();
     void bottom();
     
-    virtual void preRender(sf::RenderTarget& window) {}
-    virtual void render(sf::RenderTarget& window) {}
     virtual void postRender(sf::RenderTarget& window);
     
     virtual void update(float delta);

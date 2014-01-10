@@ -23,8 +23,12 @@ int main()
     pc2->keyBind[3] = sf::Keyboard::S;
     pc2->keyBind[4] = sf::Keyboard::Q;
     pc2->keyBind[5] = sf::Keyboard::E;
+    pc2->keyBind[6] = sf::Keyboard::R;
+    pc2->keyBind[7] = sf::Keyboard::F;
+    pc2->keyBind[8] = sf::Keyboard::T;
+    pc2->keyBind[9] = sf::Keyboard::G;
     
-    engine->registerObject("windowManager", new WindowManager(320, 240, true));
+    engine->registerObject("windowManager", new WindowManager(320, 240, false));
     
     new StarBackground();
     new MainMenu();

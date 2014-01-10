@@ -1,3 +1,4 @@
+#include <string.h>
 #include "stringUtils.h"
 #include "gameState.h"
 #include "EnemyGroup.h"
@@ -10,12 +11,149 @@
 #include "transmission.h"
 #include "engine.h"
 
+class HighscoreEntry : public GameEntity
+{
+public:
+    sf::Vector2i pos[MAX_PLAYERS];
+    float keyDelay[MAX_PLAYERS];
+    char name[MAX_PLAYERS][4];
+    bool done[MAX_PLAYERS];
+    int playerCount;
+    
+    HighscoreEntry(int playerCount)
+    : playerCount(playerCount)
+    {
+        for(int p=0; p<MAX_PLAYERS; p++)
+        {
+            keyDelay[p] = 1.0;
+            done[p] = false;
+        }
+        memset(name, 0, sizeof(name));
+    }
+
+    virtual void update(float delta)
+    {
+        P<PlayerController> pc[MAX_PLAYERS];
+        pc[0] = engine->getObject("playerController1");
+        pc[1] = engine->getObject("playerController2");
+        bool ready = true;
+        for(int p=0; p<playerCount; p++)
+        {
+            if (done[p])
+                continue;
+            ready = false;
+            if (keyDelay[p] < 0)
+            {
+                if (pc[p]->right())
+                {
+                    pos[p].x += 1;
+                    keyDelay[p] = 0.2;
+                }
+                if (pc[p]->left())
+                {
+                    pos[p].x -= 1;
+                    keyDelay[p] = 0.2;
+                }
+                if (pc[p]->down())
+                {
+                    pos[p].y += 1;
+                    keyDelay[p] = 0.2;
+                }
+                if (pc[p]->up())
+                {
+                    pos[p].y -= 1;
+                    keyDelay[p] = 0.2;
+                }
+                
+                if (pc[p]->button(fireButton))
+                {
+                    keyDelay[p] = 0.2;
+                    char c = (pos[p].x + pos[p].y * 6) + 'A';
+                    if (c <= 'Z' && strlen(name[p]) < 3)
+                        name[p][strlen(name[p])] = c;
+                    
+                    if (pos[p].x == 3 && pos[p].y == 4)
+                        name[p][strlen(name[p])-1] = '\0';
+                    if (pos[p].x >= 4 && pos[p].y == 4)
+                        done[p] = true;
+                }
+            }else{
+                keyDelay[p] -= delta;
+            }
+            
+            if(pos[p].x < 0)
+                pos[p].x = 0;
+            if(pos[p].x > 5)
+                pos[p].x = 5;
+            if(pos[p].y < 0)
+                pos[p].y = 0;
+            if(pos[p].y > 4)
+                pos[p].y = 4;
+        } 
+
+        if (ready)
+        {
+            //Clean out the game world.
+            foreach(GameEntity, e, entityList)
+                e->destroy();
+            
+            P<ScoreManager> score = engine->getObject("score");
+            std::string finalName = name[0];
+            for(int p=1; p<playerCount; p++)
+            {
+                finalName += " ";
+                finalName += name[p];
+            }
+            score->enterHighscore(playerCount, finalName);
+            score->reset();
+            new MainMenu();
+        }
+    }
+
+    virtual void postRender(sf::RenderTarget& window)
+    {
+        drawText(window, 160, 25, "NEW HIGHSCORE", align_center);
+        drawText(window, 160, 40, "ENTER YOUR NAME", align_center);
+        std::string finalName = name[0];
+        for(int p=1; p<playerCount; p++)
+        {
+            finalName += " ";
+            finalName += name[p];
+        }
+        drawText(window, 160, 60, finalName, align_center);
+
+        sf::Sprite player;
+        for(int p=0; p<playerCount; p++)
+        {
+            if (done[p])
+                continue;
+            if (p == 0)
+                textureManager.setTexture(player, "player1");
+            else
+                textureManager.setTexture(player, "player2");
+            player.setPosition(110 + pos[p].x * 20, 85 + pos[p].y * 20);
+            window.draw(player);
+        }
+        
+        for(int c='A'; c<='Z'; c++)
+        {
+            int x = (c-'A') % 6;
+            int y = (c-'A') / 6;
+            char buf[2] = {char(c), 0};
+            drawText(window, 110 + 20 * x, 80 + 20 * y, buf, align_center);
+        }
+        drawText(window, 200, 80 + 20 * 4, "DONE", align_center);
+    }
+};
+
 class GameOverState : public GameEntity
 {
     float gameOverDelay;
     static const float gameOverWait = 5.0;
+    int playerCount;
 public:
-    GameOverState()
+    GameOverState(int playerCount)
+    : playerCount(playerCount)
     {
         gameOverDelay = gameOverWait;
     }
@@ -34,8 +172,14 @@ public:
             //Clean out the game world.
             foreach(GameEntity, e, entityList)
                 e->destroy();
-            P<ScoreManager>(engine->getObject("score"))->reset();
-            new MainMenu();
+            P<ScoreManager> score = engine->getObject("score");
+            if (score->isHighscore(playerCount))
+            {
+                new HighscoreEntry(playerCount);
+            }else{
+                score->reset();
+                new MainMenu();
+            }
         }
     }
 
@@ -91,7 +235,7 @@ void GameState::update(float delta)
     {
         if (script) script->destroy();
         destroy();
-        new GameOverState();
+        new GameOverState(playerCount);
     }
 }
 

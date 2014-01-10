@@ -42,15 +42,18 @@ void MainMenu::update(float delta)
 
     P<PlayerController> pc1 = engine->getObject("playerController1");
     P<PlayerController> pc2 = engine->getObject("playerController2");
-    if (pc1->button(fireButton))
+    if (blink > 1.0)
     {
-        new GameState(1);
-        sf::Listener::setGlobalVolume(100);
-    }
-    else if (pc2->button(fireButton))
-    {
-        new GameState(2);
-        sf::Listener::setGlobalVolume(100);
+        if (pc1->button(fireButton))
+        {
+            new GameState(1);
+            sf::Listener::setGlobalVolume(100);
+        }
+        else if (pc2->button(fireButton))
+        {
+            new GameState(2);
+            sf::Listener::setGlobalVolume(100);
+        }
     }
 }
 
@@ -59,13 +62,17 @@ void MainMenu::postRender(sf::RenderTarget& window)
     P<ScoreManager> score = engine->getObject("score");
     if (introTextPosition < introTextDelay)
     {
-        drawText(window, 160, 120, "HIGH SCORE");
+        drawText(window, 160, 110, "HIGH SCORE");
+
+        drawText(window, 80, 130, "1 PLAYER");
         for(int i=0; i<ScoreManager::highscoreListSize; i++)
-        {
-            drawText(window, 160, 120 + 16 * (i+1), score->getHighscoreName(i) + " " + to_string(score->getHighScore(i)));
-        }
+            drawText(window, 80, 130 + 16 * (i+1), score->getHighscoreName(1, i) + " " + to_string(score->getHighScore(1, i)));
+        drawText(window, 160+80, 130, "2 PLAYERS");
+        for(int i=0; i<ScoreManager::highscoreListSize; i++)
+            drawText(window, 160+80, 130 + 16 * (i+1), score->getHighscoreName(2, i) + " " + to_string(score->getHighScore(2, i)));
+
         if (int(blink * 1000) % 1000 < 500)
-            drawText(window, 160, 200, "INSERT COIN");
+            drawText(window, 160, 210, "INSERT COIN");
     }else{
         float f = (introTextPosition - introTextDelay) * intoTextSpeed;
         drawText(window, 160, 250 - f, "THE YEAR IS 2022"); f -= 15.0f;

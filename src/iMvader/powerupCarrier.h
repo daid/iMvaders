@@ -3,12 +3,15 @@
 
 #include "GameEntity.h"
 #include "Collisionable.h"
+#include "ScriptInterface.h"
 
 class PowerupCarrier: public GameEntity, public Collisionable
 {
 private:
     float speed;
 public:
+    ScriptCallback destroyed;
+    
     PowerupCarrier();
     virtual ~PowerupCarrier();
     virtual void update(float delta);

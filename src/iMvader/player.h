@@ -9,6 +9,7 @@
 
 const int fireButton = 0;
 const int nukeButton = 1;
+const int skipButton = 3;
 
 class PlayerInfo
 {

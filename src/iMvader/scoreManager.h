@@ -3,6 +3,7 @@
 
 #include <SFML/System.hpp>
 #include "Updatable.h"
+#include "Player.h"
 /**
     The score manager manages the score and high-score for the game. You can add points with
         score.add(10);
@@ -21,7 +22,7 @@ private:
     struct {
         int score;
         std::string name;
-    } highscoreList[highscoreListSize];
+    } highscoreList[MAX_PLAYERS][highscoreListSize];
 public:
     ScoreManager();
     
@@ -29,8 +30,10 @@ public:
     int get();
     void reset();
     
-    int getHighScore(int idx);
-    std::string getHighscoreName(int idx);
+    bool isHighscore(int playerCount);
+    void enterHighscore(int playerCount, std::string name);
+    int getHighScore(int playerCount, int idx);
+    std::string getHighscoreName(int playerCount, int idx);
     
     virtual void update(float delta);
 };

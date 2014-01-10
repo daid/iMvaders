@@ -70,7 +70,7 @@ void Transmission::update(float delta)
     else
         textureManager.setTexture(face, faceName.c_str(), 0);
 
-    if (transmissionTime > float(text.length()) / charsPerSecond + extraDelayBeforeDone)
+    if (transmissionTime > float(text.length()) / charsPerSecond + extraDelayBeforeDone || pc1->button(skipButton) || pc2->button(skipButton))
     {
         transmissionDone();
         destroy();
