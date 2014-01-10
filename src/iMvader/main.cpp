@@ -1,9 +1,9 @@
-#include "Engine.h"
+#include "engine.h"
 #include "windowManager.h"
 #include "StarBackground.h"
-#include "MainMenu.h"
+#include "mainMenu.h"
 #include "player.h"
-#include "ScoreManager.h"
+#include "scoreManager.h"
 
 #include "scriptInterface.h"
 

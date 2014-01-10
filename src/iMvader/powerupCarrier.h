@@ -1,9 +1,9 @@
 #ifndef POWERUP_CARRIER_H
 #define POWERUP_CARRIER_H
 
-#include "GameEntity.h"
+#include "gameEntity.h"
 #include "Collisionable.h"
-#include "ScriptInterface.h"
+#include "scriptInterface.h"
 
 class PowerupCarrier: public GameEntity, public Collisionable
 {

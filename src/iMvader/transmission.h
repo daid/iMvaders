@@ -1,8 +1,8 @@
 #ifndef TRANSMISSION_H
 #define TRANSMISSION_H
 
-#include "GameEntity.h"
-#include "ScriptInterface.h"
+#include "gameEntity.h"
+#include "scriptInterface.h"
 
 class Transmission : public GameEntity
 {

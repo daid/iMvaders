@@ -9,14 +9,14 @@
 static inline std::string to_string(int number)
 {
     char buf[16];
-    itoa(number, buf, 10);
+    sprintf(buf, "%i", number);
     return std::string(buf);
 }
 
 static inline std::string to_string(unsigned int number)
 {
     char buf[16];
-    itoa(number, buf, 10);
+    sprintf(buf, "%d", number);
     return std::string(buf);
 }
 
