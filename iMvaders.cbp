@@ -227,6 +227,8 @@
 		<Unit filename="src/iMvader/nuke.h" />
 		<Unit filename="src/iMvader/player.cpp" />
 		<Unit filename="src/iMvader/player.h" />
+		<Unit filename="src/iMvader/powerup.cpp" />
+		<Unit filename="src/iMvader/powerup.h" />
 		<Unit filename="src/iMvader/powerupCarrier.cpp" />
 		<Unit filename="src/iMvader/powerupCarrier.h" />
 		<Unit filename="src/iMvader/scoreManager.cpp" />

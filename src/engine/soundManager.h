@@ -11,7 +11,7 @@ extern SoundManager soundManager;
 class SoundManager
 {
 private:
-    std::map<std::string, sf::SoundBuffer> soundMap;
+    std::map<std::string, sf::SoundBuffer*> soundMap;
     std::vector<sf::Sound> activeSoundList;
 public:
     SoundManager();
@@ -19,7 +19,7 @@ public:
     
     void playSound(const char* name, float pitch = 1.0f, float volume = 100.0f);
 private:
-    void loadSound(const char* name);
+    sf::SoundBuffer* loadSound(const char* name);
 };
 
 #endif//SOUNDMANAGER_H

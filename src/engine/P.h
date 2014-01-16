@@ -137,7 +137,28 @@ protected:
 };
 
 template<class T>
-class PVector: public std::vector<P<T> > {};
+class PVector: public std::vector<P<T> > {
+public:
+    bool has(P<T> obj)
+    {
+        for(unsigned int n=0; n<std::vector<P<T> >::size(); n++)
+            if ((*this)[n] == obj)
+                return true;
+        return false;
+    }
+    
+    void remove(P<T> obj)
+    {
+        for(unsigned int n=0; n<std::vector<P<T> >::size(); n++)
+        {
+            if ((*this)[n] == obj)
+            {
+                std::vector<P<T> >::erase(std::vector<P<T> >::begin() + n);
+                n--;
+            }
+        }
+    }
+};
 
 template<class T>
 class Piterator : public P<T>
