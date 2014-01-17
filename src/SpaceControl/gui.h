@@ -23,6 +23,16 @@ public:
     virtual void render(sf::RenderTarget& window) = 0;
 };
 
+class GuiButton : public GuiComponent
+{
+public:
+    bool& value;
+    
+    GuiButton(P<PObject> owner, bool& value, int windowID, sf::FloatRect rect);
+    
+    virtual void render(sf::RenderTarget& window);
+};
+
 class GuiToggle : public GuiComponent
 {
 public:

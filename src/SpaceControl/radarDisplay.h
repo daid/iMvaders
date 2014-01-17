@@ -1,6 +1,8 @@
 #ifndef RADAR_DISPLAY_H
 #define RADAR_DISPLAY_H
 
+#define RADAR_WINDOW 0
+
 class RadarDisplay: public EnergyConsumer, public Updatable
 {
     SpaceObject* owner;
@@ -8,9 +10,10 @@ class RadarDisplay: public EnergyConsumer, public Updatable
     sf::Sprite staticDisplay;
     sf::Sprite radarGrid;
     sf::Sprite radarCutoff;
+public:
     float radarDistance;
     float viewDistance;
-public:
+    
     RadarDisplay(EnergyGrid* grid, SpaceObject* owner)
     : EnergyConsumer(grid, "Radar", 10, 5), owner(owner)
     {
@@ -39,7 +42,7 @@ public:
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Divide))
             radarDistance *= powf(2.0, delta);
 
-        energyConsumptionRequest = 20 * powf(radarDistance / 1024.0f, 2.0);
+        energyConsumptionRequest = 15 * powf(radarDistance / 1024.0f, 2.0);
 
         if (viewDistance < 256.0f)
             viewDistance = 256.0f;

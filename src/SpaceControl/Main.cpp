@@ -23,102 +23,8 @@
 #include "CrewCapsule.h"
 #include "textDraw.h"
 #include "RadarDisplay.h"
-
-class ReactionTrusters: public EnergyConsumer, public Updatable, public TemperaturePart
-{
-    const static float energyRequirementLinear = 80.0;
-    const static float energyRequirementAngular = 80.0;
-    const static float impulseLinear = 50.0;
-    const static float impulseAngular = 300.0;
-    const static float temperaturePerEnergy = 0.05;
-    SpaceObject* owner;
-public:
-    sf::Vector2f linearMovementRequest;
-    float angularMovementRequest;
-
-    ReactionTrusters(EnergyGrid* grid, SpaceObject* owner, P<TemperaturePart> temperatureParent)
-    : EnergyConsumer(grid, "ReactionTrusters", 5, 10), TemperaturePart(80, temperatureParent), owner(owner), angularMovementRequest(0)
-    {
-    }
-    
-    virtual void update(float delta)
-    {
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-            angularMovementRequest =-1.0;
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-            angularMovementRequest = 1.0;
-        if (angularMovementRequest == 0.0)
-            angularMovementRequest = -owner->angularVelocity / 50.0;
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-            linearMovementRequest.x = 1.0;
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-            linearMovementRequest.x = -1.0;
-        
-        angularMovementRequest = std::max(std::min(angularMovementRequest, 1.0f), -1.0f);
-        linearMovementRequest.x = std::max(std::min(linearMovementRequest.x, 1.0f), -1.0f);
-        linearMovementRequest.y = std::max(std::min(linearMovementRequest.y, 1.0f), -1.0f);
-        
-        energyConsumptionRequest = abs(angularMovementRequest) * energyRequirementAngular;
-        energyConsumptionRequest += sf::length(linearMovementRequest) * energyRequirementLinear;
-
-        float e = energyConsumptionAmount;
-        if ((e / energyRequirementAngular) < abs(angularMovementRequest))
-        {
-            angularMovementRequest = angularMovementRequest / abs(angularMovementRequest) * (e / energyRequirementAngular);
-            e = 0;
-        }else{
-            e -= abs(angularMovementRequest) * energyRequirementAngular;
-        }
-        owner->angularVelocity += angularMovementRequest * impulseAngular * delta;
-        angularMovementRequest = 0.0;
-
-        if (e < sf::length(linearMovementRequest) * energyRequirementLinear)
-        {
-            linearMovementRequest *= e / (sf::length(linearMovementRequest) * energyRequirementLinear);
-        }
-        if (linearMovementRequest.x != 0.0)
-            owner->velocity += sf::vector2FromAngle(owner->getRotation()) * impulseLinear * delta * linearMovementRequest.x;
-        if (linearMovementRequest.y != 0.0)
-            owner->velocity += sf::vector2FromAngle(owner->getRotation() + 90) * impulseLinear * delta * linearMovementRequest.y;
-        linearMovementRequest = sf::Vector2f(0, 0);
-        
-        temperature += energyConsumptionAmount * delta * temperaturePerEnergy;
-    }
-};
-
-class MainEngines: public EnergyConsumer, public Updatable
-{
-    const static float energyRequirement = 200.0;
-    const static float impulse = 500.0;
-    SpaceObject* owner;
-public:
-    float trustRequest;
-
-    MainEngines(EnergyGrid* grid, SpaceObject* owner)
-    : EnergyConsumer(grid, "MainEngines", 20, 15), owner(owner)
-    {
-        trustRequest = 0.0;
-    }
-    
-    virtual void update(float delta)
-    {
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
-            trustRequest = 1.0;
-        
-        trustRequest = std::max(std::min(trustRequest, 1.0f), 0.0f);
-        
-        energyConsumptionRequest = trustRequest * energyRequirement;
-
-        float e = energyConsumptionAmount;
-        if (e < trustRequest * energyRequirement)
-        {
-            trustRequest *= e / (trustRequest * energyRequirement);
-        }
-        if (trustRequest != 0.0)
-            owner->velocity += sf::vector2FromAngle(owner->getRotation()) * impulse * delta * trustRequest;
-        trustRequest = 0.0;
-    }
-};
+#include "ReactionTrusters.h"
+#include "MainEngines.h"
 
 class PlayerVessel: public SpaceObject, public Renderable
 {
@@ -153,13 +59,15 @@ public:
         battery = new Battery(grid);
         radar = new RadarDisplay(grid, this);
         reactionTrusters = new ReactionTrusters(grid, this, temperatureRoot);
-        engines = new MainEngines(grid, this);
+        engines = new MainEngines(grid, this, temperatureRoot);
         
         generator->links.push_back(battery);
         battery->links.push_back(radar);
         battery->links.push_back(reactionTrusters);
         battery->links.push_back(engines);
         
+        (new GuiSlider(radar, radar->radarDistance, 512, 4096, RADAR_WINDOW, sf::FloatRect(120, 5, 50, 4)))->setCaption("Radar");
+        (new GuiSlider(radar, radar->viewDistance, 512, 4096, RADAR_WINDOW, sf::FloatRect(120, 15, 50, 4)))->setCaption("View distance");
         
         (new GuiGauge(battery, battery->energyStorage, 0, battery->maxEnergyStorage, ENERGY_GRID_WINDOW, sf::FloatRect(20, 25, 50, 2)))->setCaption("Charge");
         (new GuiSlider(generator, generator->powerLevel, 0, generator->maxPowerLevel, ENERGY_GRID_WINDOW, sf::FloatRect(20, 3, 50, 4)))->setCaption("Power");
@@ -172,6 +80,13 @@ public:
         (new GuiGauge(generatorRadiators[1], generatorRadiators[1]->temperature, 0, generator->criticalTemperature, TEMPERATURE_OVERVIEW_WINDOW, sf::FloatRect(75, 80, 50, 4)))->setPostfix("C")->setColor(sf::Color::Red)->setCaption("Radiator 2");
         (new GuiGauge(capsule, capsule->temperature, 0, capsule->maxTemperature, TEMPERATURE_OVERVIEW_WINDOW, sf::FloatRect(20, 90, 50, 4)))->setPostfix("C")->setColor(sf::Color::Red)->setCaption("Cabin");
         (new GuiGauge(reactionTrusters, reactionTrusters->temperature, 0, capsule->maxTemperature, TEMPERATURE_OVERVIEW_WINDOW, sf::FloatRect(20, 100, 50, 4)))->setPostfix("C")->setColor(sf::Color::Red)->setCaption("Reaction trusters");
+        (new GuiGauge(engines, engines->temperature, 0, capsule->maxTemperature, TEMPERATURE_OVERVIEW_WINDOW, sf::FloatRect(20, 110, 50, 4)))->setPostfix("C")->setColor(sf::Color::Red)->setCaption("Main Engines");
+
+        (new GuiGauge(capsule, capsule->o2concentration, capsule->minO2concentration, 22.5, TEMPERATURE_OVERVIEW_WINDOW, sf::FloatRect(250, 110, 50, 4)))->setColor(sf::Color(128,255,192))->setCaption("Oxygen level");
+        (new GuiGauge(capsule, capsule->co2concentration, 0, capsule->maxCO2concentration, TEMPERATURE_OVERVIEW_WINDOW, sf::FloatRect(250, 120, 50, 4)))->setColor(sf::Color(128,128,128))->setCaption("CarbonDioxide level");
+        (new GuiGauge(capsule, capsule->nConcentration, 0, 100, TEMPERATURE_OVERVIEW_WINDOW, sf::FloatRect(250, 130, 50, 4)))->setColor(sf::Color(255,255,128))->setCaption("Nitrogen level");
+        (new GuiGauge(capsule, capsule->internalPressure, 0, 1.0, TEMPERATURE_OVERVIEW_WINDOW, sf::FloatRect(250, 140, 50, 4)))->setColor(sf::Color(128,255,128))->setCaption("Cabin Pressure");
+        (new GuiButton(capsule, capsule->ventCapsule, TEMPERATURE_OVERVIEW_WINDOW, sf::FloatRect(250, 150, 50, 4)))->setColor(sf::Color(255,64,64))->setCaption("Open Vents");
     }
     
     virtual void update(float delta)
@@ -185,20 +100,31 @@ public:
     virtual void render(sf::RenderTarget& window)
     {
         radar->render(window);
+        renderComponentsOfWindow(window, RADAR_WINDOW);
+        
         renderComponentsOfWindow(window, ENERGY_GRID_WINDOW);
         grid->render(window);
 
         renderComponentsOfWindow(window, TEMPERATURE_OVERVIEW_WINDOW);
         
-        if (temperatureRoot->temperature > 35)
+        if (capsule->temperature > capsule->warningTemperature)
         {
             sf::RectangleShape fullScreenRed(sf::Vector2f(320, 240));
             float alpha = 200;
-            float maxTemp = 60;
-            if (temperatureRoot->temperature < maxTemp)
-                alpha = (temperatureRoot->temperature - 35) / (maxTemp - 35) * 200;
+            if (temperatureRoot->temperature < capsule->maxTemperature)
+                alpha = (temperatureRoot->temperature - capsule->warningTemperature) / (capsule->maxTemperature - capsule->warningTemperature) * 200;
             fullScreenRed.setFillColor(sf::Color(255, 0, 0, alpha));
             window.draw(fullScreenRed);
+        }
+
+        if (capsule->internalPressure < capsule->warningPressure)
+        {
+            sf::RectangleShape fullScreenBlack(sf::Vector2f(320, 240));
+            float alpha = 255;
+            if (capsule->internalPressure > capsule->minPressure)
+                alpha = (capsule->warningPressure - capsule->internalPressure) / (capsule->warningPressure - capsule->minPressure) * 255;
+            fullScreenBlack.setFillColor(sf::Color(0, 0, 0, alpha));
+            window.draw(fullScreenBlack);
         }
     }
     virtual void postRender(sf::RenderTarget& window) {}

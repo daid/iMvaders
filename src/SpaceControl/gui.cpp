@@ -44,6 +44,30 @@ GuiComponent* GuiComponent::setCaption(std::string str)
     return this;
 }
 
+GuiButton::GuiButton(P<PObject> owner, bool& value, int windowID, sf::FloatRect rect)
+: GuiComponent(owner, windowID, rect), value(value)
+{
+}
+
+void GuiButton::render(sf::RenderTarget& window)
+{
+    sf::RectangleShape button(sf::Vector2f(rect.width, rect.height));
+    button.setPosition(rect.left, rect.top);
+    button.setFillColor(color);
+    if (value)
+        button.setOutlineColor(sf::Color::White);
+    else
+        button.setOutlineColor(sf::Color::Black);
+    button.setOutlineThickness(0.5);
+    window.draw(button);
+
+    P<InputHandler> input = engine->getObject("inputHandler");
+    sf::Vector2f p = input->getMousePos();
+    value = (rect.contains(p) && input->mouseIsDown(0));
+
+    drawText(window, rect.left, rect.top - 4, 0.3, caption, align_left);
+}
+
 GuiToggle::GuiToggle(P<PObject> owner, bool& value, int windowID, sf::FloatRect rect)
 : GuiComponent(owner, windowID, rect), value(value)
 {
@@ -62,9 +86,9 @@ void GuiToggle::render(sf::RenderTarget& window)
     P<InputHandler> input = engine->getObject("inputHandler");
     sf::Vector2f p = input->getMousePos();
     if (rect.contains(p) && input->mouseIsPressed(0))
-    {
         value = !value;
-    }
+
+    drawText(window, rect.left, rect.top - 4, 0.3, caption, align_left);
 }
 
 GuiGauge::GuiGauge(P<PObject> owner, float& value, float minValue, float maxValue, int windowID, sf::FloatRect rect)
@@ -86,6 +110,8 @@ void GuiGauge::render(sf::RenderTarget& window)
     window.draw(gauge);
 
     float f = (value - minValue) / (maxValue - minValue);
+    if (f < 0.0f)
+        f = 0.0f;
     if (f > 1.0f)
         f = 1.0f;
     gauge.setSize(sf::Vector2f(rect.width * f, rect.height));
@@ -111,6 +137,10 @@ void GuiSlider::render(sf::RenderTarget& window)
 
     slider.setSize(sf::Vector2f(rect.height, rect.height));
     float f = (value - minValue) / (maxValue - minValue);
+    if (f < 0.0f)
+        f = 0.0f;
+    if (f > 1.0f)
+        f = 1.0f;
     slider.setPosition(rect.left + (rect.width - rect.height) * f, rect.top);
     slider.setFillColor(color);
     window.draw(slider);
