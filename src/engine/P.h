@@ -89,8 +89,14 @@ public:
 
     T* operator->() const
     {
+#ifdef DEBUG
+        if(!ptr || ptr->destroyed)
+        {
+            printf("Oh noes!\n");
+        }
         assert(ptr);
         assert(!ptr->destroyed);
+#endif
         return ptr;
     }
     T* operator*()

@@ -3,9 +3,10 @@
 #include "vectorUtils.h"
 
 PVector<Planet> planetList;
+PVector<Sun> sunList;
 
-Planet::Planet(int type, float radius, float density, sf::Vector2f position)
-: radius(radius)
+Planet::Planet(std::string name, int type, float radius, float density, sf::Vector2f position)
+: radius(radius), name(name)
 {
     planetList.push_back(this);
     alwaysVisible = true;
@@ -68,13 +69,15 @@ float Planet::calcOrbitTime(float distance) const
     return 2*M_PI*sqrtf(distance*distance*distance/(mass*G));
 }
 
-Sun::Sun(float radius, float density, sf::Vector2f position)
-: Planet(-1, radius, density, position)
+Sun::Sun(std::string name, float radius, float density, sf::Vector2f position)
+: Planet(name, -1, radius, density, position)
 {
     //Make the sun sprite bigger, as the outer radius of the sun is softer then of planets.
     textureManager.setTexture(sprite, "Sun");
     sprite.setScale(radius/sprite.getTextureRect().width*2, radius/sprite.getTextureRect().height*2);
     sprite.setScale(sprite.getScale() * 1.5f);
+    
+    sunList.push_back(this);
 }
 
 bool checkLineOfSight(sf::Vector2f start, sf::Vector2f end)

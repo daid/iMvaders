@@ -21,6 +21,7 @@ enum EChemical
     CarbonDioxide,
     Water,
     Hydrogen,
+    Uranium,
     MAX_CHEMICALS
 };
 

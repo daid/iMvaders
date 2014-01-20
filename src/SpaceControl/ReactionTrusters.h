@@ -14,7 +14,7 @@ public:
     float angularMovementRequest;
 
     ReactionTrusters(EnergyGrid* grid, P<SpaceObject> owner, P<TemperaturePart> temperatureParent)
-    : EnergyConsumer(grid, "ReactionTrusters", 5, 10), TemperaturePart(80, temperatureParent), owner(owner), angularMovementRequest(0)
+    : EnergyConsumer(grid, "ReactionTrusters", 5, 10), TemperaturePart(90, temperatureParent), owner(owner), angularMovementRequest(0)
     {
     }
     
@@ -27,9 +27,9 @@ public:
         if (angularMovementRequest == 0.0)
             angularMovementRequest = -owner->angularVelocity / 50.0;
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-            linearMovementRequest.x = 1.0;
+            linearMovementRequest += sf::vector2FromAngle(owner->getRotation());
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-            linearMovementRequest.x = -1.0;
+            linearMovementRequest -= sf::vector2FromAngle(owner->getRotation());
         
         angularMovementRequest = std::max(std::min(angularMovementRequest, 1.0f), -1.0f);
         linearMovementRequest.x = std::max(std::min(linearMovementRequest.x, 1.0f), -1.0f);
@@ -53,10 +53,8 @@ public:
         {
             linearMovementRequest *= e / (sf::length(linearMovementRequest) * energyRequirementLinear);
         }
-        if (linearMovementRequest.x != 0.0)
-            owner->velocity += sf::vector2FromAngle(owner->getRotation()) * impulseLinear * delta * linearMovementRequest.x;
-        if (linearMovementRequest.y != 0.0)
-            owner->velocity += sf::vector2FromAngle(owner->getRotation() + 90) * impulseLinear * delta * linearMovementRequest.y;
+        
+        owner->velocity += impulseLinear * delta * linearMovementRequest;
         linearMovementRequest = sf::Vector2f(0, 0);
         
         temperature += energyConsumptionAmount * delta * temperaturePerEnergy;

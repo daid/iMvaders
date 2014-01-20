@@ -1,5 +1,6 @@
 #include <math.h>
 #include "TemperaturePart.h"
+#include "Planet.h"
 
 TemperaturePart::TemperaturePart(float isolation, P<TemperaturePart> parent)
 : temperature(20), temperatureIsolation(isolation)
