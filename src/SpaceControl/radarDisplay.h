@@ -139,6 +139,7 @@ public:
             foreach(Planet, planet, planetList)
                 a += planet->gravity(p, timeOffset);
             float f = sf::length((v + a * 10.0f) - majorPlanet->velocity);
+            f = std::max(f, sf::length((v + a * 10.0f)));
             if (f < 1.0f) f = 1.0f;
             f = (viewDistance / 32.0f) / f;
             timeOffset += f;

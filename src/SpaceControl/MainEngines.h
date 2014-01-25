@@ -1,17 +1,22 @@
 #ifndef MAIN_ENGINES_H
 #define MAIN_ENGINES_H
 
+#include "TemperaturePart.h"
+#include "EnergyGrid.h"
+#include "StorageTank.h"
+
 class MainEngines: public EnergyConsumer, public Updatable, public TemperaturePart
 {
     const static float energyRequirement = 200.0;
     const static float impulse = 300.0;
-    const static float temperaturePerEnergy = 0.05;
+    const static float temperaturePerTrust = 10.0;
     P<SpaceObject> owner;
 public:
     float trustRequest;
+    StorageTankLinks tanks;
 
     MainEngines(EnergyGrid* grid, P<SpaceObject> owner, P<TemperaturePart> temperatureParent)
-    : EnergyConsumer(grid, "MainEngines", 20, 15), TemperaturePart(80, temperatureParent), owner(owner)
+    : EnergyConsumer(grid, "MainEngines", 20, 15), TemperaturePart(90, temperatureParent), owner(owner)
     {
         trustRequest = 0.0;
     }
@@ -31,10 +36,21 @@ public:
             trustRequest *= e / (trustRequest * energyRequirement);
         }
         if (trustRequest != 0.0)
-            owner->velocity += sf::vector2FromAngle(owner->getRotation()) * impulse * delta * trustRequest;
-        trustRequest = 0.0;
+        {
+            float totalHydrogen = tanks.total(Hydrogen);
+            float totalOxygen = tanks.total(Oxygen);
+            if (totalHydrogen < trustRequest * delta)
+                trustRequest = totalHydrogen / delta;
+            if (totalOxygen < trustRequest * delta)
+                trustRequest = totalOxygen / delta;
 
-        temperature += energyConsumptionAmount * delta * temperaturePerEnergy;
+            owner->velocity += sf::vector2FromAngle(owner->getRotation()) * impulse * delta * trustRequest;
+            temperature += trustRequest * delta * temperaturePerTrust;
+
+            tanks.drain(trustRequest * delta, Hydrogen);
+            tanks.drain(trustRequest * delta, Oxygen);
+        }
+        trustRequest = 0.0;
     }
 };
 

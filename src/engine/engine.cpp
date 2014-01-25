@@ -47,6 +47,10 @@ void Engine::runMainLoop()
             windowManager->window.close();
 
         float delta = frameTimeClock.getElapsedTime().asSeconds();
+        if (delta > 0.5)
+            delta = 0.5;
+        if (delta < 0.001)
+            delta = 0.001;
         frameTimeClock.restart();
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab))
             delta /= 5.0;

@@ -4,19 +4,23 @@
 #include "spaceObject.h"
 
 class Planet;
+class Sun;
 extern PVector<Planet> planetList;
+extern PVector<Sun> sunList;
 
 class Planet: public SpaceObject
 {
     const static float G = 0.0000000000667;
     float mass;
-public:
     float radius;
+    std::string name;
+public:
 
-    Planet(int type, float radius, float density, sf::Vector2f position);
+    Planet(std::string name, int type, float radius, float density, sf::Vector2f position);
     
     virtual void update(float delta);
     
+    std::string getName() const { return name; }
     float getRadius() const { return radius; }
     
     float calcOrbitVelocity(float distance) const;
@@ -29,7 +33,7 @@ public:
 class Sun: public Planet
 {
 public:
-    Sun(float radius, float density, sf::Vector2f position);
+    Sun(std::string name, float radius, float density, sf::Vector2f position);
 };
 
 bool checkLineOfSight(sf::Vector2f start, sf::Vector2f end);
