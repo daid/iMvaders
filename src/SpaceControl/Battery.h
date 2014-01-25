@@ -8,7 +8,7 @@ class Battery : public EnergyConsumer, public EnergyProducer, public Updatable
 public:
     const static float maxEnergyStorage = 1000;
     const static float batteryEfficency = 0.9;  //Battery efficency is usually 90% at best.
-    const static float batteryLeakagePerSecond = 0.1; //Percentage of power that leaks away every second.
+    const static float batteryLeakagePerSecond = 0.01;
     float energyStorage;
     
     Battery(EnergyGrid* grid)
@@ -20,7 +20,7 @@ public:
         
         energyStorage += energyConsumptionAmount * delta * batteryEfficency;
         energyStorage -= energyProductionUsed * delta;
-        energyStorage *= powf(1.0 - batteryLeakagePerSecond / 100.0, delta);
+        energyStorage *= powf(1.0 - batteryLeakagePerSecond, delta);
         energyProductionAmount = energyStorage;
 
         //Check for short-circuit.

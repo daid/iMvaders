@@ -35,30 +35,6 @@ namespace sf
     }
 
     template <typename T>
-    static inline bool operator > (const Vector2<T>& v, const Vector2<T>& v2)
-    {
-        return (v.x * v.x + v.y * v.y) > (v2.x * v2.x + v2.y * v2.y);
-    }
-
-    template <typename T>
-    static inline bool operator < (const Vector2<T>& v, const Vector2<T>& v2)
-    {
-        return (v.x * v.x + v.y * v.y) < (v2.x * v2.x + v2.y * v2.y);
-    }
-
-    template <typename T>
-    static inline bool operator >= (const Vector2<T>& v, const Vector2<T>& v2)
-    {
-        return (v.x * v.x + v.y * v.y) >= (v2.x * v2.x + v2.y * v2.y);
-    }
-
-    template <typename T>
-    static inline bool operator <= (const Vector2<T>& v, const Vector2<T>& v2)
-    {
-        return (v.x * v.x + v.y * v.y) <= (v2.x * v2.x + v2.y * v2.y);
-    }
-
-    template <typename T>
     Vector2<T> vector2FromAngle(const T& angle)
     {
         return Vector2<T>(sinf(angle / 180.0 * M_PI), -cosf(angle / 180.0 * M_PI));

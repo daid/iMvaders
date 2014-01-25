@@ -18,18 +18,13 @@ class CrewCapsule : public ChemicalContainer, public Updatable, public Temperatu
     const static float waterProductionPerPersonPerDay = 0.1152; //m^3
 public:
     static const float minO2concentration = 17.5;
-    static const float warningO2concentration = 18.5;
-    static const float warningCO2concentration = 5;
     static const float maxCO2concentration = 7;
     
     static const float minPressure = 0.356;
     static const float warningPressure = 0.5;
 
     static const float maxTemperature = 60;
-    static const float warningMaxTemperature = 35;
-
-    static const float minTemperature = 0;
-    static const float warningMinTemperature = 10;
+    static const float warningTemperature = 35;
     
     static const float ventPercentagePerSecond = 10.0;
     
@@ -43,7 +38,7 @@ public:
     bool ventCapsule;
 
     CrewCapsule(float volume, int occupants, P<TemperaturePart> temperatureParent)
-    : ChemicalContainer(volume), TemperaturePart(90, temperatureParent), occupants(occupants)
+    : ChemicalContainer(volume), TemperaturePart(20, temperatureParent), occupants(occupants)
     {
         //Make the default composition 20.95% oxygen and the rest nitrogen.
         contents[Oxygen] = volume * 0.2095;
