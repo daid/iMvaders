@@ -9,7 +9,6 @@
 #include "engine.h"
 #include "input.h"
 #include "planet.h"
-#include "httpServer.h"
 #include "vectorUtils.h"
 #include "spaceObject.h"
 #include "random.h"
@@ -89,20 +88,37 @@ public:
 
 class PressureValve : public Updatable, public EnergyConsumer
 {
+    const static float switchEnergy = 50;
 public:
     StorageTankLinks sourceTanks;
     ChemicalContainer* target;
     float targetPressure;
-    bool active;
+    float energyCharge;
+    bool reqActive, active;
     
     PressureValve(P<EnergyGrid> grid, ChemicalContainer* target, float targetPressure)
     : EnergyConsumer(grid, "PressureValve", 0, 0), target(target), targetPressure(targetPressure)
     {
-        active = false;
+        reqActive = false;
+        active = reqActive;
+        energyCharge = 0;
     }
     
     virtual void update(float delta)
     {
+        if (active != reqActive)
+        {
+            energyConsumptionRequest = switchEnergy;
+            energyCharge += energyConsumptionAmount * delta;
+            
+            if (energyCharge >= switchEnergy)
+            {
+                active = reqActive;
+                energyCharge = 0;
+            }
+        }else{
+            energyConsumptionRequest = 0;
+        }
         if (!active)
             return;
         if (target->pressure() < targetPressure)
@@ -110,7 +126,7 @@ public:
             foreach(StorageTank, tank, sourceTanks.tanks)
             {
                 if (tank->pressure() > targetPressure)
-                    tank->vent(20 * (targetPressure - target->pressure()) * delta, target);
+                    tank->vent((targetPressure - target->pressure()) * delta, target);
             }
         }
     }
@@ -189,7 +205,7 @@ public:
         (new GuiSlider(generator, generator->powerLevel, 0, Generator::maxPowerLevel, ENERGY_GRID_WINDOW, sf::FloatRect(20, 3, 50, 4)))->setCaption("Power");
 
         (new GuiToggle(co2Scrubber, co2Scrubber->active, ENERGY_GRID_WINDOW, sf::FloatRect(220, 50, 15, 4)))->setCaption("Active");
-        (new GuiToggle(o2PressureValve, o2PressureValve->active, ENERGY_GRID_WINDOW, sf::FloatRect(220, 60, 15, 4)))->setCaption("Active");
+        (new GuiToggle(o2PressureValve, o2PressureValve->reqActive, ENERGY_GRID_WINDOW, sf::FloatRect(220, 60, 15, 4)))->setCaption("Active");
         
         (new GuiGauge(temperatureRoot, capsule->temperature, 0, capsule->maxTemperature, TEMPERATURE_OVERVIEW_WINDOW, sf::FloatRect(20, 50, 50, 4)))->setPostfix("C")->setColor(sf::Color::Red)->setCaption("Hull");
         (new GuiGauge(mainRadiators[0], mainRadiators[0]->temperature, 0, capsule->maxTemperature, TEMPERATURE_OVERVIEW_WINDOW, sf::FloatRect(75, 50, 50, 4)))->setPostfix("C")->setColor(sf::Color::Red)->setCaption("Radiator 1");
