@@ -44,22 +44,22 @@ public:
     {
         keepOrbit = false;
     }
-    
+
     virtual void update(float delta)
     {
         if (keepOrbit)
         {
             float distance = targetDistance - sf::length(targetPlanet->getPosition() - owner->getPosition());
-            
+
             sf::Vector2f linearMovementRequest;
             float requiredVelocity = targetPlanet->calcOrbitVelocity(targetDistance);
             float requiredAngle = sf::vector2ToAngle(targetPlanet->getPosition() - owner->getPosition()) - 90;
-            
+
             float f = distance / (targetDistance * 0.1);
             if (fabs(f) > 1.0f)
                 f = f / fabs(f);
             requiredVelocity *= 1.0 + f * 0.3f;
-            
+
             sf::Vector2f targetVelocityA = targetPlanet->velocity * float(1.0f - fabs(f)) + sf::vector2FromAngle(requiredAngle) * requiredVelocity;
             sf::Vector2f targetVelocityB = targetPlanet->velocity * float(1.0f - fabs(f)) + sf::vector2FromAngle(requiredAngle + 180) * requiredVelocity;
             sf::Vector2f velocityDifference;
@@ -68,9 +68,9 @@ public:
             else
                 velocityDifference = targetVelocityB - owner->velocity;
             targetVelocity = owner->velocity + velocityDifference;
-            
+
             linearMovementRequest = velocityDifference / 100.0f;
-            
+
             trusters->linearMovementRequest.x = linearMovementRequest.x;
             trusters->linearMovementRequest.y = linearMovementRequest.y;
             //trusters->linearMovementRequest = sf::vector2FromAngle(-owner->getRotation()) * linearMovementRequest.x + sf::vector2FromAngle(-owner->getRotation() - 90) * linearMovementRequest.y;
@@ -103,7 +103,7 @@ public:
         active = reqActive;
         energyCharge = 0;
     }
-    
+
     virtual void update(float delta)
     {
         if (active != reqActive)
@@ -136,7 +136,7 @@ class PlayerVessel: public SpaceObject, public Renderable
 {
 public:
     CrewCapsule* capsule;
-    
+
     EnergyGrid* grid;
     TemperatureRoot* temperatureRoot;
     Radiator* mainRadiators[2];
@@ -160,9 +160,9 @@ public:
 
         grid = new EnergyGrid();
         temperatureRoot = new TemperatureRoot();
-        
+
         capsule = new CrewCapsule(2.0, 1, temperatureRoot);
-        
+
         mainRadiators[0] = new Radiator(temperatureRoot);
         mainRadiators[1] = new Radiator(temperatureRoot);
         generator = new Generator(grid, temperatureRoot);
@@ -177,19 +177,19 @@ public:
         co2Scrubber = new CO2Scrubber(grid, capsule, temperatureRoot);
         o2PressureValve = new PressureValve(grid, capsule, 1.0);
         autoPilot = new AutoPilot(this, reactionTrusters);
-        
+
         for(int n=0;n<4;n++)
         {
             hydrogenTanks[n] = new StorageTank(1.0);
             hydrogenTanks[n]->contents[Hydrogen] = 10.0;
             oxygenTanks[n] = new StorageTank(1.0);
             oxygenTanks[n]->contents[Oxygen] = 10.0;
-            
+
             engines->tanks.add(hydrogenTanks[n]);
             engines->tanks.add(oxygenTanks[n]);
             o2PressureValve->sourceTanks.add(oxygenTanks[n]);
         }
-        
+
         generator->links.push_back(battery);
         solarPanels[0]->links.push_back(battery);
         solarPanels[1]->links.push_back(battery);
@@ -197,16 +197,16 @@ public:
         battery->links.push_back(reactionTrusters);
         battery->links.push_back(engines);
         battery->links.push_back(co2Scrubber);
-        
+
         (new GuiSlider(radar, radar->radarDistance, 512, 4096, RADAR_WINDOW, sf::FloatRect(120, 5, 50, 4)))->setCaption("Radar");
         (new GuiSlider(radar, radar->viewDistance, 512, 4096, RADAR_WINDOW, sf::FloatRect(120, 15, 50, 4)))->setCaption("View distance");
-        
+
         (new GuiGauge(battery, battery->energyStorage, 0, battery->maxEnergyStorage, ENERGY_GRID_WINDOW, sf::FloatRect(20, 45, 50, 2)))->setCaption("Charge");
         (new GuiSlider(generator, generator->powerLevel, 0, Generator::maxPowerLevel, ENERGY_GRID_WINDOW, sf::FloatRect(20, 3, 50, 4)))->setCaption("Power");
 
         (new GuiToggle(co2Scrubber, co2Scrubber->active, ENERGY_GRID_WINDOW, sf::FloatRect(220, 50, 15, 4)))->setCaption("Active");
         (new GuiToggle(o2PressureValve, o2PressureValve->reqActive, ENERGY_GRID_WINDOW, sf::FloatRect(220, 60, 15, 4)))->setCaption("Active");
-        
+
         (new GuiGauge(temperatureRoot, capsule->temperature, 0, capsule->maxTemperature, TEMPERATURE_OVERVIEW_WINDOW, sf::FloatRect(20, 50, 50, 4)))->setPostfix("C")->setColor(sf::Color::Red)->setCaption("Hull");
         (new GuiGauge(mainRadiators[0], mainRadiators[0]->temperature, 0, capsule->maxTemperature, TEMPERATURE_OVERVIEW_WINDOW, sf::FloatRect(75, 50, 50, 4)))->setPostfix("C")->setColor(sf::Color::Red)->setCaption("Radiator 1");
         (new GuiGauge(mainRadiators[1], mainRadiators[1]->temperature, 0, capsule->maxTemperature, TEMPERATURE_OVERVIEW_WINDOW, sf::FloatRect(75, 60, 50, 4)))->setPostfix("C")->setColor(sf::Color::Red)->setCaption("Radiator 2");
@@ -238,20 +238,20 @@ public:
 
         (new GuiToggle(autoPilot, autoPilot->keepOrbit, RADAR_WINDOW, sf::FloatRect(20, 220, 50, 4)))->setColor(sf::Color(64,64,64))->setCaption("Keep Orbit");
     }
-    
+
     virtual void update(float delta)
     {
         SpaceObject::update(delta);
         printf("Battery: %f %f %f\n", battery->energyStorage, battery->energyProductionUsed, battery->energyConsumptionAmount);
         //printf("Temperature: %f %f %f\n", temperatureRoot->temperature, generator->temperature, generatorRadiators[0]->temperature);
     }
-    
+
     virtual void preRender(sf::RenderTarget& window) {}
     virtual void render(sf::RenderTarget& window)
     {
         radar->render(window);
         renderComponentsOfWindow(window, RADAR_WINDOW);
-        
+
         renderComponentsOfWindow(window, ENERGY_GRID_WINDOW);
         grid->render(window);
 
@@ -266,7 +266,7 @@ public:
             a[1].position = sf::Vector2f(160, 120) + velocity / 10.0f;
             window.draw(a);
         }
-        
+
         //Draw full screen temperature overlay when we are overheating.
         if (capsule->temperature > capsule->warningMaxTemperature)
         {
@@ -336,16 +336,16 @@ public:
     {
         textureManager.setTexture(sprite, "RadarArrow");
     }
-    
+
     virtual void update(float delta)
     {
         SpaceObject::update(delta);
-        
+
         targetPosition = target->getPosition();
-        
+
         clearPlanetsPath(getPosition(), targetPosition);
         clearPlanetsPath(getPosition(), targetPosition);
-        
+
         sf::Vector2f diff = targetPosition - getPosition();
         sf::Vector2f targetVelocity = sf::normalize(diff) * 200.0f + target->velocity;
         float dist = sf::length(diff);
@@ -363,7 +363,7 @@ public:
         setRotation(sf::vector2ToAngle(targetVelocity - velocity));
         velocity += (targetVelocity - velocity) * delta;
     }
-    
+
     virtual void renderOnRadar(sf::RenderTarget& window)
     {
         SpaceObject::renderOnRadar(window);
@@ -382,7 +382,7 @@ int main()
     engine->registerObject("inputHandler", new InputHandler());
 
     engine->registerObject("windowManager", new WindowManager(320, 240, false));
-    
+
     PlayerVessel* player = new PlayerVessel();
     Sun* sun = new Sun("Sun", 512, 2000000000, sf::Vector2f(-700, 0));
     Planet* p = new Planet("Jamarkley IV", 1, 256, 2000000000, sf::Vector2f(2560, 256));
@@ -395,7 +395,7 @@ int main()
 
     SpaceObject* obj2 = new SpaceObject();
     obj2->setOrbit(p2, 300, 180);
-    
+
     for(unsigned int n=0; n<100; n++)
     {
         AIVessel* ai = new AIVessel();
@@ -410,9 +410,9 @@ int main()
     (new Planet("Limporyen III", 1, 512, 2000000000, sf::Vector2f(0, 0)))->setOrbit(sun, 5000, 180);
     (new Planet("Levi-Montalcini VII", 2, 128, 2000000000, sf::Vector2f(0, 0)))->setOrbit(sun, 10000, 12489);
     (new Planet("Mcdermott I", 2, 1024, 2000000000, sf::Vector2f(0, 0)))->setOrbit(sun, 25000, 1298);
-    
+
     engine->runMainLoop();
-    
+
     delete engine;
     return 0;
 }
