@@ -13,6 +13,9 @@ class RadarDisplay: public EnergyConsumer, public Updatable
 public:
     float radarDistance;
     float viewDistance;
+    float directionalDistance;
+    float directionalAngle;
+    float directionalWidth;
     
     RadarDisplay(EnergyGrid* grid, SpaceObject* owner)
     : EnergyConsumer(grid, "Radar", 10, 5), owner(owner)
@@ -28,6 +31,9 @@ public:
         
         radarDistance = 1024;
         viewDistance = 512;
+        directionalDistance = 0;
+        directionalAngle = 0;
+        directionalWidth = 10;
     }
     
     virtual void update(float delta)
@@ -43,6 +49,7 @@ public:
             radarDistance *= powf(2.0, delta);
 
         energyConsumptionRequest = 15 * powf(radarDistance / 1024.0f, 2.0);
+        energyConsumptionRequest += 15 * powf(directionalDistance / 1024.0f, 2.0);
 
         if (viewDistance < 256.0f)
             viewDistance = 256.0f;
@@ -76,6 +83,18 @@ public:
             rect.setPosition(owner->getPosition() + sf::Vector2f( radarDistance,-viewDistance));
             window.draw(rect);
         }
+        
+        if (directionalDistance > radarDistance)
+        {
+            sf::VertexArray array(sf::TrianglesStrip, 3);
+            array[0].position = owner->getPosition();
+            array[0].texCoords = array[0].position / 2.0f;
+            array[1].position = owner->getPosition() + directionalDistance * sf::vector2FromAngle(directionalAngle - directionalWidth / 2.0f);
+            array[1].texCoords = array[1].position / 2.0f;
+            array[2].position = owner->getPosition() + directionalDistance * sf::vector2FromAngle(directionalAngle + directionalWidth / 2.0f);
+            array[2].texCoords = array[2].position / 2.0f;
+            window.draw(array, sf::RenderStates(textureManager.getTexture("RadarBG")));
+        }
 
         //Draw shadows of the planets.
         foreach(Planet, p, planetList)
@@ -87,24 +106,36 @@ public:
             sf::VertexArray array(sf::TrianglesStrip, 8);
             array[0].position = p->getPosition() + sf::vector2FromAngle(a0 - a1) * p->getRadius();
             array[0].color = sf::Color(0,0,0,0);
-            array[1].position = sf::normalize(array[0].position - owner->getPosition()) * radarDistance * 2.0f + owner->getPosition();
+            array[1].position = sf::normalize(array[0].position - owner->getPosition()) * viewDistance * 2.0f + owner->getPosition();
             array[1].color = sf::Color(0,0,0,0);
 
             array[2].position = p->getPosition() + sf::vector2FromAngle(a0 - a1) * p->getRadius() * 0.9f;
             array[2].color = sf::Color(0,0,0,255);
-            array[3].position = sf::normalize(array[2].position - owner->getPosition()) * radarDistance * 2.0f + owner->getPosition();
+            array[3].position = sf::normalize(array[2].position - owner->getPosition()) * viewDistance * 2.0f + owner->getPosition();
             array[3].color = sf::Color(0,0,0,255);
 
             array[4].position = p->getPosition() + sf::vector2FromAngle(a0 + a1) * p->getRadius() * 0.9f;
             array[4].color = sf::Color(0,0,0,255);
-            array[5].position = sf::normalize(array[4].position - owner->getPosition()) * radarDistance * 2.0f + owner->getPosition();
+            array[5].position = sf::normalize(array[4].position - owner->getPosition()) * viewDistance * 2.0f + owner->getPosition();
             array[5].color = sf::Color(0,0,0,255);
 
             array[6].position = p->getPosition() + sf::vector2FromAngle(a0 + a1) * p->getRadius();
             array[6].color = sf::Color(0,0,0,0);
-            array[7].position = sf::normalize(array[6].position - owner->getPosition()) * radarDistance * 2.0f + owner->getPosition();
+            array[7].position = sf::normalize(array[6].position - owner->getPosition()) * viewDistance * 2.0f + owner->getPosition();
             array[7].color = sf::Color(0,0,0,0);
             window.draw(array);
+        }
+        
+        if (directionalDistance > radarDistance)
+        {
+            sf::VertexArray line(sf::Lines, 2);
+            line[0].position = owner->getPosition();
+            line[0].color = sf::Color(255, 255, 255, 64);
+            line[1].position = owner->getPosition() + directionalDistance * sf::vector2FromAngle(directionalAngle - directionalWidth / 2.0f);
+            line[1].color = sf::Color(255, 255, 255, 32);
+            window.draw(line);
+            line[1].position = owner->getPosition() + directionalDistance * sf::vector2FromAngle(directionalAngle + directionalWidth / 2.0f);
+            window.draw(line);
         }
         
         Planet* majorPlanet = NULL;
@@ -153,7 +184,7 @@ public:
         owner->sprite.setScale(viewDistance / 512.0f, viewDistance / 512.0f);
         foreach(SpaceObject, o, spaceObjectList)
         {
-            if (o->alwaysVisible || (checkLineOfSight(owner->getPosition(), o->getPosition()) && (owner->getPosition() - o->getPosition()) < radarDistance))
+            if (checkVisible(o))
                 o->renderOnRadar(window);
         }
     
@@ -179,6 +210,23 @@ public:
                 window.draw(shape);
             }
         }
+    }
+    
+    bool checkVisible(P<SpaceObject> o)
+    {
+        if (o->alwaysVisible)
+            return true;
+        if (owner->getPosition() - o->getPosition() < radarDistance * energyConsumptionAmount / energyConsumptionRequest)
+            return checkLineOfSight(owner->getPosition(), o->getPosition());
+        if (owner->getPosition() - o->getPosition() < directionalDistance * energyConsumptionAmount / energyConsumptionRequest)
+        {
+            float angleDiff = sf::vector2ToAngle(o->getPosition() - owner->getPosition()) - directionalAngle;
+            while (angleDiff > 180) angleDiff -= 360;
+            while (angleDiff < -180) angleDiff += 360;
+            if (abs(angleDiff) < directionalWidth / 2.0f)
+                return checkLineOfSight(owner->getPosition(), o->getPosition());
+        }
+        return false;
     }
 };
 

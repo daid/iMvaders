@@ -24,6 +24,7 @@ public:
     void setTexture(sf::Sprite& sprite, const char* name, unsigned int spriteIndex = 0);
     const sf::IntRect& getSpriteRect(const char* name, unsigned int spriteIndex = 0);
 
+    sf::Texture* getTexture(const char* name);
 private:
     void loadTexture(const char* name);
 };

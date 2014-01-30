@@ -197,9 +197,14 @@ public:
         battery->links.push_back(reactionTrusters);
         battery->links.push_back(engines);
         battery->links.push_back(co2Scrubber);
+        battery->links.push_back(o2PressureValve);
 
-        (new GuiSlider(radar, radar->radarDistance, 512, 4096, RADAR_WINDOW, sf::FloatRect(120, 5, 50, 4)))->setCaption("Radar");
-        (new GuiSlider(radar, radar->viewDistance, 512, 4096, RADAR_WINDOW, sf::FloatRect(120, 15, 50, 4)))->setCaption("View distance");
+        (new GuiSlider(radar, radar->viewDistance, 512, 4096, RADAR_WINDOW, sf::FloatRect(120, 5, 50, 4)))->setCaption("View distance");
+        (new GuiSlider(radar, radar->radarDistance, 512, 4096, RADAR_WINDOW, sf::FloatRect(120, 15, 50, 4)))->setCaption("Radar");
+
+        (new GuiSlider(radar, radar->directionalDistance, 0, 1024 * 16, RADAR_WINDOW, sf::FloatRect(120, 25, 50, 4)))->setCaption("Directional Range");
+        (new GuiSlider(radar, radar->directionalAngle, 0, 360, RADAR_WINDOW, sf::FloatRect(120, 35, 50, 4)))->setCaption("Angle");
+        (new GuiSlider(radar, radar->directionalWidth, 5, 35, RADAR_WINDOW, sf::FloatRect(120, 45, 50, 4)))->setCaption("Width");
 
         (new GuiGauge(battery, battery->energyStorage, 0, battery->maxEnergyStorage, ENERGY_GRID_WINDOW, sf::FloatRect(20, 45, 50, 2)))->setCaption("Charge");
         (new GuiSlider(generator, generator->powerLevel, 0, Generator::maxPowerLevel, ENERGY_GRID_WINDOW, sf::FloatRect(20, 3, 50, 4)))->setCaption("Power");
@@ -242,7 +247,7 @@ public:
     virtual void update(float delta)
     {
         SpaceObject::update(delta);
-        printf("Battery: %f %f %f\n", battery->energyStorage, battery->energyProductionUsed, battery->energyConsumptionAmount);
+        //printf("Battery: %f %f %f\n", battery->energyStorage, battery->energyProductionUsed, battery->energyConsumptionAmount);
         //printf("Temperature: %f %f %f\n", temperatureRoot->temperature, generator->temperature, generatorRadiators[0]->temperature);
     }
 

@@ -29,6 +29,14 @@ void TextureManager::setTexture(sf::Sprite& sprite, const char* name, unsigned i
     }
 }
 
+sf::Texture* TextureManager::getTexture(const char* name)
+{
+    TextureData& data = textureMap[name];
+    if (data.texture.getSize().x < 1)
+        loadTexture(name);
+    return &data.texture;
+}
+
 const sf::IntRect& TextureManager::getSpriteRect(const char* name, unsigned int spriteIndex)
 {
     TextureData& data = textureMap[name];
