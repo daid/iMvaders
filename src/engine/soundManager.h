@@ -17,9 +17,12 @@ public:
     SoundManager();
     ~SoundManager();
     
-    void playSound(const char* name, float pitch = 1.0f, float volume = 100.0f);
+    void playSound(std::string name, float pitch = 1.0f, float volume = 100.0f);
+    void setTextToSpeachVoice(std::string name);
+    void playTextToSpeech(std::string text);
 private:
-    sf::SoundBuffer* loadSound(const char* name);
+    void playSoundData(sf::SoundBuffer* data, float pitch, float volume);
+    sf::SoundBuffer* loadSound(std::string name);
 };
 
 #endif//SOUNDMANAGER_H
