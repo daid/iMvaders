@@ -8,9 +8,9 @@ static int textWidth(sf::String str)
     {
         int c = str[i];
         if (c >= 'A' && c <= 'Z')
-            ret += textureManager.getSpriteRect("abc", c-'A').width;
+            ret += textureManager.getSpriteRect("abc2", c-'A').width;
         else if (c >= 'a' && c <= 'z')
-            ret += textureManager.getSpriteRect("abc", c-'a').width;
+            ret += textureManager.getSpriteRect("abc2", c-'a').width;
         else if (c >= '0' && c <= '9')
             ret += textureManager.getSpriteRect("nums", c-'0').width;
         else
@@ -33,7 +33,7 @@ void drawText(sf::RenderTarget& window, int x, int y, float scale, sf::String st
         if (c >= 'A' && c <= 'Z')
         {
             c -= 'A';
-            textureManager.setTexture(letter, "abc", c);
+            textureManager.setTexture(letter, "abc2", c);
             letter.setOrigin(0, 0);
             letter.setPosition(x, y);
             x += (letter.getTextureRect().width + 1) * scale;
@@ -42,7 +42,7 @@ void drawText(sf::RenderTarget& window, int x, int y, float scale, sf::String st
         else if (c >= 'a' && c <= 'z')
         {
             c -= 'a';
-            textureManager.setTexture(letter, "abc", c);
+            textureManager.setTexture(letter, "abc2", c);
             letter.setOrigin(0, 0);
             letter.setPosition(x, y);
             x += (letter.getTextureRect().width + 1) * scale;

@@ -29,6 +29,31 @@
 #include "CO2Scrubber.h"
 #include "SolarPanel.h"
 
+class Heater : public Updatable, public EnergyConsumer
+{
+    static const float energyRequirement = 100;
+    P<TemperaturePart> target;
+    float targetTemperature;
+public:
+    Heater(P<EnergyGrid> grid, P<TemperaturePart> target, float targetTemperature)
+    : EnergyConsumer(grid, "Heater", 0, 0)
+    {
+        this->target = target;
+        this->targetTemperature = targetTemperature;
+    }
+    
+    virtual void update(float delta)
+    {
+        if (target->temperature < targetTemperature - 1.0)
+            energyConsumptionRequest = energyRequirement;
+        else if (target->temperature < targetTemperature)
+            energyConsumptionRequest = (targetTemperature - target->temperature) * energyRequirement;
+        else
+            energyConsumptionRequest = 0;
+        target->temperature += 0.01 * energyConsumptionAmount * delta;
+    }
+};
+
 class AutoPilot : public Updatable
 {
     P<SpaceObject> owner;
@@ -47,7 +72,17 @@ public:
 
     virtual void update(float delta)
     {
-        if (keepOrbit)
+        if (!keepOrbit)
+        {
+            foreach(Planet, planet, planetList)
+            {
+                if (!targetPlanet || sf::length(planet->gravity(owner->getPosition())) > sf::length(targetPlanet->gravity(owner->getPosition())))
+                    targetPlanet = planet;
+            }
+            if (targetPlanet)
+                targetDistance = sf::length(targetPlanet->getPosition() - owner->getPosition());
+        }
+        if (targetPlanet)
         {
             float distance = targetDistance - sf::length(targetPlanet->getPosition() - owner->getPosition());
 
@@ -71,17 +106,11 @@ public:
 
             linearMovementRequest = velocityDifference / 100.0f;
 
-            trusters->linearMovementRequest.x = linearMovementRequest.x;
-            trusters->linearMovementRequest.y = linearMovementRequest.y;
-            //trusters->linearMovementRequest = sf::vector2FromAngle(-owner->getRotation()) * linearMovementRequest.x + sf::vector2FromAngle(-owner->getRotation() - 90) * linearMovementRequest.y;
-        }else{
-            foreach(Planet, planet, planetList)
+            if (keepOrbit)
             {
-                if (!targetPlanet || sf::length(planet->gravity(owner->getPosition())) > sf::length(targetPlanet->gravity(owner->getPosition())))
-                    targetPlanet = planet;
+                trusters->linearMovementRequest.x = linearMovementRequest.x;
+                trusters->linearMovementRequest.y = linearMovementRequest.y;
             }
-            if (targetPlanet)
-                targetDistance = sf::length(targetPlanet->getPosition() - owner->getPosition());
         }
     }
 };
@@ -125,7 +154,7 @@ public:
         {
             foreach(StorageTank, tank, sourceTanks.tanks)
             {
-                if (tank->pressure() > targetPressure)
+                if (tank->pressure() > target->pressure())
                     tank->vent((targetPressure - target->pressure()) * delta, target);
             }
         }
@@ -143,6 +172,7 @@ public:
     P<Generator> generator;
     Radiator* generatorRadiators[2];
     SolarPanel* solarPanels[2];
+    Heater* heater;
     Battery* battery;
     RadarDisplay* radar;
     ReactionTrusters* reactionTrusters;
@@ -176,6 +206,7 @@ public:
         engines = new MainEngines(grid, this, temperatureRoot);
         co2Scrubber = new CO2Scrubber(grid, capsule, temperatureRoot);
         o2PressureValve = new PressureValve(grid, capsule, 1.0);
+        heater = new Heater(grid, capsule, 15);
         autoPilot = new AutoPilot(this, reactionTrusters);
 
         for(int n=0;n<4;n++)
@@ -198,6 +229,7 @@ public:
         battery->links.push_back(engines);
         battery->links.push_back(co2Scrubber);
         battery->links.push_back(o2PressureValve);
+        battery->links.push_back(heater);
 
         (new GuiSlider(radar, radar->viewDistance, 512, 1024 * 16, RADAR_WINDOW, sf::FloatRect(120, 5, 50, 4)))->setCaption("View distance");
         (new GuiSlider(radar, radar->radarDistance, 512, 4096, RADAR_WINDOW, sf::FloatRect(120, 15, 50, 4)))->setCaption("Radar");
@@ -389,8 +421,8 @@ int main()
     engine->registerObject("windowManager", new WindowManager(320, 240, false));
 
     PlayerVessel* player = new PlayerVessel();
-    Sun* sun = new Sun("Sun", 1024, 2000000000, sf::Vector2f(-700, 0));
-    Planet* p = new Planet("Jamarkley IV", 1, 256, 2000000000, sf::Vector2f(2560, 256));
+    Sun* sun = new Sun("Sun", 768, 2000000000, sf::Vector2f(-700, 0));
+    Planet* p = new Planet("Jamarkley IV", 1, 350, 2000000000, sf::Vector2f(2560, 256));
     p->setOrbit(sun, 3500, 90);
     Planet* p2 = new Planet("Exskoth I", 2, 32, 2000000000, sf::Vector2f(128, -300));
     p2->setOrbit(p, 500, 0);
