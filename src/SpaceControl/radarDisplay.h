@@ -49,7 +49,7 @@ public:
             radarDistance *= powf(2.0, delta);
 
         energyConsumptionRequest = 15 * powf(radarDistance / 1024.0f, 2.0);
-        energyConsumptionRequest += 15 * powf(directionalDistance / 1024.0f, 2.0);
+        energyConsumptionRequest += 25 * powf(directionalDistance / 1024.0f, 2.0) * directionalWidth / 360;
 
         if (viewDistance < 256.0f)
             viewDistance = 256.0f;

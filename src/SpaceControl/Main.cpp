@@ -199,7 +199,7 @@ public:
         battery->links.push_back(co2Scrubber);
         battery->links.push_back(o2PressureValve);
 
-        (new GuiSlider(radar, radar->viewDistance, 512, 4096, RADAR_WINDOW, sf::FloatRect(120, 5, 50, 4)))->setCaption("View distance");
+        (new GuiSlider(radar, radar->viewDistance, 512, 1024 * 16, RADAR_WINDOW, sf::FloatRect(120, 5, 50, 4)))->setCaption("View distance");
         (new GuiSlider(radar, radar->radarDistance, 512, 4096, RADAR_WINDOW, sf::FloatRect(120, 15, 50, 4)))->setCaption("Radar");
 
         (new GuiSlider(radar, radar->directionalDistance, 0, 1024 * 16, RADAR_WINDOW, sf::FloatRect(120, 25, 50, 4)))->setCaption("Directional Range");
@@ -264,7 +264,7 @@ public:
 
         if (autoPilot->targetPlanet)
         {
-            drawText(window, 20, 230, 0.4, autoPilot->targetPlanet->getName() + " " + to_string(int(autoPilot->targetDistance)), align_left);
+            drawText(window, 20, 230, 0.4, autoPilot->targetPlanet->getName() + " " + to_string(int(autoPilot->targetDistance)) + " " + to_string(int(autoPilot->targetPlanet->hillSphereRadius())), align_left);
 
             sf::VertexArray a(sf::Lines, 2);
             a[0].position = sf::Vector2f(160, 120) + autoPilot->targetVelocity / 10.0f;
@@ -389,17 +389,17 @@ int main()
     engine->registerObject("windowManager", new WindowManager(320, 240, false));
 
     PlayerVessel* player = new PlayerVessel();
-    Sun* sun = new Sun("Sun", 512, 2000000000, sf::Vector2f(-700, 0));
+    Sun* sun = new Sun("Sun", 1024, 2000000000, sf::Vector2f(-700, 0));
     Planet* p = new Planet("Jamarkley IV", 1, 256, 2000000000, sf::Vector2f(2560, 256));
-    p->setOrbit(sun, 2500, 90);
+    p->setOrbit(sun, 3500, 90);
     Planet* p2 = new Planet("Exskoth I", 2, 32, 2000000000, sf::Vector2f(128, -300));
-    p2->setOrbit(p, 800, 0);
+    p2->setOrbit(p, 500, 0);
 
     SpaceObject* obj = new SpaceObject();
     obj->setOrbit(sun, 1200, 0);
 
     SpaceObject* obj2 = new SpaceObject();
-    obj2->setOrbit(p2, 300, 180);
+    obj2->setOrbit(p, 400, 180);
 
     for(unsigned int n=0; n<100; n++)
     {
@@ -411,11 +411,12 @@ int main()
 
     player->velocity = sf::Vector2f(0, sun->calcOrbitVelocity(700));
 
-    (new Planet("Limporyen II", 2, 512, 2000000000, sf::Vector2f(0, 0)))->setOrbit(sun, 5000, 0);
-    (new Planet("Limporyen III", 1, 512, 2000000000, sf::Vector2f(0, 0)))->setOrbit(sun, 5000, 180);
+    (new Planet("Limporyen II", 2, 512, 2000000000, sf::Vector2f(0, 0)))->setOrbit(sun, 6000, 0);
+    (new Planet("Limporyen III", 1, 512, 2000000000, sf::Vector2f(0, 0)))->setOrbit(sun, 6000, 180);
     (new Planet("Levi-Montalcini VII", 2, 128, 2000000000, sf::Vector2f(0, 0)))->setOrbit(sun, 10000, 12489);
     (new Planet("Mcdermott I", 2, 1024, 2000000000, sf::Vector2f(0, 0)))->setOrbit(sun, 25000, 1298);
 
+    validateOrbits();
     engine->runMainLoop();
 
     delete engine;

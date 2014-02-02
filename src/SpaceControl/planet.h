@@ -25,9 +25,51 @@ public:
     
     float calcOrbitVelocity(float distance) const;
     float calcOrbitTime(float distance) const;
+    float sphereOfInfluence() const;
+    float hillSphereRadius() const; //True orbital stability is only between 1/2 and 1/3 of the hill sphere radius.
     
     sf::Vector2f gravity(sf::Vector2f position) const;
     sf::Vector2f gravity(sf::Vector2f position, float deltaTime);
+    
+    virtual void renderOnRadar(sf::RenderTarget& window)
+    {
+#ifdef DEBUG
+        if (physics == SpaceObject::Orbit)
+        {
+            sf::CircleShape circle(hillSphereRadius() / 2.0, 64);
+            circle.setOutlineColor(sf::Color::White);
+            circle.setOutlineThickness(16.0);
+            circle.setFillColor(sf::Color::Transparent);
+            circle.setOrigin(circle.getRadius(), circle.getRadius());
+            circle.setPosition(getPosition());
+            window.draw(circle);
+
+            circle.setRadius(hillSphereRadius() / 3.0);
+            circle.setOrigin(circle.getRadius(), circle.getRadius());
+            circle.setPosition(getPosition());
+            window.draw(circle);
+
+            circle.setRadius(orbitDistance);
+            circle.setOutlineColor(sf::Color(255,0,0,128));
+            circle.setOrigin(circle.getRadius(), circle.getRadius());
+            circle.setPosition(orbitTarget->getPosition());
+            window.draw(circle);
+
+            circle.setRadius(orbitDistance + hillSphereRadius() / 2.0);
+            circle.setOutlineColor(sf::Color(0,255,0,128));
+            circle.setOrigin(circle.getRadius(), circle.getRadius());
+            circle.setPosition(orbitTarget->getPosition());
+            window.draw(circle);
+            
+            circle.setRadius(orbitDistance - hillSphereRadius() / 2.0);
+            circle.setOutlineColor(sf::Color(0,255,0,128));
+            circle.setOrigin(circle.getRadius(), circle.getRadius());
+            circle.setPosition(orbitTarget->getPosition());
+            window.draw(circle);
+        }
+#endif
+        window.draw(sprite);
+    }
 };
 
 class Sun: public Planet
@@ -38,5 +80,6 @@ public:
 
 bool checkLineOfSight(sf::Vector2f start, sf::Vector2f end);
 void clearPlanetsPath(sf::Vector2f start, sf::Vector2f& end);
+void validateOrbits();
 
 #endif//PLANET_H

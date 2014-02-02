@@ -68,6 +68,18 @@ float Planet::calcOrbitTime(float distance) const
 {
     return 2*M_PI*sqrtf(distance*distance*distance/(mass*G));
 }
+float Planet::sphereOfInfluence() const
+{
+    if (physics != Orbit)
+        return INFINITY;
+    return orbitDistance * powf(mass / orbitTarget->mass, 2.0f/5.0f);
+}
+float Planet::hillSphereRadius() const
+{
+    if (physics != Orbit)
+        return INFINITY;
+    return orbitDistance * powf(mass / (3 * orbitTarget->mass), 1.0f/3.0f);
+}
 
 Sun::Sun(std::string name, float radius, float density, sf::Vector2f position)
 : Planet(name, -1, radius, density, position)
@@ -132,4 +144,43 @@ void clearPlanetsPath(sf::Vector2f start, sf::Vector2f& end)
         end = firstAvoid->getPosition() + sf::normalize(firstAvoidQ - firstAvoid->getPosition()) * firstAvoid->getRadius() * 2.0f;
     }
     return;
+}
+
+void validateOrbits()
+{
+    foreach(Planet, p, planetList)
+    {
+        if (p->physics != SpaceObject::Orbit)
+            continue;
+        if (p->getRadius() > p->hillSphereRadius() / 3.0)
+            printf("%s size is bigger then the minimum orbit distance\n", p->getName().c_str());
+        float r = p->orbitTarget->hillSphereRadius();
+        if (p->orbitDistance < r/3.0 && r != INFINITY)
+            printf("%s too close to %s (%f < %f)\n", p->getName().c_str(), p->orbitTarget->getName().c_str(), p->orbitDistance, r/3.0);
+        if (p->orbitDistance > r/2.0)
+            printf("%s too far from %s (%f > %f)\n", p->getName().c_str(), p->orbitTarget->getName().c_str(), p->orbitDistance, r/2.0);
+        
+        foreach(Planet, p2, planetList)
+        {
+            if (p == p2 || p2->physics != SpaceObject::Orbit || p2->orbitTarget != p->orbitTarget)
+                continue;
+            r = p2->hillSphereRadius() / 2.0 + p->hillSphereRadius() / 2.0;
+            if (fabs(p2->orbitDistance - p->orbitDistance) < r && !(p2->orbitDistance == p->orbitDistance && p->orbitAngle != p2->orbitAngle))
+                printf("%s SoI collides with SoI of %s (%f < %f)\n", p->getName().c_str(), p2->getName().c_str(), fabs(p2->orbitDistance - p->orbitDistance), r);
+        }
+    }
+    foreach(SpaceObject, obj, spaceObjectList)
+    {
+        if (obj->physics != SpaceObject::Orbit)
+            continue;
+        P<Planet> p = obj;
+        if (p)
+            continue;
+        
+        float r = obj->orbitTarget->hillSphereRadius();
+        if (obj->orbitDistance < r/3.0 && r != INFINITY)
+            printf("%p too close to %s (%f < %f)\n", *obj, obj->orbitTarget->getName().c_str(), obj->orbitDistance, r/3.0);
+        if (obj->orbitDistance > r/2.0)
+            printf("%p too far from %s (%f > %f)\n", *obj, obj->orbitTarget->getName().c_str(), obj->orbitDistance, r/2.0);
+    }
 }

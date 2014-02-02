@@ -18,8 +18,6 @@ SoundManager::SoundManager()
 
     for(unsigned int n=0; n<MAX_SOUNDS; n++)
         activeSoundList.push_back(sf::Sound());
-        
-    playTextToSpeech("Incomming missiles.");
 }
 
 SoundManager::~SoundManager()

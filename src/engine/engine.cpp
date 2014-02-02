@@ -8,6 +8,7 @@ Engine::Engine()
 {
     engine = this;
     windowManager = NULL;
+    gameSpeed = 1.0;
 }
 Engine::~Engine()
 {
@@ -47,11 +48,12 @@ void Engine::runMainLoop()
             windowManager->window.close();
 
         float delta = frameTimeClock.getElapsedTime().asSeconds();
+        frameTimeClock.restart();
         if (delta > 0.5)
             delta = 0.5;
         if (delta < 0.001)
             delta = 0.001;
-        frameTimeClock.restart();
+        delta *= gameSpeed;
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab))
             delta /= 5.0;
         foreach(Updatable, u, updatableList)
@@ -61,4 +63,9 @@ void Engine::runMainLoop()
         // Clear the window
         windowManager->render();
     }
+}
+
+void Engine::setGameSpeed(float speed)
+{
+    gameSpeed = speed;
 }
