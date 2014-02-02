@@ -86,13 +86,15 @@ public:
         
         if (directionalDistance > radarDistance)
         {
-            sf::VertexArray array(sf::TrianglesStrip, 3);
+            const int angleCount = 5;
+            sf::VertexArray array(sf::TrianglesFan, 1 + angleCount);
             array[0].position = owner->getPosition();
             array[0].texCoords = array[0].position / 2.0f;
-            array[1].position = owner->getPosition() + directionalDistance * sf::vector2FromAngle(directionalAngle - directionalWidth / 2.0f);
-            array[1].texCoords = array[1].position / 2.0f;
-            array[2].position = owner->getPosition() + directionalDistance * sf::vector2FromAngle(directionalAngle + directionalWidth / 2.0f);
-            array[2].texCoords = array[2].position / 2.0f;
+            for(int n=0; n<angleCount; n++)
+            {
+                array[n+1].position = owner->getPosition() + directionalDistance * sf::vector2FromAngle(directionalAngle - directionalWidth / 2.0f + directionalWidth * float(n) / float(angleCount-1));
+                array[n+1].texCoords = array[n+1].position / 2.0f;
+            }
             window.draw(array, sf::RenderStates(textureManager.getTexture("RadarBG")));
         }
 
