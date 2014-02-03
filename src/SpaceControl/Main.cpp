@@ -455,6 +455,7 @@ int main()
     ScriptObject* so = new ScriptObject("Resources/Systems/513-920.lua");
 
     //player->velocity = sf::Vector2f(0, sun->calcOrbitVelocity(700));
+    player->setPosition(sf::Vector2f(100, 100));
 
     //(new Planet("Limporyen II", 2, 512, 2000000000, sf::Vector2f(0, 0)))->setOrbit(sun, 6000, 0);
     //(new Planet("Limporyen III", 1, 512, 2000000000, sf::Vector2f(0, 0)))->setOrbit(sun, 6000, 180);

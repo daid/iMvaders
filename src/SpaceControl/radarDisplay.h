@@ -147,41 +147,44 @@ public:
             if (majorPlanet == NULL || sf::length(majorPlanet->gravity(owner->getPosition())) < sf::length(planet->gravity(owner->getPosition())))
                 majorPlanet = *planet;
         }
-        foreach(Planet, planet, planetList)
+        if (majorPlanet)
         {
-            if (majorPlanet != *planet && (minorPlanet == NULL || sf::length(minorPlanet->gravity(owner->getPosition())) < sf::length(planet->gravity(owner->getPosition()))))
-                minorPlanet = *planet;
-        }
-        float gMajor = sf::length(majorPlanet->gravity(owner->getPosition()));
-        float gMinor = 0;
-        if (minorPlanet)
-            gMinor = sf::length(minorPlanet->gravity(owner->getPosition()));
-        sf::VertexArray majorArray(sf::LinesStrip, 100);
-        sf::VertexArray minorArray(sf::LinesStrip, 100);
-        sf::Vector2f p = owner->getPosition();
-        sf::Vector2f v = owner->velocity;
-        float timeOffset = 0.0;
-        for(unsigned int n=0; n<100; n++)
-        {
-            majorArray[n].position = p - majorPlanet->predictPositionAtDelta(timeOffset) + majorPlanet->getPosition();
-            if (minorPlanet)
-                minorArray[n].position = p - minorPlanet->predictPositionAtDelta(timeOffset) + minorPlanet->getPosition();
-            majorArray[n].color = sf::Color(255, 255, 0, 255 * (99 - n) / 100);
-            minorArray[n].color = sf::Color(255, 255, 0, 255 * (99 - n) / 100 * (gMinor / gMajor));
-            sf::Vector2f a;
             foreach(Planet, planet, planetList)
-                a += planet->gravity(p, timeOffset);
-            float f = sf::length((v + a * 10.0f) - majorPlanet->velocity);
-            f = std::max(f, sf::length((v + a * 10.0f)));
-            if (f < 1.0f) f = 1.0f;
-            f = (viewDistance / 32.0f) / f;
-            timeOffset += f;
-            v += a * f;
-            p += v * f;
+            {
+                if (majorPlanet != *planet && (minorPlanet == NULL || sf::length(minorPlanet->gravity(owner->getPosition())) < sf::length(planet->gravity(owner->getPosition()))))
+                    minorPlanet = *planet;
+            }
+            float gMajor = sf::length(majorPlanet->gravity(owner->getPosition()));
+            float gMinor = 0;
+            if (minorPlanet)
+                gMinor = sf::length(minorPlanet->gravity(owner->getPosition()));
+            sf::VertexArray majorArray(sf::LinesStrip, 100);
+            sf::VertexArray minorArray(sf::LinesStrip, 100);
+            sf::Vector2f p = owner->getPosition();
+            sf::Vector2f v = owner->velocity;
+            float timeOffset = 0.0;
+            for(unsigned int n=0; n<100; n++)
+            {
+                majorArray[n].position = p - majorPlanet->predictPositionAtDelta(timeOffset) + majorPlanet->getPosition();
+                if (minorPlanet)
+                    minorArray[n].position = p - minorPlanet->predictPositionAtDelta(timeOffset) + minorPlanet->getPosition();
+                majorArray[n].color = sf::Color(255, 255, 0, 255 * (99 - n) / 100);
+                minorArray[n].color = sf::Color(255, 255, 0, 255 * (99 - n) / 100 * (gMinor / gMajor));
+                sf::Vector2f a;
+                foreach(Planet, planet, planetList)
+                    a += planet->gravity(p, timeOffset);
+                float f = sf::length((v + a * 10.0f) - majorPlanet->velocity);
+                f = std::max(f, sf::length((v + a * 10.0f)));
+                if (f < 1.0f) f = 1.0f;
+                f = (viewDistance / 32.0f) / f;
+                timeOffset += f;
+                v += a * f;
+                p += v * f;
+            }
+            window.draw(majorArray);
+            if (minorPlanet)
+                window.draw(minorArray);
         }
-        window.draw(majorArray);
-        if (minorPlanet)
-            window.draw(minorArray);
         
         owner->sprite.setScale(viewDistance / 512.0f, viewDistance / 512.0f);
         foreach(SpaceObject, o, spaceObjectList)

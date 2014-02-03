@@ -27,6 +27,7 @@ public:
     P<Planet> orbitTarget;
     float orbitDistance;
     float orbitAngle;
+    bool orbitPrograde;
 
     SpaceObject();
     virtual ~SpaceObject() {}

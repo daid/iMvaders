@@ -58,8 +58,10 @@ void Engine::runMainLoop()
         delta *= gameSpeed;
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab))
             delta /= 5.0;
+        
         foreach(Updatable, u, updatableList)
             u->update(delta);
+        elapsedTime += delta;
         Collisionable::handleCollisions();
 
         // Clear the window
@@ -70,4 +72,9 @@ void Engine::runMainLoop()
 void Engine::setGameSpeed(float speed)
 {
     gameSpeed = speed;
+}
+
+float Engine::getElapsedTime()
+{
+    return elapsedTime;
 }
