@@ -79,7 +79,7 @@ public:
 };
 
 bool checkLineOfSight(sf::Vector2f start, sf::Vector2f end);
-void clearPlanetsPath(sf::Vector2f start, sf::Vector2f& end);
+bool findPathAroundPlanets(sf::Vector2f start, sf::Vector2f& end);
 void validateOrbits();
 
 #endif//PLANET_H

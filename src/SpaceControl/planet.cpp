@@ -114,10 +114,10 @@ bool checkLineOfSight(sf::Vector2f start, sf::Vector2f end)
     return true;
 }
 
-void clearPlanetsPath(sf::Vector2f start, sf::Vector2f& end)
+bool findPathAroundPlanets(sf::Vector2f start, sf::Vector2f& end)
 {
     if ((start - end) < 0.001f)
-        return;
+        return false;
 
     Planet* firstAvoid = NULL;
     float startEndLength = sf::length(start - end);
@@ -142,8 +142,9 @@ void clearPlanetsPath(sf::Vector2f start, sf::Vector2f& end)
     if (firstAvoid)
     {
         end = firstAvoid->getPosition() + sf::normalize(firstAvoidQ - firstAvoid->getPosition()) * firstAvoid->getRadius() * 2.0f;
+        return true;
     }
-    return;
+    return false;
 }
 
 void validateOrbits()

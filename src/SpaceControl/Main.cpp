@@ -380,8 +380,8 @@ public:
 
         targetPosition = target->getPosition();
 
-        clearPlanetsPath(getPosition(), targetPosition);
-        clearPlanetsPath(getPosition(), targetPosition);
+        findPathAroundPlanets(getPosition(), targetPosition);
+        findPathAroundPlanets(getPosition(), targetPosition);
 
         sf::Vector2f diff = targetPosition - getPosition();
         sf::Vector2f targetVelocity = sf::normalize(diff) * 200.0f + target->velocity;
