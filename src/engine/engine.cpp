@@ -1,4 +1,5 @@
 #include "engine.h"
+#include "random.h"
 #include "Updatable.h"
 #include "Collisionable.h"
 
@@ -7,6 +8,7 @@ Engine* engine;
 Engine::Engine()
 {
     engine = this;
+    initRandom();
     windowManager = NULL;
     gameSpeed = 1.0;
 }

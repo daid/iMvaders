@@ -17,13 +17,11 @@ extern registerObjectFunctionListItem* registerObjectFunctionListStart;
 class registerObjectFunctionListItem
 {
 public:
-    int prio;
     registerObjectFunction func;
     registerObjectFunctionListItem* next;
     
-    registerObjectFunctionListItem(registerObjectFunction func, int prio)
+    registerObjectFunctionListItem(registerObjectFunction func)
     {
-        this->prio = prio;
         this->func = func;
         this->next = registerObjectFunctionListStart;
         registerObjectFunctionListStart = this;
@@ -54,12 +52,19 @@ template<class T> struct convert<T*>
     static void param(lua_State* L, int& idx, T*& ptr)
     {
         P<PObject>** p = static_cast< P<PObject>** >(lua_touserdata(L, idx++));
+        if (p == NULL)
+        {
+            const char *msg = lua_pushfstring(L, "Object expected, got %s", luaL_typename(L, idx-1));
+            luaL_argerror(L, idx-1, msg);
+            return;
+        }
         ptr = dynamic_cast<T*>(***p);
         //printf("ObjParam: %p\n", ptr);
     }
 };
 //Specialized template for const char* so we can convert lua strings to C strings. This overrules the general T* template for const char*
 template<> void convert<const char*>::param(lua_State* L, int& idx, const char*& str);
+template<> void convert<std::string>::param(lua_State* L, int& idx, std::string& str);
 
 /* Convert parameters to sf::Vector2 objects. */
 template<typename T> struct convert<sf::Vector2<T> >
@@ -199,6 +204,87 @@ template<class T, typename P1, typename P2> struct call<T, void(T::*)(P1, P2) >
     }
 };
 
+template<class T, typename P1, typename P2, typename P3> struct call<T, void(T::*)(P1, P2, P3) >
+{
+    typedef P<PObject>* PT;
+    typedef void(T::*FuncProto)(P1 p1, P2 p2, P3 p3);
+    
+    static int function(lua_State* L)
+    {
+        FuncProto* func_ptr = reinterpret_cast<FuncProto*>(lua_touserdata(L, lua_upvalueindex (1)));
+        FuncProto func = *func_ptr;
+        PT* p = static_cast< PT* >(lua_touserdata(L, 1));
+        T* obj = dynamic_cast<T*>(***p);
+        P1 p1;
+        P2 p2;
+        P3 p3;
+        int idx = 2;
+        convert<P1>::param(L, idx, p1);
+        convert<P2>::param(L, idx, p2);
+        convert<P3>::param(L, idx, p3);
+        if (obj)
+            (obj->*func)(p1, p2, p3);
+        lua_pushvalue(L, 1);
+        return 1;
+    }
+};
+
+template<class T, typename P1, typename P2, typename P3, typename P4> struct call<T, void(T::*)(P1, P2, P3, P4) >
+{
+    typedef P<PObject>* PT;
+    typedef void(T::*FuncProto)(P1 p1, P2 p2, P3 p3, P4 p4);
+    
+    static int function(lua_State* L)
+    {
+        FuncProto* func_ptr = reinterpret_cast<FuncProto*>(lua_touserdata(L, lua_upvalueindex (1)));
+        FuncProto func = *func_ptr;
+        PT* p = static_cast< PT* >(lua_touserdata(L, 1));
+        T* obj = dynamic_cast<T*>(***p);
+        P1 p1;
+        P2 p2;
+        P3 p3;
+        P4 p4;
+        int idx = 2;
+        convert<P1>::param(L, idx, p1);
+        convert<P2>::param(L, idx, p2);
+        convert<P3>::param(L, idx, p3);
+        convert<P4>::param(L, idx, p4);
+        if (obj)
+            (obj->*func)(p1, p2, p3, p4);
+        lua_pushvalue(L, 1);
+        return 1;
+    }
+};
+
+template<class T, typename P1, typename P2, typename P3, typename P4, typename P5> struct call<T, void(T::*)(P1, P2, P3, P4, P5) >
+{
+    typedef P<PObject>* PT;
+    typedef void(T::*FuncProto)(P1 p1, P2 p2, P3 p3, P4 p4, P5 p5);
+    
+    static int function(lua_State* L)
+    {
+        FuncProto* func_ptr = reinterpret_cast<FuncProto*>(lua_touserdata(L, lua_upvalueindex (1)));
+        FuncProto func = *func_ptr;
+        PT* p = static_cast< PT* >(lua_touserdata(L, 1));
+        T* obj = dynamic_cast<T*>(***p);
+        P1 p1;
+        P2 p2;
+        P3 p3;
+        P4 p4;
+        P5 p5;
+        int idx = 2;
+        convert<P1>::param(L, idx, p1);
+        convert<P2>::param(L, idx, p2);
+        convert<P3>::param(L, idx, p3);
+        convert<P4>::param(L, idx, p4);
+        convert<P5>::param(L, idx, p5);
+        if (obj)
+            (obj->*func)(p1, p2, p3, p4, p5);
+        lua_pushvalue(L, 1);
+        return 1;
+    }
+};
+
 template<class T> class scriptBindObject
 {
 public:
@@ -249,8 +335,13 @@ public:
         lua_pushcfunction(L, create);
         lua_setglobal(L, objectTypeName);
         
-        luaL_newmetatable(L, objectTypeName);
+        luaL_getmetatable(L, objectTypeName);
         int metatable = lua_gettop(L);
+        if (lua_isnil(L, metatable))
+        {
+            lua_pop(L, 1);
+            luaL_newmetatable(L, objectTypeName);
+        }
         
         lua_pushstring(L, "__gc");
 		lua_pushcfunction(L, gc_collect);
@@ -272,6 +363,11 @@ public:
         if (objectBaseTypeName != NULL)
         {
             luaL_getmetatable(L, objectBaseTypeName);
+            if (lua_isnil(L, -1))
+            {
+                lua_pop(L, 1);
+                luaL_newmetatable(L, objectBaseTypeName);
+            }
             lua_setmetatable(L, functionTable);//Set the metatable of the __index table to the base class
         }
 
@@ -316,12 +412,12 @@ public:
 #define REGISTER_SCRIPT_CLASS(T) \
     template <> const char* scriptBindObject<T>::objectTypeName = # T; \
     template <> const char* scriptBindObject<T>::objectBaseTypeName = NULL; \
-    registerObjectFunctionListItem registerObjectFunctionListItem ## T (scriptBindObject<T>::registerObjectCreation, 0); \
+    registerObjectFunctionListItem registerObjectFunctionListItem ## T (scriptBindObject<T>::registerObjectCreation); \
     template <> void scriptBindObject<T>::registerFunctions(lua_State* L, int table)
 #define REGISTER_SCRIPT_SUBCLASS(T, BASE) \
     template <> const char* scriptBindObject<T>::objectTypeName = # T; \
     template <> const char* scriptBindObject<T>::objectBaseTypeName = # BASE; \
-    registerObjectFunctionListItem registerObjectFunctionListItem ## T (scriptBindObject<T>::registerObjectCreation, 1); \
+    registerObjectFunctionListItem registerObjectFunctionListItem ## T (scriptBindObject<T>::registerObjectCreation); \
     template <> void scriptBindObject<T>::registerFunctions(lua_State* L, int table)
 #define REGISTER_SCRIPT_CLASS_FUNCTION(T, F) \
     addFunction<T> (L, table, # F , &T::F)

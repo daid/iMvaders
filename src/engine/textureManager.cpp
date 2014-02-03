@@ -12,7 +12,7 @@ TextureManager::~TextureManager()
 {
 }
 
-void TextureManager::setTexture(sf::Sprite& sprite, const char* name, unsigned int spriteIndex)
+void TextureManager::setTexture(sf::Sprite& sprite, std::string name, unsigned int spriteIndex)
 {
     TextureData& data = textureMap[name];
     if (data.texture.getSize().x < 1)
@@ -29,7 +29,7 @@ void TextureManager::setTexture(sf::Sprite& sprite, const char* name, unsigned i
     }
 }
 
-sf::Texture* TextureManager::getTexture(const char* name)
+sf::Texture* TextureManager::getTexture(std::string name)
 {
     TextureData& data = textureMap[name];
     if (data.texture.getSize().x < 1)
@@ -37,7 +37,7 @@ sf::Texture* TextureManager::getTexture(const char* name)
     return &data.texture;
 }
 
-const sf::IntRect& TextureManager::getSpriteRect(const char* name, unsigned int spriteIndex)
+const sf::IntRect& TextureManager::getSpriteRect(std::string name, unsigned int spriteIndex)
 {
     TextureData& data = textureMap[name];
     if (data.texture.getSize().x < 1)
@@ -50,12 +50,12 @@ const sf::IntRect& TextureManager::getSpriteRect(const char* name, unsigned int 
     return noRect;
 }
 
-void TextureManager::loadTexture(const char* name)
+void TextureManager::loadTexture(std::string name)
 {
     TextureData& data = textureMap[name];
     
     char buffer[128];
-    sprintf(buffer, "resources/%s.png", name);
+    sprintf(buffer, "resources/%s.png", name.c_str());
     sf::Image tmpImage;
     if (!tmpImage.loadFromFile(buffer))
     {

@@ -2,6 +2,12 @@
 #define RANDOM_H
 
 #include <stdlib.h>
+#include <time.h>
+
+static inline void initRandom()
+{
+    srand(time(NULL));
+}
 
 static inline float random(float fmin, float fmax)
 {

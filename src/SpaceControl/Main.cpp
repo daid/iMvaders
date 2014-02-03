@@ -5,6 +5,7 @@
 #include <string>
 #include <algorithm>
 
+#include "scriptInterface.h"
 #include "stringUtils.h"
 #include "engine.h"
 #include "input.h"
@@ -421,10 +422,20 @@ int main()
     engine->registerObject("windowManager", new WindowManager(320, 240, false));
 
     PlayerVessel* player = new PlayerVessel();
-    Sun* sun = new Sun("Sun", 768, 2000000000, sf::Vector2f(-700, 0));
-    Planet* p = new Planet("Jamarkley IV", 1, 350, 2000000000, sf::Vector2f(2560, 256));
+    /*
+    Sun* sun = new Sun();
+    sun->setRadius(768);
+    sun->setPosition(sf::Vector2f(-700, 0));
+    Planet* p = new Planet();
+    p->setName("Jamarkley IV");
+    p->setRadius(350);
+    p->setPosition(sf::Vector2f(2560, 256));
     p->setOrbit(sun, 3500, 90);
-    Planet* p2 = new Planet("Exskoth I", 2, 32, 2000000000, sf::Vector2f(128, -300));
+    Planet* p2 = new Planet();
+    p2->setName("Exskoth I");
+    p2->setType("Planet2");
+    p2->setRadius(32);
+    p2->setPosition(sf::Vector2f(128, -300));
     p2->setOrbit(p, 500, 0);
 
     SpaceObject* obj = new SpaceObject();
@@ -440,13 +451,15 @@ int main()
         ai->target = obj;
         ai->target2 = obj2;
     }
+    */
+    ScriptObject* so = new ScriptObject("Resources/Systems/513-920.lua");
 
-    player->velocity = sf::Vector2f(0, sun->calcOrbitVelocity(700));
+    //player->velocity = sf::Vector2f(0, sun->calcOrbitVelocity(700));
 
-    (new Planet("Limporyen II", 2, 512, 2000000000, sf::Vector2f(0, 0)))->setOrbit(sun, 6000, 0);
-    (new Planet("Limporyen III", 1, 512, 2000000000, sf::Vector2f(0, 0)))->setOrbit(sun, 6000, 180);
-    (new Planet("Levi-Montalcini VII", 2, 128, 2000000000, sf::Vector2f(0, 0)))->setOrbit(sun, 10000, 12489);
-    (new Planet("Mcdermott I", 2, 1024, 2000000000, sf::Vector2f(0, 0)))->setOrbit(sun, 25000, 1298);
+    //(new Planet("Limporyen II", 2, 512, 2000000000, sf::Vector2f(0, 0)))->setOrbit(sun, 6000, 0);
+    //(new Planet("Limporyen III", 1, 512, 2000000000, sf::Vector2f(0, 0)))->setOrbit(sun, 6000, 180);
+    //(new Planet("Levi-Montalcini VII", 2, 128, 2000000000, sf::Vector2f(0, 0)))->setOrbit(sun, 10000, 12489);
+    //(new Planet("Mcdermott I", 2, 1024, 2000000000, sf::Vector2f(0, 0)))->setOrbit(sun, 25000, 1298);
 
     validateOrbits();
     engine->runMainLoop();

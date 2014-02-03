@@ -2,28 +2,53 @@
 #include "textureManager.h"
 #include "vectorUtils.h"
 
+#include "scriptInterface.h"
+REGISTER_SCRIPT_SUBCLASS(Planet, SpaceObject)
+{
+    REGISTER_SCRIPT_CLASS_FUNCTION(Planet, setRadius);
+    REGISTER_SCRIPT_CLASS_FUNCTION(Planet, setName);
+    REGISTER_SCRIPT_CLASS_FUNCTION(Planet, setType);
+    REGISTER_SCRIPT_CLASS_FUNCTION(Planet, setDensity);
+}
+REGISTER_SCRIPT_SUBCLASS(Sun, Planet)
+{
+}
+
 PVector<Planet> planetList;
 PVector<Sun> sunList;
 
-Planet::Planet(std::string name, int type, float radius, float density, sf::Vector2f position)
-: radius(radius), name(name)
+Planet::Planet()
+: density(2000000000), radius(128), name("Unknown")
 {
     planetList.push_back(this);
     alwaysVisible = true;
-    mass = (radius * radius * radius) * density;
     
-    switch(type)
-    {
-    default:
-        textureManager.setTexture(sprite, "Planet1");
-        break;
-    case 2:
-        textureManager.setTexture(sprite, "Planet2");
-        break;
-    }
-    sprite.setScale(radius/sprite.getTextureRect().width*2, radius/sprite.getTextureRect().height*2);
-    setPosition(position);
+    textureManager.setTexture(sprite, "Planet1");
     physics = Fixed;
+
+    mass = (radius * radius * radius) * density;
+    sprite.setScale(radius/sprite.getTextureRect().width*2, radius/sprite.getTextureRect().height*2);
+}
+
+void Planet::setName(std::string name)
+{
+    this->name = name;
+}
+void Planet::setType(std::string type)
+{
+    textureManager.setTexture(sprite, type);
+    sprite.setScale(radius/sprite.getTextureRect().width*2, radius/sprite.getTextureRect().height*2);
+}
+void Planet::setRadius(float radius)
+{
+    this->radius = radius;
+    mass = (radius * radius * radius) * density;
+    sprite.setScale(radius/sprite.getTextureRect().width*2, radius/sprite.getTextureRect().height*2);
+}
+void Planet::setDensity(float density)
+{
+    this->density = density;
+    mass = (radius * radius * radius) * density;
 }
 
 void Planet::update(float delta)
@@ -81,16 +106,24 @@ float Planet::hillSphereRadius() const
     return orbitDistance * powf(mass / (3 * orbitTarget->mass), 1.0f/3.0f);
 }
 
-Sun::Sun(std::string name, float radius, float density, sf::Vector2f position)
-: Planet(name, -1, radius, density, position)
+Sun::Sun()
+: Planet()
 {
+    setName("Sun");
     //Make the sun sprite bigger, as the outer radius of the sun is softer then of planets.
     textureManager.setTexture(sprite, "Sun");
-    sprite.setScale(radius/sprite.getTextureRect().width*2, radius/sprite.getTextureRect().height*2);
-    sprite.setScale(sprite.getScale() * 1.5f);
     
     sunList.push_back(this);
 }
+
+void Sun::renderOnRadar(sf::RenderTarget& window)
+{
+    sprite.setScale(getRadius()/sprite.getTextureRect().width*2, getRadius()/sprite.getTextureRect().height*2);
+    sprite.setScale(sprite.getScale() * 1.5f);
+
+    Planet::renderOnRadar(window);
+}
+
 
 bool checkLineOfSight(sf::Vector2f start, sf::Vector2f end)
 {

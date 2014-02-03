@@ -49,17 +49,8 @@ void ScriptObject::run(const char* filename)
         lua_register(L, "random", lua_random);
         lua_register(L, "destroyScript", lua_destroyScript);
         
-        int maxPrio = 0;
-        for(int prio=0; prio<=maxPrio; prio++)
-        {
-            for(registerObjectFunctionListItem* item = registerObjectFunctionListStart; item != NULL; item = item->next)
-            {
-                if (item->prio == prio)
-                    item->func(L);
-                if (item->prio > maxPrio)
-                    maxPrio = item->prio;
-            }
-        }
+        for(registerObjectFunctionListItem* item = registerObjectFunctionListStart; item != NULL; item = item->next)
+            item->func(L);
     }
 
 #if AUTO_RELOAD_SCRIPT

@@ -12,11 +12,17 @@ class Planet: public SpaceObject
 {
     const static float G = 0.0000000000667;
     float mass;
+    float density;
     float radius;
     std::string name;
 public:
 
-    Planet(std::string name, int type, float radius, float density, sf::Vector2f position);
+    Planet();
+    
+    void setName(std::string name);
+    void setType(std::string type);
+    void setRadius(float radius);
+    void setDensity(float density);
     
     virtual void update(float delta);
     
@@ -75,7 +81,9 @@ public:
 class Sun: public Planet
 {
 public:
-    Sun(std::string name, float radius, float density, sf::Vector2f position);
+    Sun();
+    
+    virtual void renderOnRadar(sf::RenderTarget& window);
 };
 
 bool checkLineOfSight(sf::Vector2f start, sf::Vector2f end);

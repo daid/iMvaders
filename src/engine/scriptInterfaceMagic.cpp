@@ -9,3 +9,8 @@ template<> void convert<const char*>::param(lua_State* L, int& idx, const char*&
 {
     str = luaL_checkstring(L, idx++);
 }
+
+template<> void convert<std::string>::param(lua_State* L, int& idx, std::string& str)
+{
+    str = luaL_checkstring(L, idx++);
+}

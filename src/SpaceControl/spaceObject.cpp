@@ -3,6 +3,13 @@
 #include "vectorUtils.h"
 #include "planet.h"
 
+#include "scriptInterface.h"
+REGISTER_SCRIPT_CLASS(SpaceObject)
+{
+    REGISTER_SCRIPT_CLASS_FUNCTION(SpaceObject, setOrbit);
+    REGISTER_SCRIPT_CLASS_FUNCTION(SpaceObject, setPosition);
+}
+
 PVector<SpaceObject> spaceObjectList;
 
 SpaceObject::SpaceObject()
