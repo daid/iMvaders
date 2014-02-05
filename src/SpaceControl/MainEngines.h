@@ -15,7 +15,7 @@ public:
     float trustRequest;
     StorageTankLinks tanks;
 
-    MainEngines(EnergyGrid* grid, P<SpaceObject> owner, P<TemperaturePart> temperatureParent)
+    MainEngines(P<EnergyGrid> grid, P<SpaceObject> owner, P<TemperaturePart> temperatureParent)
     : EnergyConsumer(grid, "MainEngines", 20, 15), TemperaturePart(90, temperatureParent), owner(owner)
     {
         trustRequest = 0.0;

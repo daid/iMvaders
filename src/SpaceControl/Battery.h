@@ -11,7 +11,7 @@ public:
     const static float batteryLeakagePerSecond = 0.1; //Percentage of power that leaks away every second.
     float energyStorage;
     
-    Battery(EnergyGrid* grid)
+    Battery(P<EnergyGrid> grid)
     : EnergyConsumer(grid, "Battery", 0, 0), EnergyProducer(grid, "Battery"), energyStorage(0) {}
 
     virtual void update(float delta)

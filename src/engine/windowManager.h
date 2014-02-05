@@ -13,6 +13,7 @@ public:
     WindowManager(int virtualWidth, int virtualHeight, bool fullScreen);
     ~WindowManager();
     
+    sf::Vector2i getVirtualSize() const { return virtualSize; }
     void render();
 
     friend class InputHandler;

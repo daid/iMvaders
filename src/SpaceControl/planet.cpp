@@ -16,6 +16,7 @@ REGISTER_SCRIPT_SUBCLASS(Sun, Planet)
 
 PVector<Planet> planetList;
 PVector<Sun> sunList;
+std::vector<NebulaInfo> nebulaInfo;
 
 Planet::Planet()
 : density(2000000000), radius(128), name("Unknown")

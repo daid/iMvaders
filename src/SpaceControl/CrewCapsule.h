@@ -2,6 +2,8 @@
 #define CREWCAPSULE_H
 
 #include "TemperaturePart.h"
+#include "chemicals.h"
+#include "Updatable.h"
 
 //Oxygen:
 //  Normal human consumption: 0.6m^3 per day

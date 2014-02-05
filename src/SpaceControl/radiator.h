@@ -1,6 +1,8 @@
 #ifndef RADIATOR_H
 #define RADIATOR_H
 
+#include <math.h>
+
 #include "TemperaturePart.h"
 #include "Updatable.h"
 

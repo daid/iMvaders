@@ -4,6 +4,8 @@
 #include "EnergyGrid.h"
 #include "TemperaturePart.h"
 #include "SpaceObject.h"
+#include "Planet.h"
+#include "vectorUtils.h"
 
 class SolarPanel : public EnergyProducer, public Updatable, public TemperaturePart
 {

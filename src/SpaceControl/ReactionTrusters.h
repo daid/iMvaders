@@ -13,7 +13,7 @@ public:
     sf::Vector2f linearMovementRequest;
     float angularMovementRequest;
 
-    ReactionTrusters(EnergyGrid* grid, P<SpaceObject> owner, P<TemperaturePart> temperatureParent)
+    ReactionTrusters(P<EnergyGrid> grid, P<SpaceObject> owner, P<TemperaturePart> temperatureParent)
     : EnergyConsumer(grid, "ReactionTrusters", 5, 10), TemperaturePart(90, temperatureParent), owner(owner), angularMovementRequest(0)
     {
     }

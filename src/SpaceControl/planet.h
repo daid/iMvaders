@@ -8,6 +8,15 @@ class Sun;
 extern PVector<Planet> planetList;
 extern PVector<Sun> sunList;
 
+class NebulaInfo
+{
+public:
+    sf::Vector3f vector;
+    std::string textureName;
+};
+
+extern std::vector<NebulaInfo> nebulaInfo;
+
 class Planet: public SpaceObject
 {
     const static float G = 0.0000000000667;
