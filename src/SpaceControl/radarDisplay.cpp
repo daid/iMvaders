@@ -149,25 +149,35 @@ void RadarDisplay::render(sf::RenderTarget& window)
         float gMinor = 0;
         if (minorPlanet)
             gMinor = sf::length(minorPlanet->gravity(owner->getPosition()));
-        sf::VertexArray majorArray(sf::LinesStrip, 100);
-        sf::VertexArray minorArray(sf::LinesStrip, 100);
+        const int radarPredictionPoints = 500;
+        sf::VertexArray majorArray(sf::LinesStrip, radarPredictionPoints);
+        sf::VertexArray minorArray(sf::LinesStrip, radarPredictionPoints);
         sf::Vector2f p = owner->getPosition();
         sf::Vector2f v = owner->velocity;
         float timeOffset = 0.0;
-        for(unsigned int n=0; n<100; n++)
+        for(unsigned int n=0; n<majorArray.getVertexCount(); n++)
         {
             majorArray[n].position = p - majorPlanet->predictPositionAtDelta(timeOffset) + majorPlanet->getPosition();
             if (minorPlanet)
                 minorArray[n].position = p - minorPlanet->predictPositionAtDelta(timeOffset) + minorPlanet->getPosition();
-            majorArray[n].color = sf::Color(255, 255, 0, 255 * (99 - n) / 100);
-            minorArray[n].color = sf::Color(255, 255, 0, 255 * (99 - n) / 100 * (gMinor / gMajor));
+            majorArray[n].color = sf::Color(255, 255, 0, 255 * ((radarPredictionPoints-1) - n) / radarPredictionPoints);
+            minorArray[n].color = sf::Color(255, 255, 0, 255 * ((radarPredictionPoints-1) - n) / radarPredictionPoints * (gMinor / gMajor));
             sf::Vector2f a;
             foreach(Planet, planet, planetList)
-                a += planet->gravity(p, timeOffset);
+            {
+                sf::Vector2f g = planet->gravity(p, timeOffset);
+                if (g.x == 0 && g.y == 0)
+                {
+                    majorArray.resize(n+1);
+                    minorArray.resize(n+1);
+                }
+                a += g;
+            }
             float f = sf::length((v + a * 10.0f) - majorPlanet->velocity);
             f = std::max(f, sf::length((v + a * 10.0f)));
             if (f < 1.0f) f = 1.0f;
-            f = (viewDistance / 32.0f) / f;
+            f = (viewDistance / 128.0f) / f;
+            if (f > 0.5f) f = 0.5f;
             timeOffset += f;
             v += a * f;
             p += v * f;
