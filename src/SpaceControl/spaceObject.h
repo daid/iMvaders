@@ -8,6 +8,7 @@ class SpaceObject;
 extern PVector<SpaceObject> spaceObjectList;
 
 class Planet;
+class RenderInfo;
 class SpaceObject: public Updatable
 {
 public:
@@ -38,6 +39,7 @@ public:
     {
         window.draw(sprite);
     }
+    virtual void render3D(RenderInfo* info) {}
     
     void setOrbit(Planet* target, float distance, float angle);
     

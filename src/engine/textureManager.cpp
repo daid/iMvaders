@@ -63,23 +63,27 @@ void TextureManager::loadTexture(std::string name)
         data.texture.create(8, 8);
         return;
     }
-    for(unsigned int y=0; y<tmpImage.getSize().y; y++)
+    
+    if (tmpImage.getSize().x < 1024 && tmpImage.getSize().y < 1024)
     {
-        for(unsigned int x=0; x<tmpImage.getSize().x; x++)
+        for(unsigned int y=0; y<tmpImage.getSize().y; y++)
         {
-            if (tmpImage.getPixel(x, y) == sf::Color(255,0,255))
+            for(unsigned int x=0; x<tmpImage.getSize().x; x++)
             {
-                unsigned int x1=x+1;
-                for(; x1<tmpImage.getSize().x; x1++)
-                    if (tmpImage.getPixel(x1, y) == sf::Color(255,0,255))
-                        break;
-                unsigned int y1=y+1;
-                for(; y1<tmpImage.getSize().y; y1++)
-                    if (tmpImage.getPixel(x, y1) == sf::Color(255,0,255))
-                        break;
-                if (x1-x > 1 && y1-y > 1 && x1<tmpImage.getSize().x && y1<tmpImage.getSize().y)
-                    data.sprites.push_back(sf::IntRect(x+1, y+1, x1-x-1, y1-y-1));
-                x = x1-1;
+                if (tmpImage.getPixel(x, y) == sf::Color(255,0,255))
+                {
+                    unsigned int x1=x+1;
+                    for(; x1<tmpImage.getSize().x; x1++)
+                        if (tmpImage.getPixel(x1, y) == sf::Color(255,0,255))
+                            break;
+                    unsigned int y1=y+1;
+                    for(; y1<tmpImage.getSize().y; y1++)
+                        if (tmpImage.getPixel(x, y1) == sf::Color(255,0,255))
+                            break;
+                    if (x1-x > 1 && y1-y > 1 && x1<tmpImage.getSize().x && y1<tmpImage.getSize().y)
+                        data.sprites.push_back(sf::IntRect(x+1, y+1, x1-x-1, y1-y-1));
+                    x = x1-1;
+                }
             }
         }
     }

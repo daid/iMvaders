@@ -1,6 +1,11 @@
+#include <SFML/OpenGL.hpp>
+
 #include "planet.h"
 #include "textureManager.h"
 #include "vectorUtils.h"
+#include "random.h"
+#include "mesh.h"
+#include "SpaceRenderer.h"
 
 #include "scriptInterface.h"
 REGISTER_SCRIPT_SUBCLASS(Planet, SpaceObject)
@@ -16,7 +21,6 @@ REGISTER_SCRIPT_SUBCLASS(Sun, Planet)
 
 PVector<Planet> planetList;
 PVector<Sun> sunList;
-std::vector<NebulaInfo> nebulaInfo;
 
 Planet::Planet()
 : density(2000000000), radius(128), name("Unknown")
@@ -29,6 +33,8 @@ Planet::Planet()
 
     mass = (radius * radius * radius) * density;
     sprite.setScale(radius/sprite.getTextureRect().width*2, radius/sprite.getTextureRect().height*2);
+    angularVelocity = 1.0;
+    setRotation(random(0, 360));
 }
 
 void Planet::setName(std::string name)
@@ -107,6 +113,115 @@ float Planet::hillSphereRadius() const
     return orbitDistance * powf(mass / (3 * orbitTarget->mass), 1.0f/3.0f);
 }
 
+class SphereMesh : public Mesh
+{
+    int subDivisions;
+public:
+    SphereMesh(int subDivisions)
+    : subDivisions(subDivisions)
+    {
+        vertexList.push_back(TVertex(sf::Vector3f( 1, 0, 0), sf::Vector2f(0.00, 0.5)));//0
+        vertexList.push_back(TVertex(sf::Vector3f( 0, 1, 0), sf::Vector2f(0.25, 0.5)));//1
+        vertexList.push_back(TVertex(sf::Vector3f( 0, 0, 1), sf::Vector2f(0.00,   0)));//2
+        vertexList.push_back(TVertex(sf::Vector3f( 0, 0,-1), sf::Vector2f(0.00, 1.0)));//3
+
+        vertexList.push_back(TVertex(sf::Vector3f(-1, 0, 0), sf::Vector2f(0.50, 0.5)));//4
+        vertexList.push_back(TVertex(sf::Vector3f( 0, 0, 1), sf::Vector2f(0.25,   0)));//5
+        vertexList.push_back(TVertex(sf::Vector3f( 0, 0,-1), sf::Vector2f(0.25, 1.0)));//6
+
+        vertexList.push_back(TVertex(sf::Vector3f( 0,-1, 0), sf::Vector2f(0.75, 0.5)));//7
+        vertexList.push_back(TVertex(sf::Vector3f( 0, 0, 1), sf::Vector2f(0.50,   0)));//8
+        vertexList.push_back(TVertex(sf::Vector3f( 0, 0,-1), sf::Vector2f(0.50, 1.0)));//9
+
+        vertexList.push_back(TVertex(sf::Vector3f( 1, 0, 0), sf::Vector2f(1.00, 0.5)));//10
+        vertexList.push_back(TVertex(sf::Vector3f( 0, 0, 1), sf::Vector2f(0.75,   0)));//11
+        vertexList.push_back(TVertex(sf::Vector3f( 0, 0,-1), sf::Vector2f(0.75, 1.0)));//12
+        
+        addSphereSubdivide(1, 0, 2);
+        addSphereSubdivide(0, 1, 3);
+        addSphereSubdivide(4, 1, 5);
+        addSphereSubdivide(1, 4, 6);
+        
+        addSphereSubdivide(7, 4, 8);
+        addSphereSubdivide(4, 7, 9);
+        addSphereSubdivide(10, 7, 11);
+        addSphereSubdivide(7, 10, 12);
+        
+        for(unsigned int n=0; n<vertexList.size(); n++)
+        {
+            vertexList[n].normal = sf::normalize(vertexList[n].position);
+            //Recalculate the U values of the uvMap so we get proper spherical mapping.
+            float u = vertexList[n].uvMap.x;
+            float v = fabs(vertexList[n].uvMap.y - 0.5) * 2.0; // = 0 when at center, 1 at top/bottom of the texture.
+            if (v < 1.0)
+                u = fmod(u, 0.25) / (1.0 - v) + (floorf(u * 4) / 4.0f);
+            
+            vertexList[n].uvMap.x = u;
+        }
+    }
+    
+private:
+    void addSphereSubdivide(int idx0, int idx1, int idx2, int depth = 0)
+    {
+        if (depth == subDivisions)
+        {
+            faceList.push_back(TFace(idx0, idx1, idx2));
+        }else{
+            sf::Vector3f v01 = sf::normalize(vertexList[idx0].position + vertexList[idx1].position);
+            sf::Vector3f v12 = sf::normalize(vertexList[idx1].position + vertexList[idx2].position);
+            sf::Vector3f v20 = sf::normalize(vertexList[idx2].position + vertexList[idx0].position);
+            sf::Vector2f uv01 = (vertexList[idx0].uvMap + vertexList[idx1].uvMap) / 2.0f;
+            sf::Vector2f uv12 = (vertexList[idx1].uvMap + vertexList[idx2].uvMap) / 2.0f;
+            sf::Vector2f uv20 = (vertexList[idx2].uvMap + vertexList[idx0].uvMap) / 2.0f;
+            
+            int idx01 = vertexList.size();
+            vertexList.push_back(TVertex(v01, uv01));
+            int idx12 = vertexList.size();
+            vertexList.push_back(TVertex(v12, uv12));
+            int idx20 = vertexList.size();
+            vertexList.push_back(TVertex(v20, uv20));
+            
+            addSphereSubdivide(idx0, idx01, idx20, depth+1);
+            addSphereSubdivide(idx1, idx12, idx01, depth+1);
+            addSphereSubdivide(idx2, idx20, idx12, depth+1);
+            addSphereSubdivide(idx01, idx12, idx20, depth+1);
+        }
+    }
+};
+
+static SphereMesh* sphereMeshList[10];
+void Planet::render3D(RenderInfo* info)
+{
+    glColor4f(0.3, 0.5, 0.7, 1);
+    textureManager.getTexture("PlanetTexture1")->setSmooth(true);
+    sf::Texture::bind(textureManager.getTexture("PlanetTexture1"), sf::Texture::Pixels);
+    sf::Shader::bind(lightShader);
+    
+    glScalef(radius, radius, radius);
+    
+    float f = info->objectDepth / radius;
+    if (f < -1.0)
+        return;
+
+    //Scale the subdivision amount depending on the visible scale of the planet.
+    int idx = 0;
+    if (f < 8)
+        idx = 5;
+    else if (f < 10)
+        idx = 4;
+    else if (f < 25)
+        idx = 3;
+    else if (f < 75)
+        idx = 2;
+    else if (f < 150)
+        idx = 1;
+    
+    if (sphereMeshList[idx] == NULL)
+        sphereMeshList[idx] = new SphereMesh(idx);
+    glRotatef(getRotation(), 0, 0, 1);
+    sphereMeshList[idx]->draw();
+}
+
 Sun::Sun()
 : Planet()
 {
@@ -125,6 +240,23 @@ void Sun::renderOnRadar(sf::RenderTarget& window)
     Planet::renderOnRadar(window);
 }
 
+void Sun::render3D(RenderInfo* info)
+{
+    sf::Texture::bind(textureManager.getTexture("Sun"), sf::Texture::Pixels);
+    sf::Shader::bind(NULL);
+    
+    glDepthFunc(GL_ALWAYS);
+    glScalef(getRadius(), getRadius(), getRadius());
+    glColor4f(1,1,1,1);
+    glRotatef(info->yaw, 0, 0, 1);
+    glBegin(GL_QUADS);
+    glTexCoord2f(  0,   0); glVertex3f(-1.5, 0,-1.5);
+    glTexCoord2f(512,   0); glVertex3f( 1.5, 0,-1.5);
+    glTexCoord2f(512, 512); glVertex3f( 1.5, 0, 1.5);
+    glTexCoord2f(  0, 512); glVertex3f(-1.5, 0, 1.5);
+    glEnd();
+    glDepthFunc(GL_LESS);
+}
 
 bool checkLineOfSight(sf::Vector2f start, sf::Vector2f end)
 {

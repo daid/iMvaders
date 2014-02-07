@@ -54,6 +54,7 @@ template<class T> struct convert<T*>
         P<PObject>** p = static_cast< P<PObject>** >(lua_touserdata(L, idx++));
         if (p == NULL)
         {
+            ptr = NULL;
             const char *msg = lua_pushfstring(L, "Object expected, got %s", luaL_typename(L, idx-1));
             luaL_argerror(L, idx-1, msg);
             return;

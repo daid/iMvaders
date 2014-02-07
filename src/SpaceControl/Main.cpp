@@ -5,6 +5,7 @@
 #include <string>
 #include <algorithm>
 
+#include "SpaceRenderer.h"
 #include "Player.h"
 #include "scriptInterface.h"
 #include "stringUtils.h"

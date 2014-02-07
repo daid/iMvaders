@@ -1,43 +1,8 @@
-#include <SFML/OpenGL.hpp>
-
 #include "textureManager.h"
 #include "stringUtils.h"
 #include "textDraw.h"
-#include "random.h"
 #include "Player.h"
-
-void drawSphereSubdivide(sf::Vector3f v0, sf::Vector3f v1, sf::Vector3f v2, int depth = 0)
-{
-    if (depth == 3)
-    {
-        glBegin(GL_LINE_LOOP);
-        glNormal3f(v0.x, v0.y, v0.z); glVertex3f(v0.x, v0.y, v0.z);
-        glNormal3f(v1.x, v1.y, v1.z); glVertex3f(v1.x, v1.y, v1.z);
-        glNormal3f(v2.x, v2.y, v2.z); glVertex3f(v2.x, v2.y, v2.z);
-        glEnd();
-    }else{
-        sf::Vector3f v01 = sf::normalize(v0 + v1);
-        sf::Vector3f v12 = sf::normalize(v1 + v2);
-        sf::Vector3f v20 = sf::normalize(v2 + v0);
-        
-        drawSphereSubdivide(v0, v01, v20, depth + 1);
-        drawSphereSubdivide(v1, v01, v12, depth + 1);
-        drawSphereSubdivide(v2, v12, v20, depth + 1);
-        drawSphereSubdivide(v01, v12, v20, depth + 1);
-    }
-}
-
-void drawSphere()
-{
-    drawSphereSubdivide(sf::Vector3f(0, 0, 1), sf::Vector3f( 1, 0, 0), sf::Vector3f(0, 1, 0));
-    drawSphereSubdivide(sf::Vector3f(0, 0,-1), sf::Vector3f( 1, 0, 0), sf::Vector3f(0, 1, 0));
-    drawSphereSubdivide(sf::Vector3f(0, 0, 1), sf::Vector3f(-1, 0, 0), sf::Vector3f(0, 1, 0));
-    drawSphereSubdivide(sf::Vector3f(0, 0,-1), sf::Vector3f(-1, 0, 0), sf::Vector3f(0, 1, 0));
-    drawSphereSubdivide(sf::Vector3f(0, 0, 1), sf::Vector3f( 1, 0, 0), sf::Vector3f(0,-1, 0));
-    drawSphereSubdivide(sf::Vector3f(0, 0,-1), sf::Vector3f( 1, 0, 0), sf::Vector3f(0,-1, 0));
-    drawSphereSubdivide(sf::Vector3f(0, 0, 1), sf::Vector3f(-1, 0, 0), sf::Vector3f(0,-1, 0));
-    drawSphereSubdivide(sf::Vector3f(0, 0,-1), sf::Vector3f(-1, 0, 0), sf::Vector3f(0,-1, 0));
-}
+#include "SpaceRenderer.h"
 
 PlayerVessel::PlayerVessel()
 {
@@ -177,94 +142,8 @@ void PlayerVessel::render(sf::RenderTarget& window)
     if (currentView == 4)
     {
         window.pushGLStates();
-
-        glClearDepth(1.f);
-        glClear(GL_DEPTH_BUFFER_BIT);
-        glDepthMask(GL_TRUE);
-
-        glMatrixMode(GL_PROJECTION);
-        glLoadIdentity();
-        gluPerspective(60.f, 320.0/240.0, 1.f, 16000.f);
-
-        glMatrixMode(GL_MODELVIEW);
-        glLoadIdentity();
-        glRotatef(90, 1, 0, 0);
-        glScalef(1,1,-1);
-        glRotatef(-angularVelocity * 0.07, 0,1, 0);
-        glRotatef(-getRotation(), 0, 0, 1);
         
-        sf::Texture::bind(textureManager.getTexture("Stars"), sf::Texture::Pixels);
-        glBegin(GL_TRIANGLE_STRIP);
-        glTexCoord2f(   0,    0); glVertex3f( 100, 100,-100);
-        glTexCoord2f(1024,    0); glVertex3f( 100, 100, 100);
-        glTexCoord2f(   0, 1024); glVertex3f(-100, 100,-100);
-        glTexCoord2f(1024, 1024); glVertex3f(-100, 100, 100);
-        glEnd();
-        glBegin(GL_TRIANGLE_STRIP);
-        glTexCoord2f(   0,    0); glVertex3f(-100, 100,-100);
-        glTexCoord2f(1024,    0); glVertex3f(-100, 100, 100);
-        glTexCoord2f(   0, 1024); glVertex3f(-100,-100,-100);
-        glTexCoord2f(1024, 1024); glVertex3f(-100,-100, 100);
-        glEnd();
-        glBegin(GL_TRIANGLE_STRIP);
-        glTexCoord2f(   0,    0); glVertex3f(-100,-100,-100);
-        glTexCoord2f(1024,    0); glVertex3f(-100,-100, 100);
-        glTexCoord2f(   0, 1024); glVertex3f( 100,-100,-100);
-        glTexCoord2f(1024, 1024); glVertex3f( 100,-100, 100);
-        glEnd();
-        glBegin(GL_TRIANGLE_STRIP);
-        glTexCoord2f(   0,    0); glVertex3f( 100,-100,-100);
-        glTexCoord2f(1024,    0); glVertex3f( 100,-100, 100);
-        glTexCoord2f(   0, 1024); glVertex3f( 100, 100,-100);
-        glTexCoord2f(1024, 1024); glVertex3f( 100, 100, 100);
-        glEnd();
-        glBegin(GL_TRIANGLE_STRIP);
-        glTexCoord2f(   0,    0); glVertex3f(-100,-100, 100);
-        glTexCoord2f(1024,    0); glVertex3f( 100,-100, 100);
-        glTexCoord2f(   0, 1024); glVertex3f(-100, 100, 100);
-        glTexCoord2f(1024, 1024); glVertex3f( 100, 100, 100);
-        glEnd();
-        glBegin(GL_TRIANGLE_STRIP);
-        glTexCoord2f(   0,    0); glVertex3f(-100,-100,-100);
-        glTexCoord2f(1024,    0); glVertex3f( 100,-100,-100);
-        glTexCoord2f(   0, 1024); glVertex3f(-100, 100,-100);
-        glTexCoord2f(1024, 1024); glVertex3f( 100, 100,-100);
-        glEnd();
-        
-        for(unsigned int n=0; n<nebulaInfo.size(); n++)
-        {
-            sf::Texture::bind(textureManager.getTexture(nebulaInfo[n].textureName), sf::Texture::Pixels);
-            glEnable(GL_BLEND);
-            glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-            glPushMatrix();
-            glRotatef(180, nebulaInfo[n].vector.x, nebulaInfo[n].vector.y, nebulaInfo[n].vector.z);
-            glColor4f(1,1,1,0.3);
-            glBegin(GL_TRIANGLE_STRIP);
-            glTexCoord2f(   0,    0); glVertex3f( 100, 100,-100);
-            glTexCoord2f(1024,    0); glVertex3f( 100, 100, 100);
-            glTexCoord2f(   0, 1024); glVertex3f(-100, 100,-100);
-            glTexCoord2f(1024, 1024); glVertex3f(-100, 100, 100);
-            glEnd();
-            glPopMatrix();
-            glDisable(GL_BLEND);
-        }
-        sf::Texture::bind(NULL);
-        
-        glTranslatef(-getPosition().x,-getPosition().y, 0);
-        glEnable(GL_DEPTH_TEST);
-        
-        foreach(Planet, p, planetList)
-        {
-            float dist = sf::length(getPosition() - p->getPosition());
-            
-            glPushMatrix();
-            glTranslatef(p->getPosition().x, p->getPosition().y, 0);
-            glScalef(p->getRadius(), p->getRadius(), p->getRadius());
-            
-            drawSphere();
-            
-            glPopMatrix();
-        }
+        renderSpace(sf::Vector3f(getPosition().x, getPosition().y, 0), getRotation(), 0, angularVelocity * 0.07);
 
         window.popGLStates();
     }

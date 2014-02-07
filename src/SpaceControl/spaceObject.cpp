@@ -31,7 +31,6 @@ void SpaceObject::update(float delta)
         break;
     case Newtonian:
         setPosition(getPosition() + velocity * delta);
-        setRotation(getRotation() + angularVelocity * delta);
         break;
     case Orbit:
         if (!orbitTarget)
@@ -53,6 +52,7 @@ void SpaceObject::update(float delta)
         }
         break;
     }
+    setRotation(getRotation() + angularVelocity * delta);
 }
 
 void SpaceObject::setOrbit(Planet* target, float distance, float angle)
