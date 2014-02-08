@@ -7,8 +7,11 @@
 #include "vectorUtils.h"
 #include "random.h"
 #include "planet.h"
+#include "engine.h"
+#include "Player.h"
 
 std::vector<NebulaInfo> nebulaInfo;
+std::vector<sf::Vector3f> spaceDust;
 sf::Shader* lightShader;
 
 struct RenderSortInfo
@@ -143,6 +146,9 @@ void renderSpace(sf::Vector3f cameraPosition, float yaw, float pitch, float roll
         GLfloat lightpos[] = {lightDir.x, lightDir.y, 0, 0};
         glLightfv(GL_LIGHT0, GL_POSITION, lightpos);
         info.renderScale = 1;
+        
+        //On far away objects, increase the renderScale, which will scale down the distance so the objects are not beyond the Z clipping plane.
+        // Note that no depth-buffer drawing will be enabled when renderScale > 1 which should not be a problem as only planets should be visible at this distance.
         while(info.objectDepth / info.renderScale > 8000)
             info.renderScale *= 2;
         if (info.renderScale > 1)
@@ -161,4 +167,32 @@ void renderSpace(sf::Vector3f cameraPosition, float yaw, float pitch, float roll
         glPopMatrix();
     }
     sf::Shader::bind(NULL);
+    
+    sf::Texture::bind(NULL);
+    
+    while(spaceDust.size() < 2000)
+        spaceDust.push_back(sf::Vector3f());
+    
+    P<PlayerVessel> player = engine->getObject("player");
+    sf::Vector2f dustVector = player->velocity / 30.0f;
+    glDepthMask(false);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+    glTranslatef(-cameraPosition.x,-cameraPosition.y, -cameraPosition.z);
+    glColor4f(0.7, 0.5, 0.35, 0.1);
+    for(unsigned int n=0; n<spaceDust.size(); n++)
+    {
+        const float maxDustDist = 250.0f;
+        const float minDustDist = 30.0f;
+        const float dustScale = 0.2f;
+        glPushMatrix();
+        if ((spaceDust[n] - cameraPosition) > maxDustDist || (spaceDust[n] - cameraPosition) < minDustDist)
+            spaceDust[n] = cameraPosition + sf::Vector3f(random(-maxDustDist, maxDustDist), random(-maxDustDist, maxDustDist), random(-maxDustDist, maxDustDist));
+        glTranslatef(spaceDust[n].x, spaceDust[n].y, spaceDust[n].z);
+        glBegin(GL_LINES);
+        glVertex3f(-dustVector.x, -dustVector.y, 0);
+        glVertex3f( dustVector.x,  dustVector.y, 0);
+        glEnd();
+        glPopMatrix();
+    }
+    glDepthMask(true);
 }

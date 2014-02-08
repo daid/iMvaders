@@ -2,10 +2,12 @@
 #include "stringUtils.h"
 #include "textDraw.h"
 #include "Player.h"
+#include "engine.h"
 #include "SpaceRenderer.h"
 
 PlayerVessel::PlayerVessel()
 {
+    engine->registerObject("player", this);
     currentView = 0;
     alwaysVisible = true;
     textureManager.setTexture(sprite, "RadarArrow");

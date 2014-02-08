@@ -245,7 +245,6 @@ void Sun::render3D(RenderInfo* info)
     sf::Texture::bind(textureManager.getTexture("Sun"), sf::Texture::Pixels);
     sf::Shader::bind(NULL);
     
-    glDepthFunc(GL_ALWAYS);
     glScalef(getRadius(), getRadius(), getRadius());
     glColor4f(1,1,1,1);
     glRotatef(info->yaw, 0, 0, 1);
@@ -255,7 +254,6 @@ void Sun::render3D(RenderInfo* info)
     glTexCoord2f(512, 512); glVertex3f( 1.5, 0, 1.5);
     glTexCoord2f(  0, 512); glVertex3f(-1.5, 0, 1.5);
     glEnd();
-    glDepthFunc(GL_LESS);
 }
 
 bool checkLineOfSight(sf::Vector2f start, sf::Vector2f end)
