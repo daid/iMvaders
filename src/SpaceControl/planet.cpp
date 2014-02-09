@@ -104,13 +104,13 @@ float Planet::sphereOfInfluence() const
 {
     if (physics != Orbit)
         return INFINITY;
-    return orbitDistance * powf(mass / orbitTarget->mass, 2.0f/5.0f);
+    return orbitDistanceGravetational * powf(mass / orbitTarget->mass, 2.0f/5.0f);
 }
 float Planet::hillSphereRadius() const
 {
     if (physics != Orbit)
         return INFINITY;
-    return orbitDistance * powf(mass / (3 * orbitTarget->mass), 1.0f/3.0f);
+    return orbitDistanceGravetational * powf(mass / (3 * orbitTarget->mass), 1.0f/3.0f);
 }
 
 class SphereMesh : public Mesh
@@ -247,7 +247,7 @@ void Sun::render3D(RenderInfo* info)
     
     glScalef(getRadius(), getRadius(), getRadius());
     glColor4f(1,1,1,1);
-    glRotatef(info->yaw, 0, 0, 1);
+    glRotatef(sf::vector2ToAngle(getPosition() - info->cameraPosition), 0, 0, 1);
     glBegin(GL_QUADS);
     glTexCoord2f(  0,   0); glVertex3f(-1.5, 0,-1.5);
     glTexCoord2f(512,   0); glVertex3f( 1.5, 0,-1.5);

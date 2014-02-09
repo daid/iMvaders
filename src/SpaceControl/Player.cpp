@@ -143,11 +143,7 @@ void PlayerVessel::render(sf::RenderTarget& window)
     
     if (currentView == 4)
     {
-        window.pushGLStates();
-        
-        renderSpace(sf::Vector3f(getPosition().x, getPosition().y, 0), getRotation(), 0, angularVelocity * 0.07);
-
-        window.popGLStates();
+        renderSpace(window, sf::Vector3f(getPosition().x, getPosition().y, 0), getRotation(), 0, angularVelocity * 0.07);
     }
 }
 

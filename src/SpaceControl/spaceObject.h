@@ -26,9 +26,12 @@ public:
     float angularVelocity;
     //Orbit physics
     P<Planet> orbitTarget;
+    float orbitDistanceGravetational;   //Orbits can have a different gravetational orbit then a real orbit distance. This allows for putting objects in formation in orbit.
     float orbitDistance;
     float orbitAngle;
     bool orbitPrograde;
+    
+    bool canTarget;
 
     SpaceObject();
     virtual ~SpaceObject() {}
@@ -41,7 +44,7 @@ public:
     }
     virtual void render3D(RenderInfo* info) {}
     
-    void setOrbit(Planet* target, float distance, float angle);
+    void setOrbit(P<Planet> target, float distance, float angle);
     
     sf::Vector2f getPosition() const
     {

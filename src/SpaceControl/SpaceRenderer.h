@@ -23,6 +23,6 @@ public:
 extern sf::Shader* lightShader;
 extern std::vector<NebulaInfo> nebulaInfo;
 
-void renderSpace(sf::Vector3f cameraPosition, float yaw, float pitch, float roll);
+void renderSpace(sf::RenderTarget& window, sf::Vector3f cameraPosition, float yaw, float pitch, float roll);
 
 #endif//SPACE_RENDERER_H

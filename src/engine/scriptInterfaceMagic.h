@@ -63,6 +63,25 @@ template<class T> struct convert<T*>
         //printf("ObjParam: %p\n", ptr);
     }
 };
+
+template<class T> struct convert< P<T> >
+//TODO: Possible addition, make sure T is a subclass of PObject
+{
+    static void param(lua_State* L, int& idx, P<T>& ptr)
+    {
+        P<PObject>** p = static_cast< P<PObject>** >(lua_touserdata(L, idx++));
+        if (p == NULL)
+        {
+            ptr = NULL;
+            const char *msg = lua_pushfstring(L, "Object expected, got %s", luaL_typename(L, idx-1));
+            luaL_argerror(L, idx-1, msg);
+            return;
+        }
+        ptr = **p;
+        //printf("ObjParam: %p\n", ptr);
+    }
+};
+
 //Specialized template for const char* so we can convert lua strings to C strings. This overrules the general T* template for const char*
 template<> void convert<const char*>::param(lua_State* L, int& idx, const char*& str);
 template<> void convert<std::string>::param(lua_State* L, int& idx, std::string& str);

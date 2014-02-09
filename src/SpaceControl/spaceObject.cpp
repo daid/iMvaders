@@ -17,6 +17,7 @@ SpaceObject::SpaceObject()
 : alwaysVisible(false), angularVelocity(0)
 {
     physics = Newtonian;
+    canTarget = false;
     
     spaceObjectList.push_back(this);
     textureManager.setTexture(sprite, "RadarBlip");
@@ -37,7 +38,7 @@ void SpaceObject::update(float delta)
         {
             physics = Newtonian;
         }else{
-            float timeForOrbit = orbitTarget->calcOrbitTime(orbitDistance);
+            float timeForOrbit = orbitTarget->calcOrbitTime(orbitDistanceGravetational);
             if (orbitPrograde)
             {
                 orbitAngle += delta / timeForOrbit * 360.0f;
@@ -55,14 +56,16 @@ void SpaceObject::update(float delta)
     setRotation(getRotation() + angularVelocity * delta);
 }
 
-void SpaceObject::setOrbit(Planet* target, float distance, float angle)
+void SpaceObject::setOrbit(P<Planet> target, float distance, float angle)
 {
     physics = Orbit;
     orbitTarget = target;
     orbitDistance = abs(distance);
+    orbitDistanceGravetational = orbitDistance;
     orbitAngle = angle;
     orbitPrograde = distance > 0;
-    SpaceObject::update(engine->getElapsedTime());//Call the update to set the position right now.
+    SpaceObject::update(0);//Call the update to set the position right now.
+    //SpaceObject::update(engine->getElapsedTime());//Call the update to set the position right now.
 }
 
 sf::Vector2f SpaceObject::predictPositionAtDelta(float delta)
@@ -74,7 +77,7 @@ sf::Vector2f SpaceObject::predictPositionAtDelta(float delta)
     case Newtonian:
         return getPosition() + velocity * delta;
     case Orbit: {
-        float timeForOrbit = orbitTarget->calcOrbitTime(orbitDistance);
+        float timeForOrbit = orbitTarget->calcOrbitTime(orbitDistanceGravetational);
         float angle;
         if (orbitPrograde)
             angle = orbitAngle + delta / timeForOrbit * 360.0f;

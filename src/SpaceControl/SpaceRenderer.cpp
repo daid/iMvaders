@@ -25,8 +25,10 @@ bool renderCompare(RenderSortInfo i0, RenderSortInfo i1)
     return i0.objectDepth > i1.objectDepth;
 }
 
-void renderSpace(sf::Vector3f cameraPosition, float yaw, float pitch, float roll)
+void renderSpace(sf::RenderTarget& window, sf::Vector3f cameraPosition, float yaw, float pitch, float roll)
 {
+    window.pushGLStates();
+
     glClearDepth(1.f);
     glClear(GL_DEPTH_BUFFER_BIT);
     glDepthMask(GL_TRUE);
@@ -44,7 +46,7 @@ void renderSpace(sf::Vector3f cameraPosition, float yaw, float pitch, float roll
     glRotatef(-roll, 0,1, 0);
     glRotatef(-pitch, 0, 1, 0);
     glRotatef(-yaw, 0, 0, 1);
-    
+  
     textureManager.getTexture("Stars")->setSmooth(true);
     sf::Texture::bind(textureManager.getTexture("Stars"), sf::Texture::Pixels);
     glBegin(GL_TRIANGLE_STRIP);
@@ -167,23 +169,21 @@ void renderSpace(sf::Vector3f cameraPosition, float yaw, float pitch, float roll
         glPopMatrix();
     }
     sf::Shader::bind(NULL);
-    
     sf::Texture::bind(NULL);
     
     while(spaceDust.size() < 2000)
         spaceDust.push_back(sf::Vector3f());
     
     P<PlayerVessel> player = engine->getObject("player");
-    sf::Vector2f dustVector = player->velocity / 30.0f;
+    sf::Vector2f dustVector = player->velocity / 50.0f;
     glDepthMask(false);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE);
     glTranslatef(-cameraPosition.x,-cameraPosition.y, -cameraPosition.z);
-    glColor4f(0.7, 0.5, 0.35, 0.1);
+    glColor4f(0.7, 0.5, 0.35, 0.07);
     for(unsigned int n=0; n<spaceDust.size(); n++)
     {
-        const float maxDustDist = 250.0f;
-        const float minDustDist = 30.0f;
-        const float dustScale = 0.2f;
+        const float maxDustDist = 50.0f;
+        const float minDustDist = 10.0f;
         glPushMatrix();
         if ((spaceDust[n] - cameraPosition) > maxDustDist || (spaceDust[n] - cameraPosition) < minDustDist)
             spaceDust[n] = cameraPosition + sf::Vector3f(random(-maxDustDist, maxDustDist), random(-maxDustDist, maxDustDist), random(-maxDustDist, maxDustDist));
@@ -195,4 +195,7 @@ void renderSpace(sf::Vector3f cameraPosition, float yaw, float pitch, float roll
         glPopMatrix();
     }
     glDepthMask(true);
+
+    window.popGLStates();
+    sf::Texture::bind(NULL);
 }

@@ -5,6 +5,8 @@
 #include <string>
 #include <algorithm>
 
+#include <SFML/OpenGL.hpp>
+
 #include "SpaceRenderer.h"
 #include "Player.h"
 #include "scriptInterface.h"
@@ -31,6 +33,79 @@
 #include "MainEngines.h"
 #include "CO2Scrubber.h"
 #include "SolarPanel.h"
+
+class Asteroid : public SpaceObject
+{
+public:
+    float z;
+    
+    Asteroid()
+    {
+        sprite.setScale(0.2, 0.2);
+        z = random(-100, 100);
+    }
+    
+    virtual void render3D(RenderInfo* info)
+    {
+        sf::Texture::bind(textureManager.getTexture("Sun"), sf::Texture::Pixels);
+        sf::Shader::bind(NULL);
+        
+        glColor4f(1,1,1,1);
+        glTranslatef(0, 0, z);
+        glRotatef(sf::vector2ToAngle(getPosition() - info->cameraPosition), 0, 0, 1);
+        glBegin(GL_QUADS);
+        glTexCoord2f(  0,   0); glVertex3f(-1.5, 0,-1.5);
+        glTexCoord2f(512,   0); glVertex3f( 1.5, 0,-1.5);
+        glTexCoord2f(512, 512); glVertex3f( 1.5, 0, 1.5);
+        glTexCoord2f(  0, 512); glVertex3f(-1.5, 0, 1.5);
+        glEnd();
+    }
+};
+
+class AsteroidField : public SpaceObject
+{
+    PVector<Asteroid> asteroids;
+    
+    const static float visualDistance = 2000;
+    float radius;
+public:
+    AsteroidField()
+    {
+        radius = 200;
+        sprite.setScale(radius / 16.0, radius / 16.0);
+    }
+
+    virtual void update(float delta)
+    {
+        SpaceObject::update(delta);
+        
+        P<PlayerVessel> player = engine->getObject("player");
+        if (getPosition() - player->getPosition() < radius + visualDistance)
+        {
+            sprite.setColor(sf::Color(255,255,255, 32));
+            while(asteroids.size() < 1000)
+            {
+                Asteroid* asteroid = new Asteroid();
+                asteroid->setOrbit(orbitTarget, orbitDistanceGravetational, orbitAngle);
+                float a = random(0, 360);
+                float d = random(0, radius);
+                sf::Vector2f v = sf::vector2FromAngle(a) * d;
+                asteroid->z = random(-1.0, 1.0) * sin(M_PI / 2.0 * (1.0 - (d / radius))) * radius * 0.1;
+                asteroid->orbitDistance += v.x;
+                asteroid->orbitAngle += v.y * 360 / (M_PI * 2 * orbitDistance);
+                asteroids.push_back(asteroid);
+            }
+        }else{
+            sprite.setColor(sf::Color(255,255,255, 128));
+            foreach(Asteroid, a, asteroids)
+                a->destroy();
+        }
+    }
+};
+
+REGISTER_SCRIPT_SUBCLASS(AsteroidField, SpaceObject)
+{
+}
 
 class AIVessel: public SpaceObject
 {
@@ -123,8 +198,8 @@ int main()
     */
     ScriptObject* so = new ScriptObject("Resources/Systems/513-920.lua");
 
-    //player->velocity = sf::Vector2f(0, sun->calcOrbitVelocity(700));
-    player->setPosition(sf::Vector2f(100, 100));
+    player->setPosition(sf::Vector2f(0, 0));
+    player->velocity = sf::vector2FromAngle(sf::vector2ToAngle(player->getPosition() - sunList[0]->getPosition()) + 90) * sunList[0]->calcOrbitVelocity(sf::length(player->getPosition() - sunList[0]->getPosition()));
 
     //(new Planet("Limporyen II", 2, 512, 2000000000, sf::Vector2f(0, 0)))->setOrbit(sun, 6000, 0);
     //(new Planet("Limporyen III", 1, 512, 2000000000, sf::Vector2f(0, 0)))->setOrbit(sun, 6000, 180);
