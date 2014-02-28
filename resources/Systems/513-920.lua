@@ -3,7 +3,7 @@
 function init()
 	sun = Sun():setRadius(768):setPosition(0, 5000);
 	---[[
-	J4 = Planet():setName("Jamarkley IV"):setRadius(350):setOrbit(sun, 6000, 90);
+	J4 = Planet():setName("Jamarkley IV"):setRadius(350):setOrbit(sun, 6000 * 1000, 90);
 	E1 = Planet():setName("Exskoth I"):setType("Planet2"):setRadius(32):setOrbit(J4, 800, 0):setDensity(4000000000);
 	E2 = Planet():setName("Exskoth II"):setType("Planet2"):setRadius(32):setOrbit(J4, 800, 180):setDensity(4000000000);
 	

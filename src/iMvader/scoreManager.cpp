@@ -19,6 +19,8 @@ ScoreManager::ScoreManager()
     highscoreList[1][1].name = "JME MRV";
     highscoreList[1][2].score = 10;
     highscoreList[1][2].name = "MRV MRV";
+    
+    loadHighscore("score.list");
 }
 
 void ScoreManager::add(int points)
@@ -52,6 +54,8 @@ bool ScoreManager::isHighscore(int playerCount)
 void ScoreManager::enterHighscore(int playerCount, std::string name)
 {
     assert(playerCount > 0 && playerCount <= MAX_PLAYERS);
+    if (name.size() < 1)
+        return;
     int n=highscoreListSize-1;
     while(n>0 && highscoreList[playerCount-1][n-1].score < currentScore)
         n--;
@@ -59,6 +63,8 @@ void ScoreManager::enterHighscore(int playerCount, std::string name)
         highscoreList[playerCount-1][i] = highscoreList[playerCount-1][i-1];
     highscoreList[playerCount-1][n].score = currentScore;
     highscoreList[playerCount-1][n].name = name;
+    
+    saveHighscore("score.list");
 }
 
 int ScoreManager::getHighScore(int playerCount, int idx)
@@ -77,4 +83,40 @@ std::string ScoreManager::getHighscoreName(int playerCount, int idx)
 void ScoreManager::update(float delta)
 {
     
+}
+
+void ScoreManager::loadHighscore(std::string filename)
+{
+    FILE* f = fopen(filename.c_str(), "r");
+    if (!f)
+        return;
+    for(int p=0; p<MAX_PLAYERS; p++)
+    {
+        for(int i=0; i<highscoreListSize; i++)
+        {
+            char buffer[64];
+            if (fgets(buffer, sizeof(buffer), f))
+            {
+                highscoreList[p][i].name = buffer;
+                fgets(buffer, sizeof(buffer), f);
+                highscoreList[p][i].score = atoi(buffer);
+            }
+        }
+    }
+    fclose(f);
+}
+
+void ScoreManager::saveHighscore(std::string filename)
+{
+    FILE* f = fopen(filename.c_str(), "w");
+    if (!f)
+        return;
+    for(int p=0; p<MAX_PLAYERS; p++)
+    {
+        for(int i=0; i<highscoreListSize; i++)
+        {
+            fprintf(f, "%s\n%d\n", highscoreList[p][i].name.c_str(), highscoreList[p][i].score);
+        }
+    }
+    fclose(f);
 }

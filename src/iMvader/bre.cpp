@@ -8,6 +8,10 @@
 #include "explosion.h"
 #include "engine.h"
 
+REGISTER_SCRIPT_CLASS(BreEnemy)
+{
+}
+
 BreEnemy::BreEnemy()
 : GameEntity(), Collisionable(50.0)
 {

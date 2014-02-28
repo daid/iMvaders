@@ -36,6 +36,10 @@ public:
     std::string getHighscoreName(int playerCount, int idx);
     
     virtual void update(float delta);
+
+private:
+    void loadHighscore(std::string filename);
+    void saveHighscore(std::string filename);
 };
 
 #endif//SCORE_MANAGER_H

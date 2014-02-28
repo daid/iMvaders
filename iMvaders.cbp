@@ -40,6 +40,7 @@
 					<Add library="sfml-graphics" />
 					<Add library="sfml-system" />
 					<Add library="sfml-window" />
+					<Add library="sfml-network" />
 				</Linker>
 			</Target>
 		</Build>
