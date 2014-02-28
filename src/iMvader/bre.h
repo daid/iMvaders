@@ -27,6 +27,7 @@ public:
     float invulnerability;
     int enemySpawnCount;
     PVector<BasicEnemyBase> enemyList;
+    ScriptCallback destroyed;
 
     static const int maxHealth = 100;
     static const int normalShotDelay = 1.2;

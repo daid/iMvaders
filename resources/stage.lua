@@ -43,7 +43,23 @@ function round2Finished4()
 end
 function round2Finished5()
 	launchBasicRound();
-	OnRoundDone = launchBasicRound;
+	OnRoundDone = round3Finished;
+end
+function round3Finished()
+	launchBasicRound();
+	OnRoundDone = round4Finished;
+end
+function round4Finished()
+	Transmission():setFace("Jaime1"):setText("Incomming!"):top():transmissionDone("round4Finished2")
+end
+function round4Finished2()
+	Transmission():setFace("Daid1"):setText("Oh no!|It is him!"):top():transmissionDone("round4Finished3")
+end
+function round4Finished3()
+	Transmission():setFace("Jaime1"):setText("Kill IT!!!"):top():transmissionDone("round4Finished4")
+end
+function round4Finished4()
+	BreEnemy():destroyed("round2Finished4")
 end
 
 function setupNewRound()
@@ -57,13 +73,13 @@ function launchBasicRound()
 	setupNewRound();
 	g = EnemyGroup();
 	for n=0,7 do
-		g:add(BasicEnemy():giveShield():setTargetPosition(160 - 4 * 20 + n * 20, 50));
+		--g:add(BasicEnemy():giveShield():setTargetPosition(160 - 4 * 20 + n * 20, 50));
 	end
 	table.insert(groupList, g)
 
 	g = EnemyGroup();
 	for n=0,9 do
-		g:add(BasicEnemy():setTargetPosition(160 - 5 * 20 + n * 20, 70));
+		--g:add(BasicEnemy():setTargetPosition(160 - 5 * 20 + n * 20, 70));
 	end
 	table.insert(groupList, g)
 
@@ -75,7 +91,7 @@ function launchBasicRound()
 
 	g = EnemyGroup();
 	for n=0,3 do
-		g:add(BurstShotEnemy():setTargetPosition(160 + 4 * 20 - n * 20, 90));
+		--g:add(BurstShotEnemy():setTargetPosition(160 + 4 * 20 - n * 20, 90));
 	end
 	table.insert(groupList, g)
 end

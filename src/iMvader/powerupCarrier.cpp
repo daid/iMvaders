@@ -8,7 +8,6 @@
 #include "scriptInterface.h"
 REGISTER_SCRIPT_CLASS(PowerupCarrier)
 {
-    //REGISTER_SCRIPT_CLASS_FUNCTION(PowerupCarrier, giveShield);
     REGISTER_SCRIPT_CLASS_CALLBACK(PowerupCarrier, destroyed);
 }
 

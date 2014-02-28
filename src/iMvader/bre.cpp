@@ -10,6 +10,7 @@
 
 REGISTER_SCRIPT_CLASS(BreEnemy)
 {
+    REGISTER_SCRIPT_CLASS_CALLBACK(BreEnemy, destroyed);
 }
 
 BreEnemy::BreEnemy()
@@ -204,6 +205,8 @@ bool BreEnemy::takeDamage(sf::Vector2f position, int damageType, int damageAmoun
     {
         health = 0;
         destroy();
+        foreach(BasicEnemyBase, e, enemyList)
+            e->destroy();
         P<ScoreManager>(engine->getObject("score"))->add(500);
         for(unsigned int n=0; n<20; n++)
         {
