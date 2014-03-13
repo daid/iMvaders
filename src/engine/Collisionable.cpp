@@ -32,6 +32,10 @@ void Collisionable::setCollisionLineVector(sf::Vector2f lineVector)
     collisionLineVector = lineVector;
     collisionType = CT_Line;
 }
+sf::Vector2f Collisionable::getCollisionLineVector()
+{
+    return collisionLineVector;
+}
 
 void Collisionable::collision(Collisionable* target)
 {

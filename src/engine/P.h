@@ -23,7 +23,7 @@ class PObject: public sf::NonCopyable
 {
 private:
     int refCount;
-    bool destroyed;
+    bool _destroyed_flag;
 
     //Make the P template a friend so it can access the private refCount and destroyed.
     template<typename> friend class P;
@@ -38,13 +38,13 @@ public:
         assert(abs(diff) > 10000);//"Object on stack! Not allowed!"
 #endif
         refCount = 0;
-        destroyed = false;
+        _destroyed_flag = false;
     }
     virtual ~PObject() {}
 
     void destroy()
     {
-        destroyed = true;
+        _destroyed_flag = true;
     }
 };
 
@@ -90,12 +90,12 @@ public:
     T* operator->() const
     {
 #ifdef DEBUG
-        if(!ptr || ptr->destroyed)
+        if(!ptr || ptr->_destroyed_flag)
         {
             printf("Oh noes!\n");
         }
         assert(ptr);
-        assert(!ptr->destroyed);
+        assert(!ptr->_destroyed_flag);
 #endif
         return ptr;
     }
@@ -119,7 +119,7 @@ public:
 protected:
     void check_release()
     {
-        if (ptr && ptr->destroyed)
+        if (ptr != NULL && ptr->_destroyed_flag)
             release();
     }
 

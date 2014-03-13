@@ -14,6 +14,7 @@ enum BreState
     BS_MouthClose,
 };
 
+class BreLaser;
 class BreEnemy: public GameEntity, public Collisionable
 {
 public:
@@ -26,10 +27,12 @@ public:
     float mouthPos;
     float invulnerability;
     int enemySpawnCount;
+    bool moneyshieldDeployed;
     PVector<BasicEnemyBase> enemyList;
+    P<BreLaser> laser[2];
     ScriptCallback destroyed;
 
-    static const int maxHealth = 100;
+    static const int maxHealth = 10;
     static const int normalShotDelay = 1.2;
     static const int laserChargeTime = 2.0;
 
@@ -45,4 +48,34 @@ public:
 
     virtual bool takeDamage(sf::Vector2f position, int damageType, int damageAmount);
 };
+
+class BreLaser: public GameEntity, public Collisionable
+{
+    P<BreEnemy> owner;
+public:
+    BreLaser(P<BreEnemy> owner);
+
+    virtual void update(float delta);
+    virtual void render(sf::RenderTarget& window);
+
+    virtual void collision(Collisionable* other);
+};
+
+class MoneyShield: public GameEntity, public Collisionable
+{
+    float angle;
+    float distance;
+    float endDistance;
+    bool counterClockwise;
+    
+    P<BreEnemy> owner;
+public:
+    MoneyShield(P<BreEnemy> owner, float startAngle, float endDistance, bool counterClockwise);
+    
+    virtual void update(float delta);
+    virtual void render(sf::RenderTarget& window);
+    
+    virtual bool takeDamage(sf::Vector2f position, int damageType, int damageAmount);
+};
+
 #endif // BRE_H

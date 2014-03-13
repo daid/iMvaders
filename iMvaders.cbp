@@ -22,6 +22,7 @@
 					<Add library="sfml-graphics-d" />
 					<Add library="sfml-main-d" />
 					<Add library="sfml-system-d" />
+					<Add library="sfml-network-d" />
 					<Add library="opengl32" />
 					<Add directory="../../SFML-2.1/lib" />
 				</Linker>

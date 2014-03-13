@@ -6,6 +6,7 @@
 #include "textureManager.h"
 #include "scoreManager.h"
 #include "explosion.h"
+#include "transmission.h"
 #include "engine.h"
 
 REGISTER_SCRIPT_CLASS(BreEnemy)
@@ -25,8 +26,8 @@ BreEnemy::BreEnemy()
     shotDelay = 0;
     invulnerability = 0;
     moveSpeed = 60;
+    moneyshieldDeployed = false;
     health = maxHealth;
-    //setCollisionRadius(50.f);
 }
 
 BreEnemy::~BreEnemy()
@@ -60,9 +61,9 @@ void BreEnemy::update(float delta)
         {
             shotDelay -= delta;
         }else{
-            if (random(0, 100) < 30)
+            if (random(0, 100) < 30 || 1)
             {
-                if (random(0, 100) < 50)
+                if (random(0, 100) < 50 || 1)
                 {
                     state = BS_LaserCharge;
                     shotDelay = laserChargeTime;
@@ -83,6 +84,8 @@ void BreEnemy::update(float delta)
             shotDelay -= delta;
         }else{
             state = BS_LaserFire;
+            laser[0] = new BreLaser(this);
+            laser[1] = new BreLaser(this);
             shotDelay = 0.5;
         }
         break;
@@ -95,6 +98,8 @@ void BreEnemy::update(float delta)
         {
             shotDelay = normalShotDelay;
             state = BS_MoveLeftRight;
+            laser[0]->destroy();
+            laser[1]->destroy();
         }
         break;
     case BS_MouthOpen:
@@ -132,6 +137,17 @@ void BreEnemy::update(float delta)
             state = BS_MoveLeftRight;
         }
     }
+    if (laser[0])
+    {
+        laser[0]->setPosition(getPosition() + sf::Vector2f(18, 7));
+        laser[0]->setCollisionLineVector(sf::vector2FromAngle(-shotDelay*30.0f) * -240.0f);
+    }
+    if (laser[1])
+    {
+        laser[1]->setPosition(getPosition() + sf::Vector2f(-18, 7));
+        laser[1]->setCollisionLineVector(sf::vector2FromAngle(shotDelay*30.0f) * -240.0f);
+    }
+    
     mouth.setPosition(sprite.getPosition() + sf::Vector2f(0, mouthPos));
     setPosition(sprite.getPosition()); // Set position for collision
     foreach(BasicEnemyBase, e, enemyList)
@@ -160,20 +176,6 @@ void BreEnemy::render(sf::RenderTarget& window)
     }
     window.draw(sprite);
     window.draw(mouth);
-
-    if (state == BS_LaserFire)
-    {
-        sf::RectangleShape laser(sf::Vector2f(6, 240));
-        laser.setOrigin(3, 0);
-        laser.setFillColor(sf::Color(255,0,0,192));
-        laser.setRotation(-shotDelay*30.0);
-        laser.setPosition(sprite.getPosition() + sf::Vector2f(18, 7));
-        window.draw(laser);
-
-        laser.setRotation(shotDelay*30.0);
-        laser.setPosition(sprite.getPosition() + sf::Vector2f(-18, 7));
-        window.draw(laser);
-    }
 }
 
 void BreEnemy::postRender(sf::RenderTarget& window)
@@ -200,6 +202,19 @@ bool BreEnemy::takeDamage(sf::Vector2f position, int damageType, int damageAmoun
 
     if (state != BS_FlyIn)
         health -= damageAmount;
+    if (health < maxHealth / 2 && !moneyshieldDeployed)
+    {
+        moneyshieldDeployed = true;
+        P<Transmission> t = new Transmission();
+        t->setText("Deploying corperate|money shield");
+        t->top();
+        
+        for(float f=0; f<=360; f+=20)
+        {
+            new MoneyShield(this, f, 100, false);
+            new MoneyShield(this, f, 80, true);
+        }
+    }
 
     if (health <= 0)
     {
@@ -214,5 +229,77 @@ bool BreEnemy::takeDamage(sf::Vector2f position, int damageType, int damageAmoun
         }
     }
     invulnerability = 0.25;
+    return true;
+}
+
+BreLaser::BreLaser(P<BreEnemy> owner)
+: Collisionable(sf::Vector2f(0, 240))
+{
+    this->owner = owner;
+}
+
+void BreLaser::update(float delta)
+{
+    if (!owner)
+        destroy();
+}
+
+void BreLaser::render(sf::RenderTarget& window)
+{
+    sf::RectangleShape laser(sf::Vector2f(6, 240));
+    laser.setOrigin(3, 240);
+    laser.setFillColor(sf::Color(255,0,0,192));
+    laser.setRotation(sf::vector2ToAngle(getCollisionLineVector()));
+    laser.setPosition(getPosition());
+    window.draw(laser);
+}
+
+void BreLaser::collision(Collisionable* other)
+{
+    GameEntity* e = dynamic_cast<GameEntity*>(other);
+    e->takeDamage(getPosition(), 1, 1);
+}
+
+MoneyShield::MoneyShield(P<BreEnemy> owner, float startAngle, float endDistance, bool counterClockwise)
+: Collisionable(10), endDistance(endDistance), counterClockwise(counterClockwise)
+{
+    this->owner = owner;
+    angle = startAngle;
+    distance = 0;
+    textureManager.setTexture(sprite, "money");
+}
+
+void MoneyShield::update(float delta)
+{
+    if (!owner)
+    {
+        destroy();
+        return;
+    }
+    
+    if (counterClockwise)
+        angle -= delta * 50.0f;
+    else
+        angle += delta * 50.0f;
+    distance += delta * endDistance;
+    if (distance > endDistance)
+        distance = endDistance;
+
+    setPosition(owner->getPosition() + sf::vector2FromAngle(angle) * distance);
+}
+
+void MoneyShield::render(sf::RenderTarget& window)
+{
+    sprite.setPosition(getPosition());
+    sprite.setRotation(angle);
+    
+    window.draw(sprite);
+}
+
+bool MoneyShield::takeDamage(sf::Vector2f position, int damageType, int damageAmount)
+{
+    if (damageType >= 0)
+        return false;
+    destroy();
     return true;
 }

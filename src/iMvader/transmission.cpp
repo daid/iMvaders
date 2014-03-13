@@ -17,7 +17,7 @@ REGISTER_SCRIPT_CLASS(Transmission)
 
 Transmission::Transmission()
 {
-    faceName = "Jaime1";
+    faceName = "";
     text = "NO TEXT SET";
     transmissionTime = 0;
     positionY = 160;
@@ -50,10 +50,14 @@ void Transmission::postRender(sf::RenderTarget& window)
     transmissionShape.setOutlineColor(sf::Color::White);
     transmissionShape.setOutlineThickness(1);
     window.draw(transmissionShape);
-    face.setPosition(21+30, positionY+1+30);
-    window.draw(face);
-    
-    drawText(window, 23 + 60, positionY+1, text.substr(0, int(transmissionTime * charsPerSecond)), align_left);
+    if (faceName.size() > 0)
+    {
+        face.setPosition(21+30, positionY+1+30);
+        window.draw(face);
+        drawText(window, 23 + 60, positionY+1, text.substr(0, int(transmissionTime * charsPerSecond)), align_left);
+    }else{
+        drawText(window, 23, positionY+1, text.substr(0, int(transmissionTime * charsPerSecond)), align_left);
+    }
 }
 
 void Transmission::update(float delta)
@@ -65,10 +69,13 @@ void Transmission::update(float delta)
     if (pc1->button(fireButton) || pc2->button(fireButton))
         transmissionTime += delta * 4;
     
-    if (transmissionTime * charsPerSecond < text.length())
-        textureManager.setTexture(face, faceName.c_str(), fmodf(transmissionTime * charsPerSecond, 2.0f) < 1.0f ? 1 : 0);
-    else
-        textureManager.setTexture(face, faceName.c_str(), 0);
+    if (faceName.size() > 0)
+    {
+        if (transmissionTime * charsPerSecond < text.length())
+            textureManager.setTexture(face, faceName.c_str(), fmodf(transmissionTime * charsPerSecond, 2.0f) < 1.0f ? 1 : 0);
+        else
+            textureManager.setTexture(face, faceName.c_str(), 0);
+    }
 
     if (transmissionTime > float(text.length()) / charsPerSecond + extraDelayBeforeDone || pc1->button(skipButton) || pc2->button(skipButton))
     {

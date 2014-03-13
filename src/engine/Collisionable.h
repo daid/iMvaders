@@ -26,6 +26,7 @@ public:
     
     void setCollisionRadius(float radius);
     void setCollisionLineVector(sf::Vector2f lineVector);
+    sf::Vector2f getCollisionLineVector();
     void setPosition(sf::Vector2f v);
     sf::Vector2f getPosition();
 
