@@ -61,9 +61,9 @@ void BreEnemy::update(float delta)
         {
             shotDelay -= delta;
         }else{
-            if (random(0, 100) < 30 || 1)
+            if (random(0, 100) < 30)
             {
-                if (random(0, 100) < 50 || 1)
+                if (random(0, 100) < 50)
                 {
                     state = BS_LaserCharge;
                     shotDelay = laserChargeTime;
@@ -220,6 +220,7 @@ bool BreEnemy::takeDamage(sf::Vector2f position, int damageType, int damageAmoun
     {
         health = 0;
         destroy();
+        destroyed();
         foreach(BasicEnemyBase, e, enemyList)
             e->destroy();
         P<ScoreManager>(engine->getObject("score"))->add(500);

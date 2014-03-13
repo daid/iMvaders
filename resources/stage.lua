@@ -73,13 +73,13 @@ function launchBasicRound()
 	setupNewRound();
 	g = EnemyGroup();
 	for n=0,7 do
-		--g:add(BasicEnemy():giveShield():setTargetPosition(160 - 4 * 20 + n * 20, 50));
+		g:add(BasicEnemy():giveShield():setTargetPosition(160 - 4 * 20 + n * 20, 50));
 	end
 	table.insert(groupList, g)
 
 	g = EnemyGroup();
 	for n=0,9 do
-		--g:add(BasicEnemy():setTargetPosition(160 - 5 * 20 + n * 20, 70));
+		g:add(BasicEnemy():setTargetPosition(160 - 5 * 20 + n * 20, 70));
 	end
 	table.insert(groupList, g)
 
@@ -91,7 +91,7 @@ function launchBasicRound()
 
 	g = EnemyGroup();
 	for n=0,3 do
-		--g:add(BurstShotEnemy():setTargetPosition(160 + 4 * 20 - n * 20, 90));
+		g:add(BurstShotEnemy():setTargetPosition(160 + 4 * 20 - n * 20, 90));
 	end
 	table.insert(groupList, g)
 end
