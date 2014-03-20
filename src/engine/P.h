@@ -32,7 +32,7 @@ public:
     {
 #ifdef DEBUG
         int stackTest = 0;
-        ptrdiff_t diff = &stackTest - (int*)this;
+        std::ptrdiff_t diff = &stackTest - (int*)this;
         //Check if this object is created on the stack, PObjects should not be created on the stack, as they manage
         // their own destruction.
         assert(abs(diff) > 10000);//"Object on stack! Not allowed!"
@@ -110,7 +110,7 @@ public:
         check_release();
         return ptr != NULL;
     }
-    
+
     template<class T2> operator P<T2>()
     {
         return dynamic_cast<T2*>(**this);
@@ -152,7 +152,7 @@ public:
                 return true;
         return false;
     }
-    
+
     void remove(P<T> obj)
     {
         for(unsigned int n=0; n<std::vector<P<T> >::size(); n++)
