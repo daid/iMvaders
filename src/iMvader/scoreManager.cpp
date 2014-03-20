@@ -1,3 +1,4 @@
+#include <string.h>
 #include "scoreManager.h"
 
 ScoreManager score;
@@ -97,6 +98,8 @@ void ScoreManager::loadHighscore(std::string filename)
             char buffer[64];
             if (fgets(buffer, sizeof(buffer), f))
             {
+                while(strlen(buffer) > 0 && buffer[strlen(buffer)-1] <= ' ')
+                    buffer[strlen(buffer)-1] = '\0';
                 highscoreList[p][i].name = buffer;
                 fgets(buffer, sizeof(buffer), f);
                 highscoreList[p][i].score = atoi(buffer);
