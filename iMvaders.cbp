@@ -218,6 +218,8 @@
 		<Unit filename="src/iMvader/bullet.h" />
 		<Unit filename="src/iMvader/curve.cpp" />
 		<Unit filename="src/iMvader/curve.h" />
+		<Unit filename="src/iMvader/digitizer.cpp" />
+		<Unit filename="src/iMvader/digitizer.h" />
 		<Unit filename="src/iMvader/explosion.cpp" />
 		<Unit filename="src/iMvader/explosion.h" />
 		<Unit filename="src/iMvader/gameState.cpp" />
@@ -232,6 +234,8 @@
 		<Unit filename="src/iMvader/powerup.h" />
 		<Unit filename="src/iMvader/powerupCarrier.cpp" />
 		<Unit filename="src/iMvader/powerupCarrier.h" />
+		<Unit filename="src/iMvader/replicatorZ18.cpp" />
+		<Unit filename="src/iMvader/replicatorZ18.h" />
 		<Unit filename="src/iMvader/scoreManager.cpp" />
 		<Unit filename="src/iMvader/scoreManager.h" />
 		<Unit filename="src/iMvader/textDraw.cpp" />

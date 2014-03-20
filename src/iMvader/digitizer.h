@@ -1,5 +1,5 @@
-#ifndef BASICENEMYBASE_H
-#define BASICENEMYBASE_H
+#ifndef DIGITIZER_H
+#define DIGITIZER_H
 
 #include "gameEntity.h"
 #include "Collisionable.h"
