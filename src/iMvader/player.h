@@ -9,6 +9,7 @@
 
 const int fireButton = 0;
 const int nukeButton = 1;
+const int chargeShotButton = 2;
 const int skipButton = 3;
 
 class PlayerInfo
@@ -52,7 +53,10 @@ public:
     PlayerInfo* info;
     sf::Vector2f velocity;
     int type;
-    float fireCooldown;
+    float fireCooldown, nukeCooldown;
+    float chargeShot;
+    static const float minChargeShot = 0.3;
+    static const float maxChargeShot = 2.0;
     float invulnerability;
     int health;
 public:

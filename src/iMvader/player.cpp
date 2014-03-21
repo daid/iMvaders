@@ -2,6 +2,7 @@
 
 #include "player.h"
 #include "textureManager.h"
+#include "vectorUtils.h"
 #include "bullet.h"
 #include "explosion.h"
 #include "nuke.h"
@@ -11,6 +12,8 @@ PlayerCraft::PlayerCraft(PlayerController* controller, PlayerInfo* info, int typ
 {
     invulnerability = 1.0;
     fireCooldown = 0.4;
+    nukeCooldown = 2.0;
+    chargeShot = 0;
     health = 2;
     if (type == 0)
         textureManager.setTexture(sprite, "player1");
@@ -27,6 +30,8 @@ void PlayerCraft::update(float delta)
 {
     if (fireCooldown > 0)
         fireCooldown -= delta;
+    if (nukeCooldown > 0)
+        nukeCooldown -= delta;
     if (invulnerability > 0)
         invulnerability -= delta;
 
@@ -51,7 +56,21 @@ void PlayerCraft::update(float delta)
     if (getPosition().y > 230)
         setPosition(sf::Vector2f(getPosition().x, 230));
 
-    if (controller->button(fireButton) && fireCooldown <= 0 && invulnerability <= 0)
+    if (controller->button(chargeShotButton))
+    {
+        chargeShot += delta;
+        if (chargeShot > maxChargeShot) chargeShot = maxChargeShot;
+    }else if (chargeShot > 0)
+    {
+        int shots = 5 * (chargeShot - minChargeShot) / (maxChargeShot - minChargeShot);
+        chargeShot = 0.0;
+        for(int n=0; n<=shots; n++)
+        {
+            new Bullet(getPosition(), -1 - type, (float(n) - float(shots) / 2.0) / float(shots) * 15.0);
+        }
+    }
+    
+    if (controller->button(fireButton) && fireCooldown <= 0 && invulnerability <= 0 && !controller->button(chargeShotButton))
     {
         if (type == 0)
         {
@@ -72,9 +91,9 @@ void PlayerCraft::update(float delta)
         if (type == 1 && fireCooldown > 0.25)
             fireCooldown = 0.25;
     }
-    if (fireCooldown <= 0 && controller->button(nukeButton) && info->nukes > 0)
+    if (nukeCooldown <= 0 && controller->button(nukeButton) && info->nukes > 0 && !controller->button(chargeShotButton))
     {
-        fireCooldown = 2.0;
+        nukeCooldown = 2.0;
         info->nukes -= 1;
         new Nuke(getPosition(), sf::Vector2f(0.0, -150.0), 10.0, type);
     }
@@ -87,6 +106,20 @@ void PlayerCraft::render(sf::RenderTarget& window)
     sprite.setPosition(getPosition());
     sprite.setRotation(velocity.x / 10.0);
     window.draw(sprite);
+    
+    if (chargeShot > minChargeShot)
+    {
+        float r = 0.5 + 3 * (chargeShot - minChargeShot) / (maxChargeShot - minChargeShot);
+        sf::CircleShape circle(r, random(3, 5));
+        circle.setOrigin(r, r);
+        if (type == 0)
+            circle.setFillColor(sf::Color(24, 161, 212, 200));
+        else
+            circle.setFillColor(sf::Color(231, 24, 118, 200));
+        circle.setRotation(random(0, 360));
+        circle.setPosition(getPosition() + sf::vector2FromAngle(velocity.x / 10.0f) * 10.0f);
+        window.draw(circle);
+    }
 }
 
 bool PlayerCraft::takeDamage(sf::Vector2f position, int damageType, int damageAmount)

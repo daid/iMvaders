@@ -237,7 +237,7 @@ bool BreEnemy::takeDamage(sf::Vector2f position, int damageType, int damageAmoun
             new Explosion(sprite.getPosition() + sf::Vector2f(random(-50, 50), random(-80, 80)), 10);
         }
     }
-    invulnerability = 0.25;
+    invulnerability = 0.10;
     return true;
 }
 
