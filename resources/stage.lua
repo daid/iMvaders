@@ -99,11 +99,7 @@ function round2Finished9()
 	Transmission():setFace("Jaime1"):setText("It is on a crash|course towards us"):top():transmissionDone("round2Finished10")
 end
 function round2Finished10()
-	Transmission():setFace("Jaime1"):setText("Blast your way|trough it!"):top():transmissionDone("Delay():time(25):call('round3joke')")
-end
-
-function round3joke()
-	Transmission():setFace("Daid1"):setText("This has to be the|lamest enemy in|this game."):bottom()
+	Transmission():setFace("Jaime1"):setText("Blast your way|trough it!"):top()
 end
 
 --[[ ROUND 3 --]]
@@ -116,7 +112,7 @@ end
 --[[ ROUND 3 finished --]]
 
 function round3Finished()
-	Transmission():setFace("Daid1"):setText("More enemies inbound."):transmissionDone("Delay():time(0.5):call('launchRound4')")
+	Transmission():setFace("Daid1"):setText("More enemies inbound."):top():transmissionDone("Delay():time(0.5):call('launchRound4')")
 end
 
 function launchRound4()
