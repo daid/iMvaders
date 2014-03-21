@@ -275,7 +275,7 @@ MoneyShield::MoneyShield(P<BreEnemy> owner, float startAngle, float endDistance,
     this->owner = owner;
     angle = startAngle;
     distance = 0;
-    textureManager.setTexture(sprite, "money");
+    textureManager.setTexture(sprite, "Money");
 }
 
 void MoneyShield::update(float delta)
