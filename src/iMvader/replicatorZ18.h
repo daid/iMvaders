@@ -12,6 +12,8 @@ public:
     
     ReplicatorZ18();
     virtual ~ReplicatorZ18() {}
+
+    virtual void update(float delta);
 };
 
 class ReplicatorZ18Part : public GameEntity, public Collisionable

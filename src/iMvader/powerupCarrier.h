@@ -9,6 +9,7 @@ class PowerupCarrier: public GameEntity, public Collisionable
 {
 private:
     float speed;
+    float direction;
 public:
     ScriptCallback destroyed;
     
@@ -18,6 +19,8 @@ public:
 
     virtual bool takeDamage(sf::Vector2f position, int damageType, int damageAmount);
     virtual void render(sf::RenderTarget& window);
+    
+    void setDirection(int dir);
 };
 
 #endif//POWERUP_CARRIER_H

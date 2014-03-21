@@ -147,6 +147,15 @@ void ScriptCallback::operator() ()
     lua_State* L = script->L;
     
     lua_getglobal(L, functionName.c_str());
+    if (lua_isnil(L, -1))
+    {
+        if (luaL_loadstring(L, functionName.c_str()))
+        {
+            printf("ERROR(%s): %s\n", functionName.c_str(), luaL_checkstring(L, -1));
+            lua_pop(L, 1);
+            return;
+        }
+    }
     if (lua_pcall(L, 0, 0, 0))
     {
         printf("ERROR(%s): %s\n", functionName.c_str(), luaL_checkstring(L, -1));

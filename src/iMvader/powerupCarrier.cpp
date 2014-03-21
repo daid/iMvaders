@@ -8,12 +8,14 @@
 #include "scriptInterface.h"
 REGISTER_SCRIPT_CLASS(PowerupCarrier)
 {
+    REGISTER_SCRIPT_CLASS_FUNCTION(PowerupCarrier, setDirection);
     REGISTER_SCRIPT_CLASS_CALLBACK(PowerupCarrier, destroyed);
 }
 
 PowerupCarrier::PowerupCarrier()
 : GameEntity(), Collisionable(12.0)
 {
+    direction = 1.0;
     speed = 40;
     textureManager.setTexture(sprite, "replicator2", 0);
     setPosition(sf::Vector2f(-20, 0));
@@ -23,10 +25,25 @@ PowerupCarrier::~PowerupCarrier()
 {
 }
 
+void PowerupCarrier::setDirection(int dir)
+{
+    if (dir > 0)
+    {
+        setPosition(sf::Vector2f(-20, 0));
+        direction = 1.0;
+    }else{
+        setPosition(sf::Vector2f(340, 0));
+        direction = -1.0;
+    }
+}
+
 void PowerupCarrier::update(float delta)
 {
-    setPosition(sf::Vector2f(getPosition().x + delta * speed, sin(getPosition().x / 30) * 30 + 50));
-    if (getPosition().x > 320 + 20)
+    if (direction > 0)
+        setPosition(sf::Vector2f(getPosition().x + delta * speed, sin(getPosition().x / 30) * 30 + 50));
+    else
+        setPosition(sf::Vector2f(getPosition().x - delta * speed, sin(getPosition().x / 30 + M_PI) * 30 + 50));
+    if ((direction > 0 && getPosition().x > 320 + 20) || (direction < 0 && getPosition().x < -20))
     {
         destroyed();
         destroy();

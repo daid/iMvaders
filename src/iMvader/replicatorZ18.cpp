@@ -17,10 +17,19 @@ ReplicatorZ18::ReplicatorZ18()
         for(unsigned int x=0; x<20; x++)
         {
             P<ReplicatorZ18Part> part = new ReplicatorZ18Part(this, x + y * 20);
-            part->setPosition(sf::Vector2f(x * 16, float(y) * 15.5 - 34.0 * 16.0));
+            part->setPosition(sf::Vector2f(x * 16, float(y) * 15 - 34.0 * 16.0));
             parts.push_back(part);
         }
     }
+}
+
+void ReplicatorZ18::update(float delta)
+{
+    int cnt = 0;
+    foreach(ReplicatorZ18Part, p, parts)
+        cnt++;
+    if (cnt == 0)
+        destroy();
 }
 
 ReplicatorZ18Part::ReplicatorZ18Part(P<ReplicatorZ18> owner, int index)
@@ -32,7 +41,7 @@ ReplicatorZ18Part::ReplicatorZ18Part(P<ReplicatorZ18> owner, int index)
 
 void ReplicatorZ18Part::update(float delta)
 {
-    setPosition(getPosition() + sf::Vector2f(0, 10) * delta);
+    setPosition(getPosition() + sf::Vector2f(0, 15) * delta);
     if (getPosition().y > 260)
         destroy();
 }
@@ -46,8 +55,8 @@ void ReplicatorZ18Part::render(sf::RenderTarget& window)
 void ReplicatorZ18Part::collision(Collisionable* other)
 {
     GameEntity* e = dynamic_cast<GameEntity*>(other);
-    if (e)
-        e->takeDamage(getPosition(), 0, 1);
+    if (e && e->takeDamage(getPosition(), 0, 1))
+        destroy();
 }
 
 bool ReplicatorZ18Part::takeDamage(sf::Vector2f position, int damageType, int damageAmount)

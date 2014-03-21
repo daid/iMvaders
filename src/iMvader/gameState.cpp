@@ -19,6 +19,7 @@ public:
     char name[MAX_PLAYERS][4];
     bool done[MAX_PLAYERS];
     int playerCount;
+    float timeout;
     
     HighscoreEntry(int playerCount)
     : playerCount(playerCount)
@@ -29,6 +30,7 @@ public:
             done[p] = false;
         }
         memset(name, 0, sizeof(name));
+        timeout = 120.0;
     }
 
     virtual void update(float delta)
@@ -89,7 +91,16 @@ public:
                 pos[p].y = 0;
             if(pos[p].y > 4)
                 pos[p].y = 4;
-        } 
+        }
+        
+        if (timeout > 0)
+        {
+            timeout -= delta;
+        }else{
+            name[0][0] = '\0';
+            name[1][0] = '\0';
+            ready = true;
+        }
 
         if (ready)
         {
@@ -104,7 +115,8 @@ public:
                 finalName += " ";
                 finalName += name[p];
             }
-            score->enterHighscore(playerCount, finalName);
+            if (finalName.length() > 1)
+                score->enterHighscore(playerCount, finalName);
             score->reset();
             new MainMenu();
         }

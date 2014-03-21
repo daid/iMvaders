@@ -39,7 +39,7 @@ void Transmission::top()
 
 void Transmission::bottom()
 {
-    positionY = 20;
+    positionY = 160;
 }
 
 void Transmission::postRender(sf::RenderTarget& window)
