@@ -228,6 +228,7 @@
 		<Unit filename="src/iMvader/mainMenu.cpp" />
 		<Unit filename="src/iMvader/mainMenu.h" />
 		<Unit filename="src/iMvader/nuke.cpp" />
+		<Unit filename="src/iMvader/objectListWatcher.cpp" />
 		<Unit filename="src/iMvader/player.cpp" />
 		<Unit filename="src/iMvader/player.h" />
 		<Unit filename="src/iMvader/powerup.cpp" />
