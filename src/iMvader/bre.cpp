@@ -164,10 +164,16 @@ void BreEnemy::update(float delta)
 
 void BreEnemy::render(sf::RenderTarget& window)
 {
-    if ((fmodf(invulnerability, 4.0/60) > 2.0/60.0) || (state == BS_LaserCharge && (fmodf(shotDelay, 2.0/60.0) > 1.0/60.0)))
+    if (fmodf(invulnerability, 4.0/60) > 2.0/60.0)
     {
         sprite.setColor(sf::Color(212, 0, 0));
         mouth.setColor(sf::Color(212, 0, 0));
+    }
+    else if (state == BS_LaserCharge)
+    {
+        float f = (shotDelay / laserChargeTime);
+        sprite.setColor(sf::Color(212, 128 * f, 128 * f));
+        mouth.setColor(sf::Color(212, 128 * f, 128 * f));
     }
     else
     {
@@ -180,6 +186,8 @@ void BreEnemy::render(sf::RenderTarget& window)
 
 void BreEnemy::postRender(sf::RenderTarget& window)
 {
+    if (state == BS_FlyIn)
+        return;
     sf::RectangleShape healthBarBG(sf::Vector2f(280, 10));
     healthBarBG.setFillColor(sf::Color::Transparent);
     healthBarBG.setOutlineColor(sf::Color(128, 128, 128, 128));
