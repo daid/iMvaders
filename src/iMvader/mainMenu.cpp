@@ -59,8 +59,8 @@ void MainMenu::update(float delta)
     //Magic 4 button exit combo, to quit&rebuild on the arcade machine.
     if (pc1->button(nukeButton) && pc1->button(skipButton) && pc2->button(nukeButton) && pc2->button(skipButton))
     {
-        WindowManager* windowManager = dynamic_cast<WindowManager*>(*getObject("windowManager"));
-        windowManager->window.close();
+        P<WindowManager> windowManager = engine->getObject("windowManager");
+        windowManager->close();
     }
 }
 

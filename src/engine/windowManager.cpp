@@ -71,3 +71,8 @@ void WindowManager::render()
     // Display things on screen
     window.display();
 }
+
+void WindowManager::close()
+{
+    window.close();
+}

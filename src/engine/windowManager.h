@@ -15,6 +15,7 @@ public:
     
     sf::Vector2i getVirtualSize() const { return virtualSize; }
     void render();
+    void close();
 
     friend class InputHandler;
     friend class Engine;
