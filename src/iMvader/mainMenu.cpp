@@ -10,13 +10,13 @@ MainMenu::MainMenu()
 {
     blink = 0;
     textureManager.setTexture(logoSprite, "iMvader");
-    logoSprite.setPosition(160, 60);
+    logoSprite.setPosition(160, 30);
 
     enemyGroup = new EnemyGroup();
     for(unsigned int n=0; n<10; n++)
     {
         BasicEnemyBase* e = new BasicEnemy();
-        e->setTargetPosition(sf::Vector2f(160+4*20 - n * 20, 100));
+        e->setTargetPosition(sf::Vector2f(160+4*20 - n * 20, 70));
         enemyGroup->add(e);
     }
 
@@ -69,14 +69,14 @@ void MainMenu::postRender(sf::RenderTarget& window)
     P<ScoreManager> score = engine->getObject("score");
     if (introTextPosition < introTextDelay)
     {
-        drawText(window, 160, 110, "HIGH SCORE");
+        drawText(window, 160, 70, "HIGH SCORE");
 
-        drawText(window, 80, 130, "1 PLAYER");
+        drawText(window, 80, 90, "1 PLAYER");
         for(int i=0; i<ScoreManager::highscoreListSize; i++)
-            drawText(window, 80, 130 + 16 * (i+1), score->getHighscoreName(1, i) + " " + to_string(score->getHighScore(1, i)));
-        drawText(window, 160+80, 130, "2 PLAYERS");
+            drawText(window, 80, 90 + 16 * (i+1), score->getHighscoreName(1, i) + " " + to_string(score->getHighScore(1, i)));
+        drawText(window, 160+80, 90, "2 PLAYERS");
         for(int i=0; i<ScoreManager::highscoreListSize; i++)
-            drawText(window, 160+80, 130 + 16 * (i+1), score->getHighscoreName(2, i) + " " + to_string(score->getHighScore(2, i)));
+            drawText(window, 160+80, 90 + 16 * (i+1), score->getHighscoreName(2, i) + " " + to_string(score->getHighScore(2, i)));
 
         if (int(blink * 1000) % 1000 < 500)
             drawText(window, 160, 210, "INSERT COIN");

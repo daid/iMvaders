@@ -14,7 +14,7 @@
 class ScoreManager : public Updatable
 {
 public:
-    static const int highscoreListSize = 3;
+    static const int highscoreListSize = 6;
 private:
     int displayScore;
     int currentScore;
