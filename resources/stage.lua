@@ -157,16 +157,27 @@ end
 --[[ ROUND 4 finished --]]
 
 function round4Finished()
-	Transmission():setFace("Jaime1"):setText("I am detecting a|huge ego on the radar!"):top():transmissionDone("round4Finished2")
+	Transmission():setFace("Jaime1"):setText("I am detecting a|huge ego on|the radar"):top():transmissionDone("round4Finished2")
 end
 function round4Finished2()
 	Transmission():setFace("Daid1"):setText("Oh no!|It is him!"):top():transmissionDone("round4Finished3")
 end
 function round4Finished3()
-	Transmission():setFace("Jaime1"):setText("Kill IT!!!"):top():transmissionDone("round4Finished4")
+	Transmission():setFace("Jaime1"):setText("Kill IT!!!"):top():transmissionDone("launchRound5")
 end
-function round4Finished4()
-	BreEnemy():destroyed("intro4")
+--[[ ROUND 5 finished --]]
+function launchRound5()
+	BreEnemy():destroyed("round5Finished")
+end
+--[[ ROUND 5 finished --]]
+function round5Finished()
+	Transmission():setFace("Daid1"):setText("You did it|You saved the universe."):top():transmissionDone("round5Finished2")
+end
+function round5Finished2()
+	Transmission():setFace("Henk1"):setText("Thank you|But our princess|is in another castle!"):top():transmissionDone("round5Finished3")
+end
+function round5Finished3()
+	intro4()
 end
 
 function setupNewRound()
