@@ -14,6 +14,9 @@ private:
     int stageNr;
     int playerCount;
     float startStageDelay;
+    
+    float reviveDelay;
+    const static float reviveTimeout = 3.0;
 public:
     GameState(int playerCount);
     virtual ~GameState();

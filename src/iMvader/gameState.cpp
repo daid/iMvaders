@@ -197,7 +197,9 @@ public:
 
     virtual void postRender(sf::RenderTarget& window)
     {
+        P<ScoreManager> score = engine->getObject("score");
         drawText(window, 160, 120, "GAME OVER", align_center);
+        drawText(window, 160, 140, "SCORE " + to_string(score->get()), align_center);
     }
 };
 
@@ -211,6 +213,7 @@ GameState::GameState(int playerCount)
         playerInfo[n].nukes = 1;
     }
     startStageDelay = 2.0;
+    reviveDelay = reviveTimeout;
     //Destroy all objects except ourselves.
     foreach(GameEntity, e, entityList)
         if (e != this)
@@ -222,6 +225,36 @@ GameState::~GameState() {}
 
 void GameState::update(float delta)
 {
+    if (playerCount > 1)
+    {
+        int deadPlayer = -1;
+        int livePlayer = -1;
+        for(int p=0; p<playerCount; p++)
+        {
+            if (playerInfo[p].lives < 1 && !player[p])
+                deadPlayer = p;
+            if (playerInfo[p].lives > 0 && player[p])
+                livePlayer = p;
+        }
+        
+        P<PlayerController> pc = engine->getObject("playerController1");
+        if (livePlayer == 1)
+            pc = engine->getObject("playerController2");
+        
+        if (deadPlayer > -1 && livePlayer > -1 && !pc->up() && !pc->down() && !pc->left() && !pc->right() && !pc->button(fireButton))
+        {
+            reviveDelay -= delta;
+            if (reviveDelay < 0.0)
+            {
+                playerInfo[livePlayer].lives --;
+                playerInfo[deadPlayer].lives ++;
+                reviveDelay = reviveTimeout;
+            }
+        }else{
+            reviveDelay = reviveTimeout;
+        }
+    }
+
     bool gameOver = true;
     for(int n=0; n<playerCount; n++)
     {
@@ -238,11 +271,11 @@ void GameState::update(float delta)
                 if (n)
                     pc = engine->getObject("playerController2");
                 player[n] = new PlayerCraft(*pc, &playerInfo[n], n);
-                postProcessorManager.triggerPostProcess("pixel", 1.0);
                 gameOver = false;
             }
         }
     }
+
     if (gameOver)
     {
         if (script) script->destroy();
@@ -284,5 +317,20 @@ void GameState::postRender(sf::RenderTarget& window)
         }
     }
     
+    if (reviveDelay < reviveTimeout)
+    {
+        sf::RectangleShape reviveBarBG(sf::Vector2f(40, 8));
+        reviveBarBG.setFillColor(sf::Color::Transparent);
+        reviveBarBG.setOutlineColor(sf::Color(128, 128, 128, 128));
+        reviveBarBG.setOutlineThickness(1);
+        reviveBarBG.setPosition(5, 200);
+        window.draw(reviveBarBG);
+
+        sf::RectangleShape reviveBar(sf::Vector2f(40 * (reviveTimeout - reviveDelay) / reviveTimeout, 8));
+        reviveBar.setFillColor(sf::Color(24, 161, 212, 128));
+        reviveBar.setPosition(5, 200);
+        window.draw(reviveBar);
+    }
+
     drawText(window, 310, 220, to_string(P<ScoreManager>(engine->getObject("score"))->get()), align_right);
 }

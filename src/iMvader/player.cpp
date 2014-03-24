@@ -1,5 +1,6 @@
 #include <math.h>
 
+#include "postProcessManager.h"
 #include "player.h"
 #include "textureManager.h"
 #include "vectorUtils.h"
@@ -130,7 +131,7 @@ bool PlayerCraft::takeDamage(sf::Vector2f position, int damageType, int damageAm
     invulnerability = 1.0;
     if(health <= 0)
     {
-
+        postProcessorManager.triggerPostProcess("pixel", 1.0);
         destroy();
         for(unsigned int n=0; n<4; n++)
         {
