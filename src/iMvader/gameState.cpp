@@ -316,7 +316,7 @@ void GameState::postRender(sf::RenderTarget& window)
         }
     }
     
-    if (reviveDelay < reviveTimeout)
+    if (reviveDelay < reviveTimeout - 0.5)
     {
         sf::RectangleShape reviveBarBG(sf::Vector2f(40, 8));
         reviveBarBG.setFillColor(sf::Color::Transparent);
@@ -325,7 +325,7 @@ void GameState::postRender(sf::RenderTarget& window)
         reviveBarBG.setPosition(5, 200);
         window.draw(reviveBarBG);
 
-        sf::RectangleShape reviveBar(sf::Vector2f(40 * (reviveTimeout - reviveDelay) / reviveTimeout, 8));
+        sf::RectangleShape reviveBar(sf::Vector2f(40 * ((reviveTimeout - 0.5) - reviveDelay) / (reviveTimeout - 0.5), 8));
         reviveBar.setFillColor(sf::Color(24, 161, 212, 128));
         reviveBar.setPosition(5, 200);
         window.draw(reviveBar);
