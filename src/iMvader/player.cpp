@@ -37,14 +37,17 @@ void PlayerCraft::update(float delta)
         invulnerability -= delta;
 
     velocity = velocity * 0.85f;//TODO: Proper dampening with use of delta.
+    float speed = 100;
+    if (controller->button(slowButton))
+        speed = 40;
     if (controller->left())
-        velocity = sf::Vector2f(-100.0, velocity.y);
+        velocity = sf::Vector2f(-speed, velocity.y);
     if (controller->right())
-        velocity = sf::Vector2f( 100.0, velocity.y);
+        velocity = sf::Vector2f( speed, velocity.y);
     if (controller->up())
-        velocity = sf::Vector2f(velocity.x, -100);
+        velocity = sf::Vector2f(velocity.x, -speed);
     if (controller->down())
-        velocity = sf::Vector2f(velocity.x,  100);
+        velocity = sf::Vector2f(velocity.x,  speed);
 
     setPosition(getPosition() + velocity * delta);
 

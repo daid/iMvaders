@@ -8,6 +8,7 @@
 #include "scriptInterface.h"
 REGISTER_SCRIPT_CLASS(ReplicatorZ18)
 {
+    REGISTER_SCRIPT_CLASS_FUNCTION(ReplicatorZ18, setSpeed);
 }
 
 ReplicatorZ18::ReplicatorZ18()
@@ -32,16 +33,23 @@ void ReplicatorZ18::update(float delta)
         destroy();
 }
 
+void ReplicatorZ18::setSpeed(float speed)
+{
+    foreach(ReplicatorZ18Part, p, parts)
+        p->setSpeed(speed);
+}
+
 ReplicatorZ18Part::ReplicatorZ18Part(P<ReplicatorZ18> owner, int index)
 : Collisionable(7)
 {
+    speed = 16;
     textureManager.setTexture(sprite, "Replicator_Z18", index);
     health = maxHealth;
 }
 
 void ReplicatorZ18Part::update(float delta)
 {
-    setPosition(getPosition() + sf::Vector2f(0, 15) * delta);
+    setPosition(getPosition() + sf::Vector2f(0, speed) * delta);
     if (getPosition().y > 260)
         destroy();
 }
@@ -71,4 +79,9 @@ bool ReplicatorZ18Part::takeDamage(sf::Vector2f position, int damageType, int da
         P<ScoreManager>(engine->getObject("score"))->add(5);
     }
     return true;
+}
+
+void ReplicatorZ18Part::setSpeed(float speed)
+{
+    this->speed = speed;
 }

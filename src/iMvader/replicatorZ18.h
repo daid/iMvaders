@@ -14,10 +14,13 @@ public:
     virtual ~ReplicatorZ18() {}
 
     virtual void update(float delta);
+    
+    void setSpeed(float speed);
 };
 
 class ReplicatorZ18Part : public GameEntity, public Collisionable
 {
+    float speed;
     int health;
     static const int maxHealth = 2;
 public:
@@ -29,6 +32,8 @@ public:
 
     virtual void collision(Collisionable* other);
     virtual bool takeDamage(sf::Vector2f position, int damageType, int damageAmount);
+    
+    void setSpeed(float speed);
 };
 
 #endif//REPLICATOR_Z18_H

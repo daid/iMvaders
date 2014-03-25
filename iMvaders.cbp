@@ -11,6 +11,7 @@
 				<Option object_output=".obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
+				<Option parameters="-w" />
 				<Compiler>
 					<Add option="-g" />
 					<Add option="-DDEBUG" />
@@ -229,6 +230,7 @@
 		<Unit filename="src/iMvader/mainMenu.h" />
 		<Unit filename="src/iMvader/nuke.cpp" />
 		<Unit filename="src/iMvader/objectListWatcher.cpp" />
+		<Unit filename="src/iMvader/oldPrinters.cpp" />
 		<Unit filename="src/iMvader/player.cpp" />
 		<Unit filename="src/iMvader/player.h" />
 		<Unit filename="src/iMvader/powerup.cpp" />

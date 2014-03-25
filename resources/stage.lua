@@ -1,5 +1,6 @@
 --[[ INTRO --]]
 function init()
+	playtrough = 1
 	groupList = nil
 	Transmission():setFace("Daid1"):setText("Welcome heroes|of earth"):top():transmissionDone("intro2")
 end
@@ -79,8 +80,17 @@ function round2Finished3()
 end
 function round2Finished4()
 	w = ListWatcher():delay(2.0):allDestroyed("round2Finished5")
-	w:add(PowerupCarrier():setDirection( 1))
-	w:add(PowerupCarrier():setDirection(-1))
+	if playtrough > 1 then
+		--On the 2nd playtrough only give 1 powerup instead of 2.
+		if random(0, 100) < 50 then
+			w:add(PowerupCarrier():setDirection( 1))
+		else
+			w:add(PowerupCarrier():setDirection(-1))
+		end
+	else
+		w:add(PowerupCarrier():setDirection( 1))
+		w:add(PowerupCarrier():setDirection(-1))
+	end
 end
 function round2Finished5()
 	Transmission():setFace("Daid1"):setText("Large object inbound"):top():transmissionDone("round2Finished6")
@@ -106,7 +116,11 @@ end
 
 function launchRound3()
 	w = ListWatcher():allDestroyed("round3Finished")
-	w:add(ReplicatorZ18())
+	r = ReplicatorZ18()
+	w:add(r)
+	if playtrough > 1 then
+		r:setSpeed(20)
+	end
 end
 
 --[[ ROUND 3 finished --]]
@@ -155,29 +169,97 @@ function launchRound4()
 end
 
 --[[ ROUND 4 finished --]]
-
 function round4Finished()
-	Transmission():setFace("Jaime1"):setText("I am detecting a|huge ego on|the radar"):top():transmissionDone("round4Finished2")
+	w = ListWatcher():delay(2.0):allDestroyed("round4Finished2")
+	if random(0, 100) < 50 then
+		w:add(PowerupCarrier():setDirection( 1))
+	else
+		w:add(PowerupCarrier():setDirection(-1))
+	end
 end
 function round4Finished2()
-	Transmission():setFace("Daid1"):setText("Oh no!|It is him!"):top():transmissionDone("round4Finished3")
+	Transmission():setFace("Jaime1"):setText("Watch out"):top():transmissionDone("round4Finished3")
 end
 function round4Finished3()
-	Transmission():setFace("Jaime1"):setText("Kill IT!!!"):top():transmissionDone("launchRound5")
+	Transmission():setFace("Jaime1"):setText("You are flying into|a field of abandoned|printers"):top():transmissionDone("launchRound5")
 end
---[[ ROUND 5 finished --]]
+--[[ ROUND 5 --]]
+function spawnOldPrinter()
+	OldPrinter()
+	if spawnPrinters then
+		Delay():time(0.8):call("spawnOldPrinter")
+	end
+end
 function launchRound5()
-	BreEnemy():destroyed("round5Finished")
+	Delay():time(5.0):call("delayedLaunchRound5")
+	spawnPrinters = true
+	spawnOldPrinter()
+end
+function delayedLaunchRound5()
+	w = ListWatcher():delay(1.5):allDestroyed("delayedLaunchRound5_2")
+	w:add(Digitizer():setPosition(40, -50))
+	w:add(Digitizer():setPosition(320 - 40, -50))
+end
+function delayedLaunchRound5_2()
+	setupNewRound()
+	w = ListWatcher():delay(1.5):allDestroyed("delayedLaunchRound5_3")
+	w:add(Digitizer():setPosition(40, -50))
+	w:add(Digitizer():setPosition(160, -50))
+	w:add(Digitizer():setPosition(320 - 40, -50))
+	g = EnemyGroup()
+	w:add(g)
+	for n=0,7 do
+		g:add(BasicEnemy():setTargetPosition(160 - 4 * 20 + n * 20, 50));
+	end
+	g:flyInBy(160, -20, 160, 100);
+	table.insert(groupList, g)
+end
+function delayedLaunchRound5_3()
+	setupNewRound()
+	w = ListWatcher():allDestroyed("spawnPrinters = false; Delay():time(10.0):call('round5Finished')")
+	w:add(Digitizer():setPosition(40, -50))
+	w:add(Digitizer():setPosition(120, -50))
+	w:add(Digitizer():setPosition(200, -50))
+	w:add(Digitizer():setPosition(320 - 40, -50))
+	g = EnemyGroup()
+	w:add(g)
+	for n=0,7 do
+		g:add(BasicEnemy():setTargetPosition(160 - 4 * 20 + n * 20, 50));
+	end
+	g:flyInBy(160, -20, 160, 100);
+	table.insert(groupList, g)
+	g = EnemyGroup()
+	w:add(g)
+	for n=0,7 do
+		g:add(BasicEnemy():setTargetPosition(160 - 4 * 20 + n * 20, 70));
+	end
+	g:flyInBy(160, -20, 160, 120);
+	table.insert(groupList, g)
 end
 --[[ ROUND 5 finished --]]
 function round5Finished()
-	Transmission():setFace("Daid1"):setText("You did it|You saved the universe."):top():transmissionDone("round5Finished2")
+	Transmission():setFace("Jaime1"):setText("I am detecting a|huge ego on|the radar"):top():transmissionDone("round5Finished2")
 end
 function round5Finished2()
-	Transmission():setFace("Henk1"):setText("Thank you|But our princess|is in another castle!"):top():transmissionDone("round5Finished3")
+	Transmission():setFace("Daid1"):setText("Oh no!|It is him!"):top():transmissionDone("round5Finished3")
 end
 function round5Finished3()
-	intro4()
+	Transmission():setFace("Jaime1"):setText("Kill IT!!!"):top():transmissionDone("launchRound6")
+end
+--[[ ROUND 5 finished --]]
+function launchRound6()
+	BreEnemy():destroyed("round6Finished")
+end
+--[[ ROUND 6 finished --]]
+function round6Finished()
+	Transmission():setFace("Daid1"):setText("You did it|You saved the universe."):top():transmissionDone("round6Finished2")
+end
+function round6Finished2()
+	Transmission():setFace("Henk1"):setText("Thank you|            |But our princess|is in another castle!"):top():transmissionDone("round6Finished3")
+end
+function round6Finished3()
+	playtrough = playtrough + 1
+	round1Finished2()
 end
 
 function setupNewRound()

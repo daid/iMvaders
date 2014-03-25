@@ -11,6 +11,7 @@ const int fireButton = 0;
 const int nukeButton = 1;
 const int chargeShotButton = 2;
 const int skipButton = 3;
+const int slowButton = 4;
 
 class PlayerInfo
 {

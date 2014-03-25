@@ -1,3 +1,5 @@
+#include <string.h>
+
 #include "engine.h"
 #include "windowManager.h"
 #include "StarBackground.h"
@@ -7,7 +9,7 @@
 
 #include "scriptInterface.h"
 
-int main()
+int main(int argc, char** argv)
 {
     new Engine();
     
@@ -28,7 +30,15 @@ int main()
     pc2->keyBind[8] = sf::Keyboard::T;
     pc2->keyBind[9] = sf::Keyboard::G;
     
-    engine->registerObject("windowManager", new WindowManager(320, 240, true));
+    bool fullscreen = true;
+    for(int n=1; n<argc; n++)
+    {
+        if (strcmp(argv[n], "-f") == 0)
+            fullscreen = true;
+        else if (strcmp(argv[n], "-w") == 0)
+            fullscreen = false;
+    }
+    engine->registerObject("windowManager", new WindowManager(320, 240, fullscreen));
     
     new StarBackground();
     new MainMenu();
