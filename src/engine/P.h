@@ -18,6 +18,9 @@
     The "foreach" macro can be used to walk trough all the Pobjects in a list without needing to dive into details
     and automaticly removes any pointer from the list that points to an Pobject which has been destroyed.
  */
+#ifdef DEBUG
+extern int DEBUG_PobjCount;
+#endif
 
 class PObject: public sf::NonCopyable
 {
@@ -36,11 +39,17 @@ public:
         //Check if this object is created on the stack, PObjects should not be created on the stack, as they manage
         // their own destruction.
         assert(abs(diff) > 10000);//"Object on stack! Not allowed!"
+        DEBUG_PobjCount ++;
 #endif
         refCount = 0;
         _destroyed_flag = false;
     }
-    virtual ~PObject() {}
+    virtual ~PObject()
+    {
+#ifdef DEBUG
+        DEBUG_PobjCount --;
+#endif
+    }
 
     void destroy()
     {
@@ -158,6 +167,18 @@ public:
         for(unsigned int n=0; n<std::vector<P<T> >::size(); n++)
         {
             if ((*this)[n] == obj)
+            {
+                std::vector<P<T> >::erase(std::vector<P<T> >::begin() + n);
+                n--;
+            }
+        }
+    }
+    
+    void update()
+    {
+        for(unsigned int n=0; n<std::vector<P<T> >::size(); n++)
+        {
+            if (!(*this)[n])
             {
                 std::vector<P<T> >::erase(std::vector<P<T> >::begin() + n);
                 n--;

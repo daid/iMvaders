@@ -1,7 +1,12 @@
 #include "engine.h"
 #include "random.h"
+#include "gameEntity.h"
 #include "Updatable.h"
 #include "Collisionable.h"
+
+#ifdef DEBUG
+int DEBUG_PobjCount;
+#endif
 
 Engine* engine;
 
@@ -32,6 +37,9 @@ void Engine::runMainLoop()
 {
     windowManager = dynamic_cast<WindowManager*>(*getObject("windowManager"));
     sf::Clock frameTimeClock;
+#ifdef DEBUG
+    sf::Clock debugOutputClock;
+#endif
     while (windowManager->window.isOpen())
     {
         // Handle events
@@ -49,6 +57,14 @@ void Engine::runMainLoop()
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
             windowManager->window.close();
 
+#ifdef DEBUG
+        if (debugOutputClock.getElapsedTime().asSeconds() > 1.0)
+        {
+            printf("Object count: %4d %4d %4d %4d\n", DEBUG_PobjCount, updatableList.size(), entityList.size(), collisionableList.size());
+            debugOutputClock.restart();
+        }
+#endif
+
         float delta = frameTimeClock.getElapsedTime().asSeconds();
         frameTimeClock.restart();
         if (delta > 0.5)
@@ -59,6 +75,7 @@ void Engine::runMainLoop()
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab))
             delta /= 5.0;
         
+        entityList.update();
         foreach(Updatable, u, updatableList)
             u->update(delta);
         elapsedTime += delta;

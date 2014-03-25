@@ -21,7 +21,7 @@ Bullet::Bullet(sf::Vector2f position, int type, float angle, float speed)
     else if (type == -2)
         sprite.setColor(sf::Color(231, 24, 118));
 }
-    
+
 void Bullet::update(float delta)
 {
     setPosition(getPosition() + sf::vector2FromAngle(sprite.getRotation()) * speed * delta);

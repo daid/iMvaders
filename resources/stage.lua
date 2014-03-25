@@ -267,6 +267,7 @@ function round6Finished3()
 	round1Finished2()
 end
 
+--[[ Utility functions --]]
 function setupNewRound()
 	groupList = {}
 	enemyDirection = 20.0
@@ -274,6 +275,7 @@ function setupNewRound()
 	diveCountdown = random(2.0, 5.0)
 end
 
+--[[ Called each update, to manage flying in M logos --]]
 function update(delta)
 
 	if groupList ~= nil then
