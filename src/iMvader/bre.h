@@ -27,6 +27,7 @@ public:
     float mouthPos;
     float invulnerability;
     int enemySpawnCount;
+    int difficulty;
     bool moneyshieldDeployed;
     PVector<BasicEnemyBase> enemyList;
     P<BreLaser> laser[2];
@@ -40,12 +41,11 @@ public:
     
     virtual ~BreEnemy();
 
+    void setDifficulty(int difficulty);
+    
     virtual void update(float delta);
-
     virtual void render(sf::RenderTarget& window);
-
     virtual void postRender(sf::RenderTarget& window);
-
     virtual bool takeDamage(sf::Vector2f position, int damageType, int damageAmount);
 };
 

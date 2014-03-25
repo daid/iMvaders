@@ -12,6 +12,7 @@
 REGISTER_SCRIPT_CLASS(BreEnemy)
 {
     REGISTER_SCRIPT_CLASS_CALLBACK(BreEnemy, destroyed);
+    REGISTER_SCRIPT_CLASS_FUNCTION(BreEnemy, setDifficulty);
 }
 
 BreEnemy::BreEnemy()
@@ -28,10 +29,16 @@ BreEnemy::BreEnemy()
     moveSpeed = 60;
     moneyshieldDeployed = false;
     health = maxHealth;
+    difficulty = 1;
 }
 
 BreEnemy::~BreEnemy()
 {
+}
+
+void BreEnemy::setDifficulty(int difficulty)
+{
+    this->difficulty = difficulty;
 }
 
 void BreEnemy::update(float delta)
@@ -60,6 +67,8 @@ void BreEnemy::update(float delta)
         if (shotDelay > 0)
         {
             shotDelay -= delta;
+            if (difficulty > 1)
+                shotDelay -= delta * 0.3;
         }else{
             if (random(0, 100) < 30)
             {
@@ -69,7 +78,7 @@ void BreEnemy::update(float delta)
                     shotDelay = laserChargeTime;
                 }else{
                     state = BS_MouthOpen;
-                    enemySpawnCount = 5;
+                    enemySpawnCount = 5 * difficulty;
                 }
             }else{
                 for(int n=-2; n<=2; n++)
@@ -82,6 +91,8 @@ void BreEnemy::update(float delta)
         if (shotDelay > 0)
         {
             shotDelay -= delta;
+            if (difficulty > 1)
+                shotDelay -= delta * 0.3;
         }else{
             state = BS_LaserFire;
             laser[0] = new BreLaser(this);
@@ -106,12 +117,16 @@ void BreEnemy::update(float delta)
         if (mouthPos < 30)
         {
             mouthPos += delta * 40;
+            if (difficulty > 1)
+                mouthPos += delta * 10;
             shotDelay = 0.2;
         }else if (shotDelay > 0)
         {
             shotDelay -= delta;
+            if (difficulty > 1)
+                shotDelay -= delta * 0.5;
         }else{
-            shotDelay = 0.2;
+            shotDelay += 0.2;
             if (enemySpawnCount > 0)
             {
                 BasicEnemyBase* e = new BasicEnemy();
@@ -217,10 +232,20 @@ bool BreEnemy::takeDamage(sf::Vector2f position, int damageType, int damageAmoun
         t->setText("Deploying corperate|money shield");
         t->top();
         
-        for(float f=0; f<=360; f+=20)
+        if (difficulty < 2)
         {
-            new MoneyShield(this, f, 100, false);
-            new MoneyShield(this, f, 80, true);
+            for(float f=0; f<=360; f+=20)
+            {
+                new MoneyShield(this, f, 100, false);
+                new MoneyShield(this, f, 80, true);
+            }
+        }else{
+            for(float f=0; f<=360; f+=20)
+            {
+                new MoneyShield(this, f, 110, false);
+                new MoneyShield(this, f, 90, true);
+                new MoneyShield(this, f, 70, false);
+            }
         }
     }
 
@@ -232,6 +257,8 @@ bool BreEnemy::takeDamage(sf::Vector2f position, int damageType, int damageAmoun
         foreach(BasicEnemyBase, e, enemyList)
             e->destroy();
         P<ScoreManager>(engine->getObject("score"))->add(500);
+        if (difficulty > 1)
+            P<ScoreManager>(engine->getObject("score"))->add(200);
         for(unsigned int n=0; n<20; n++)
         {
             new Explosion(sprite.getPosition() + sf::Vector2f(random(-50, 50), random(-80, 80)), 10);
@@ -310,5 +337,6 @@ bool MoneyShield::takeDamage(sf::Vector2f position, int damageType, int damageAm
     if (damageType >= 0)
         return false;
     destroy();
+    P<ScoreManager>(engine->getObject("score"))->add(2);
     return true;
 }

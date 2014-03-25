@@ -193,7 +193,10 @@ bool BasicEnemyBase::takeDamage(sf::Vector2f position, int damageType, int damag
     {
         new Explosion(getPosition(), 8);
         destroy();
-        P<ScoreManager>(engine->getObject("score"))->add(10);
+        if (hasShield)
+            P<ScoreManager>(engine->getObject("score"))->add(15);
+        else
+            P<ScoreManager>(engine->getObject("score"))->add(10);
     }
     return true;
 }

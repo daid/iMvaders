@@ -248,7 +248,7 @@ function round5Finished3()
 end
 --[[ ROUND 5 finished --]]
 function launchRound6()
-	BreEnemy():destroyed("round6Finished")
+	BreEnemy():setDifficulty(playtrough):destroyed("round6Finished")
 end
 --[[ ROUND 6 finished --]]
 function round6Finished()
