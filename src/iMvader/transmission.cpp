@@ -66,8 +66,6 @@ void Transmission::update(float delta)
     P<PlayerController> pc2 = engine->getObject("playerController2");
     
     transmissionTime += delta;
-    if (pc1->button(fireButton) || pc2->button(fireButton))
-        transmissionTime += delta * 4;
     
     if (faceName.size() > 0)
     {
