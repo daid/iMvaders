@@ -206,11 +206,15 @@ GameState::GameState(int playerCount)
 : playerCount(playerCount)
 {
     stageNr = 0;
-    for(int n=0; n<playerCount; n++)
+    for(int n=0; n<MAX_PLAYERS; n++)
     {
         playerInfo[n].lives = 4;
         playerInfo[n].nukes = 1;
     }
+    if (playerCount < 2)
+        player2SpawnDelay = 10.0;
+    else
+        player2SpawnDelay = 0;
     startStageDelay = 2.0;
     reviveDelay = reviveTimeout;
     //Destroy all objects except ourselves.
@@ -224,6 +228,16 @@ GameState::~GameState() {}
 
 void GameState::update(float delta)
 {
+    if (player2SpawnDelay > 0.0)
+    {
+        player2SpawnDelay -= delta;
+        P<PlayerController> pc = engine->getObject("playerController2");
+        if (pc->button(fireButton))
+        {
+            playerCount = 2;
+            player2SpawnDelay = 0.0;
+        }
+    }
     if (playerCount > 1)
     {
         int deadPlayer = -1;
@@ -331,5 +345,11 @@ void GameState::postRender(sf::RenderTarget& window)
         window.draw(reviveBar);
     }
 
-    drawText(window, 310, 220, to_string(P<ScoreManager>(engine->getObject("score"))->get()), align_right);
+    if (P<ScoreManager>(engine->getObject("score"))->get() < 1)
+    {
+        if (player2SpawnDelay > 0.0 && fmodf(player2SpawnDelay, 1.0) < 0.5)
+            drawText(window, 310, 220, "Press fire to join", align_right);
+    }else{
+        drawText(window, 310, 220, to_string(P<ScoreManager>(engine->getObject("score"))->get()), align_right);
+    }
 }

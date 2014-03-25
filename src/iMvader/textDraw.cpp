@@ -11,7 +11,7 @@ static int textWidth(std::string str)
         if (c >= 'A' && c <= 'Z')
             ret += textureManager.getSpriteRect("abc", c-'A').width + 1;
         else if (c >= 'a' && c <= 'z')
-            ret += textureManager.getSpriteRect("abc", c-'A').width + 1;
+            ret += textureManager.getSpriteRect("abc", c-'a').width + 1;
         else if (c >= '0' && c <= '9')
             ret += textureManager.getSpriteRect("nums", c-'0').width + 1;
         else if (c == '|')

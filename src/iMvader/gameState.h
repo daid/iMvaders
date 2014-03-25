@@ -14,6 +14,7 @@ private:
     int stageNr;
     int playerCount;
     float startStageDelay;
+    float player2SpawnDelay;
     
     float reviveDelay;
     const static float reviveTimeout = 3.0;

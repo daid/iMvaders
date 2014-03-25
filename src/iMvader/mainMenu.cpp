@@ -42,6 +42,8 @@ void MainMenu::update(float delta)
 
     P<PlayerController> pc1 = engine->getObject("playerController1");
     P<PlayerController> pc2 = engine->getObject("playerController2");
+    if (pc1->down() || pc2->down())
+        introTextPosition += delta * 5;
     if (blink > 1.0)
     {
         if (pc1->button(fireButton))
