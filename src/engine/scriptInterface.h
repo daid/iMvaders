@@ -18,6 +18,7 @@ public:
     virtual ~ScriptObject();
     
     void run(const char* filename);
+    void clean();
     virtual void update(float delta);
 
     //Make the ScriptCallback our friend, so we can access the lua_State from the callback class.

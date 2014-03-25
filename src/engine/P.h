@@ -19,7 +19,10 @@
     and automaticly removes any pointer from the list that points to an Pobject which has been destroyed.
  */
 #ifdef DEBUG
+#include <list>
+class PObject;
 extern int DEBUG_PobjCount;
+extern PObject* DEBUG_PobjListStart;
 #endif
 
 class PObject: public sf::NonCopyable
@@ -31,6 +34,9 @@ private:
     //Make the P template a friend so it can access the private refCount and destroyed.
     template<typename> friend class P;
 public:
+#ifdef DEBUG
+    PObject* DEBUG_PobjListNext;
+#endif
     PObject()
     {
 #ifdef DEBUG
@@ -40,6 +46,9 @@ public:
         // their own destruction.
         assert(abs(diff) > 10000);//"Object on stack! Not allowed!"
         DEBUG_PobjCount ++;
+        
+        DEBUG_PobjListNext = DEBUG_PobjListStart;
+        DEBUG_PobjListStart = this;
 #endif
         refCount = 0;
         _destroyed_flag = false;
@@ -48,12 +57,34 @@ public:
     {
 #ifdef DEBUG
         DEBUG_PobjCount --;
+        if (DEBUG_PobjListStart == this)
+        {
+            DEBUG_PobjListStart = DEBUG_PobjListStart->DEBUG_PobjListNext;
+        }else{
+            for(PObject* obj = DEBUG_PobjListStart; obj; obj = obj->DEBUG_PobjListNext)
+            {
+                if (obj->DEBUG_PobjListNext == this)
+                {
+                    obj->DEBUG_PobjListNext = obj->DEBUG_PobjListNext->DEBUG_PobjListNext;
+                    break;
+                }
+            }
+        }
 #endif
     }
 
     void destroy()
     {
         _destroyed_flag = true;
+    }
+    
+    int getRefCount()
+    { 
+        return refCount;
+    }
+    bool isDestroyed()
+    {
+        return _destroyed_flag;
     }
 };
 

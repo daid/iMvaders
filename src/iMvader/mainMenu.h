@@ -15,7 +15,6 @@ public:
     P<EnemyGroup> enemyGroup;
 
     MainMenu();
-
     virtual ~MainMenu();
 
     virtual void update(float delta);

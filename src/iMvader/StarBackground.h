@@ -18,7 +18,7 @@ public:
     const static int starCount = 256;
     Star stars[starCount];
     StarBackground();
-    ~StarBackground();
+    virtual ~StarBackground();
     virtual void update(float delta);
     virtual void preRender(sf::RenderTarget& window);
     virtual void render(sf::RenderTarget& window) {}

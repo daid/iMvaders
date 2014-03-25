@@ -1,8 +1,6 @@
 #include <string.h>
 #include "scoreManager.h"
 
-ScoreManager score;
-
 ScoreManager::ScoreManager()
 {
     currentScore = 0;

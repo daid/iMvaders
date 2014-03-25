@@ -12,6 +12,7 @@ class InputHandler : public Updatable
     bool mouseButtonDown[sf::Mouse::ButtonCount];
     bool mouseButtonPressed[sf::Mouse::ButtonCount];
 public:
+    virtual ~InputHandler() {}
     virtual void update(float delta);
     
     sf::Vector2f getMousePos() { return mousePos; }

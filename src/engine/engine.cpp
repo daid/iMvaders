@@ -5,7 +5,9 @@
 #include "Collisionable.h"
 
 #ifdef DEBUG
+#include <typeinfo>
 int DEBUG_PobjCount;
+PObject* DEBUG_PobjListStart;
 #endif
 
 Engine* engine;
@@ -53,6 +55,16 @@ void Engine::runMainLoop()
                 windowManager->window.close();
                 break;
             }
+#ifdef DEBUG
+            if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::L))
+            {
+                int n = 0;
+                printf("---------------------\n");
+                for(PObject* obj = DEBUG_PobjListStart; obj; obj = obj->DEBUG_PobjListNext)
+                    printf("%c%4d: %4d: %s\n", obj->isDestroyed() ? '>' : ' ', n++, obj->getRefCount(), typeid(*obj).name());
+                printf("---------------------\n");
+            }
+#endif
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
             windowManager->window.close();
@@ -60,7 +72,7 @@ void Engine::runMainLoop()
 #ifdef DEBUG
         if (debugOutputClock.getElapsedTime().asSeconds() > 1.0)
         {
-            printf("Object count: %4d %4d %4d %4d\n", DEBUG_PobjCount, updatableList.size(), entityList.size(), collisionableList.size());
+            printf("Object count: %4d %4d %4d %4d %4d\n", DEBUG_PobjCount, updatableList.size(), entityList.size(), collisionableList.size(), renderableList.size());
             debugOutputClock.restart();
         }
 #endif

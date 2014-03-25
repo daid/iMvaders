@@ -13,6 +13,7 @@ private:
     int type;
 public:
     Bullet(sf::Vector2f position, int type, float angle, float speed = 180.0f);
+    virtual ~Bullet() {}
     
     virtual void update(float delta);
     

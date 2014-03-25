@@ -86,13 +86,18 @@ void ScriptObject::run(const char* filename)
     }
 }
 
-ScriptObject::~ScriptObject()
+void ScriptObject::clean()
 {
     if (L)
     {
         lua_close(L);
         L = NULL;
     }
+}
+
+ScriptObject::~ScriptObject()
+{
+    clean();
 }
 
 void ScriptObject::update(float delta)
@@ -128,6 +133,10 @@ void ScriptObject::update(float delta)
 
     if (L)
     {
+#ifdef DEBUG
+        //Run the garbage collector every update when debugging, to better debug references and leaks.
+        lua_gc(L, LUA_GCCOLLECT, 0);
+#endif
         lua_getglobal(L, "update");
         lua_pushnumber(L, delta);
         if (lua_pcall(L, 1, 1, 0))

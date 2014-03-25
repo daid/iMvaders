@@ -39,6 +39,7 @@ public:
         keyBind[8] = sf::Keyboard::V;
         keyBind[9] = sf::Keyboard::B;
     }
+    virtual ~PlayerController() {}
 
     bool left() { return sf::Keyboard::isKeyPressed(keyBind[0]); }
     bool right() { return sf::Keyboard::isKeyPressed(keyBind[1]); }

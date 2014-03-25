@@ -25,6 +25,7 @@ private:
     } highscoreList[MAX_PLAYERS][highscoreListSize];
 public:
     ScoreManager();
+    virtual ~ScoreManager() {}
     
     void add(int points);
     int get();

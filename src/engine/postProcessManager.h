@@ -32,6 +32,7 @@ private:
     float speedFactor;
 
     PostProcessor(const char* name);
+    virtual ~PostProcessor() {}
     
     void trigger(float f);
     void process(sf::RenderTarget& target, sf::Texture& source);

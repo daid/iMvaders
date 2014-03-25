@@ -38,7 +38,6 @@ public:
     static const int laserChargeTime = 2.0;
 
     BreEnemy();
-    
     virtual ~BreEnemy();
 
     void setDifficulty(int difficulty);

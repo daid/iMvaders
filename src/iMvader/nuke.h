@@ -14,6 +14,7 @@ private:
     int owner;
 public:
     Nuke(sf::Vector2f position, sf::Vector2f velocity, float size, int owner);
+    virtual ~Nuke() {}
     
     virtual void update(float delta);
     

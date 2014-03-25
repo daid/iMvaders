@@ -317,7 +317,7 @@ public:
         if (lua_istable(L, -1))//When a subclass is destroyed, it's metatable might call the __gc function on it's sub-metatable. So we can get tables here ignore them.
             return 0;
         PT* p = static_cast< PT* >(lua_touserdata(L, -1));
-        //printf("Collect: %p\n", dynamic_cast<T*>(***p));
+        //printf("Collect: %p %s\n", dynamic_cast<T*>(***p), objectTypeName);
         if (*p)
             delete *p;
         return 0;

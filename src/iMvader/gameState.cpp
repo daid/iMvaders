@@ -291,7 +291,11 @@ void GameState::update(float delta)
 
     if (gameOver)
     {
-        if (script) script->destroy();
+        if (script)
+        {
+            script->clean();
+            script->destroy();
+        }
         destroy();
         new GameOverState(playerCount);
     }

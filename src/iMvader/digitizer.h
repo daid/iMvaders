@@ -34,6 +34,7 @@ class DigitizerLaser: public GameEntity, public Collisionable
     static const float deactivateDelayMax = 1.0;
 public:
     DigitizerLaser(P<Digitizer> owner);
+    virtual ~DigitizerLaser() {}
 
     virtual void update(float delta);
     virtual void render(sf::RenderTarget& window);

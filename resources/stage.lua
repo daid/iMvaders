@@ -16,8 +16,8 @@ end
 --[[ ROUND 1 --]]
 function launchRound1()
 	setupNewRound()
-	w = ListWatcher():delay(0.5):allDestroyed("round1Finished")
-	g = EnemyGroup()
+	local w = ListWatcher():delay(0.5):allDestroyed("round1Finished")
+	local g = EnemyGroup()
 	w:add(g)
 	g:add(BasicEnemy():setTargetPosition(150, 70));
 	g:add(BasicEnemy():setTargetPosition(170, 70));
@@ -36,9 +36,9 @@ end
 --[[ ROUND 2 --]]
 
 function launchRound2()
-	w = ListWatcher():delay(0.5):allDestroyed("round2Finished")
+	local w = ListWatcher():delay(0.5):allDestroyed("round2Finished")
 	setupNewRound()
-	g = EnemyGroup()
+	local g = EnemyGroup()
 	w:add(g)
 	for n=0,7 do
 		g:add(BasicEnemy():giveShield():setTargetPosition(160 - 4 * 20 + n * 20, 50));
@@ -79,7 +79,7 @@ function round2Finished3()
 	Transmission():setFace("Daid1"):setText("Better destroy some|smaller 3D printers|and grab the upgrades"):top():transmissionDone("round2Finished4")
 end
 function round2Finished4()
-	w = ListWatcher():delay(2.0):allDestroyed("round2Finished5")
+	local w = ListWatcher():delay(2.0):allDestroyed("round2Finished5")
 	if playtrough > 1 then
 		--On the 2nd playtrough only give 1 powerup instead of 2.
 		if random(0, 100) < 50 then
@@ -115,8 +115,8 @@ end
 --[[ ROUND 3 --]]
 
 function launchRound3()
-	w = ListWatcher():allDestroyed("round3Finished")
-	r = ReplicatorZ18()
+	local w = ListWatcher():allDestroyed("round3Finished")
+	local r = ReplicatorZ18()
 	w:add(r)
 	if playtrough > 1 then
 		r:setSpeed(20)
@@ -130,10 +130,10 @@ function round3Finished()
 end
 
 function launchRound4()
-	w = ListWatcher():delay(0.5):allDestroyed("round4Finished")
+	local w = ListWatcher():delay(0.5):allDestroyed("round4Finished")
 	
 	setupNewRound()
-	g = EnemyGroup()
+	local g = EnemyGroup()
 	w:add(g)
 	for n=0,3 do
 		g:add(BasicEnemy():giveShield():setTargetPosition(160 - 4 * 20 + n * 20, 50));
@@ -170,7 +170,7 @@ end
 
 --[[ ROUND 4 finished --]]
 function round4Finished()
-	w = ListWatcher():delay(2.0):allDestroyed("round4Finished2")
+	local w = ListWatcher():delay(2.0):allDestroyed("round4Finished2")
 	if random(0, 100) < 50 then
 		w:add(PowerupCarrier():setDirection( 1))
 	else
@@ -200,17 +200,17 @@ function launchRound5()
 	spawnOldPrinter()
 end
 function delayedLaunchRound5()
-	w = ListWatcher():delay(1.5):allDestroyed("delayedLaunchRound5_2")
+	local w = ListWatcher():delay(1.5):allDestroyed("delayedLaunchRound5_2")
 	w:add(Digitizer():setPosition(40, -50))
 	w:add(Digitizer():setPosition(320 - 40, -50))
 end
 function delayedLaunchRound5_2()
 	setupNewRound()
-	w = ListWatcher():delay(1.5):allDestroyed("delayedLaunchRound5_3")
+	local w = ListWatcher():delay(1.5):allDestroyed("delayedLaunchRound5_3")
 	w:add(Digitizer():setPosition(40, -50))
 	w:add(Digitizer():setPosition(160, -50))
 	w:add(Digitizer():setPosition(320 - 40, -50))
-	g = EnemyGroup()
+	local g = EnemyGroup()
 	w:add(g)
 	for n=0,7 do
 		g:add(BasicEnemy():setTargetPosition(160 - 4 * 20 + n * 20, 50));
@@ -220,12 +220,12 @@ function delayedLaunchRound5_2()
 end
 function delayedLaunchRound5_3()
 	setupNewRound()
-	w = ListWatcher():allDestroyed("spawnPrinters = false; Delay():time(10.0):call('round5Finished')")
+	local w = ListWatcher():allDestroyed("spawnPrinters = false; Delay():time(10.0):call('round5Finished')")
 	w:add(Digitizer():setPosition(40, -50))
 	w:add(Digitizer():setPosition(120, -50))
 	w:add(Digitizer():setPosition(200, -50))
 	w:add(Digitizer():setPosition(320 - 40, -50))
-	g = EnemyGroup()
+	local g = EnemyGroup()
 	w:add(g)
 	for n=0,7 do
 		g:add(BasicEnemy():setTargetPosition(160 - 4 * 20 + n * 20, 50));
@@ -277,7 +277,6 @@ end
 
 --[[ Called each update, to manage flying in M logos --]]
 function update(delta)
-
 	if groupList ~= nil then
 		if enemyOffset > 30 then
 			enemyDirection = -math.abs(enemyDirection)
