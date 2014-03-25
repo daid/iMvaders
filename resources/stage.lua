@@ -260,6 +260,7 @@ function round6Finished()
 end
 function round6Finished2()
 	Transmission():setFace("Henk1"):setText("Thank you|            |But our princess|is in another castle!"):top():transmissionDone("round6Finished3")
+	SurfHenk()
 end
 function round6Finished3()
 	playtrough = playtrough + 1

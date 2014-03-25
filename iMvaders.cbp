@@ -225,6 +225,7 @@
 		<Unit filename="src/iMvader/explosion.h" />
 		<Unit filename="src/iMvader/gameState.cpp" />
 		<Unit filename="src/iMvader/gameState.h" />
+		<Unit filename="src/iMvader/henk.cpp" />
 		<Unit filename="src/iMvader/main.cpp" />
 		<Unit filename="src/iMvader/mainMenu.cpp" />
 		<Unit filename="src/iMvader/mainMenu.h" />
