@@ -187,7 +187,11 @@ end
 function spawnOldPrinter()
 	OldPrinter()
 	if spawnPrinters then
-		Delay():time(0.8):call("spawnOldPrinter")
+		if playtrough > 1 then
+			Delay():time(0.6):call("spawnOldPrinter")
+		else
+			Delay():time(0.8):call("spawnOldPrinter")
+		end
 	end
 end
 function launchRound5()
