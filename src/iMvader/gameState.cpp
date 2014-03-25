@@ -115,8 +115,7 @@ public:
                 finalName += " ";
                 finalName += name[p];
             }
-            if (finalName.length() > 1)
-                score->enterHighscore(playerCount, finalName);
+            score->enterHighscore(playerCount, finalName);
             score->reset();
             new MainMenu();
         }

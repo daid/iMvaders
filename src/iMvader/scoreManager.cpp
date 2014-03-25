@@ -55,7 +55,7 @@ bool ScoreManager::isHighscore(int playerCount)
 void ScoreManager::enterHighscore(int playerCount, std::string name)
 {
     assert(playerCount > 0 && playerCount <= MAX_PLAYERS);
-    if (name.size() < 1)
+    if (name.size() < playerCount)
         return;
     int n=highscoreListSize-1;
     while(n>0 && highscoreList[playerCount-1][n-1].score < currentScore)
