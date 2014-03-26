@@ -14,6 +14,8 @@ static int textWidth(std::string str)
             ret += textureManager.getSpriteRect("abc", c-'a').width + 1;
         else if (c >= '0' && c <= '9')
             ret += textureManager.getSpriteRect("nums", c-'0').width + 1;
+        else if (c == ':')
+            ret += 5;
         else if (c == '|')
         {
             width = std::max(ret, width);
@@ -25,13 +27,13 @@ static int textWidth(std::string str)
     return std::max(ret, width);
 }
 
-void drawText(sf::RenderTarget& window, float x, float y, std::string str, textAlign align)
+void drawText(sf::RenderTarget& window, float x, float y, std::string str, textAlign align, float scale)
 {
     sf::Sprite letter;
     if (align == align_center)
-        x -= textWidth(str)/2.0f;
+        x -= textWidth(str)/2.0f * scale;
     if (align == align_right)
-        x -= textWidth(str);
+        x -= textWidth(str) * scale;
     float xStart = x;
     for(unsigned int i=0; i<str.size(); i++)
     {
@@ -42,7 +44,8 @@ void drawText(sf::RenderTarget& window, float x, float y, std::string str, textA
             textureManager.setTexture(letter, "abc", c);
             letter.setOrigin(0, 0);
             letter.setPosition(x, y);
-            x += letter.getTextureRect().width + 1;
+            letter.setScale(scale, scale);
+            x += (float(letter.getTextureRect().width) + 1.0f) * scale;
             window.draw(letter);
         }
         else if (c >= 'a' && c <= 'z')
@@ -51,7 +54,8 @@ void drawText(sf::RenderTarget& window, float x, float y, std::string str, textA
             textureManager.setTexture(letter, "abc", c);
             letter.setOrigin(0, 0);
             letter.setPosition(x, y);
-            x += letter.getTextureRect().width + 1;
+            letter.setScale(scale, scale);
+            x += (float(letter.getTextureRect().width) + 1.0f) * scale;
             window.draw(letter);
         }
         else if (c >= '0' && c <= '9')
@@ -59,17 +63,18 @@ void drawText(sf::RenderTarget& window, float x, float y, std::string str, textA
             textureManager.setTexture(letter, "nums", c-'0');
             letter.setOrigin(0, 0);
             letter.setPosition(x, y);
-            x += letter.getTextureRect().width + 1;
+            letter.setScale(scale, scale);
+            x += (float(letter.getTextureRect().width) + 1.0f) * scale;
             window.draw(letter);
         }
         else if (c == '|')
         {
             x = xStart;
-            y += 15;
+            y += 15.0f * scale;
         }
+        else if (c == ':')
+            x += 5.0f * scale;
         else
-        {
-            x += 8;
-        }
+            x += 8.0f * scale;
     }
 }

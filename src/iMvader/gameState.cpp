@@ -352,7 +352,7 @@ void GameState::postRender(sf::RenderTarget& window)
     if (P<ScoreManager>(engine->getObject("score"))->get() < 1)
     {
         if (player2SpawnDelay > 0.0 && fmodf(player2SpawnDelay, 1.0) < 0.5)
-            drawText(window, 310, 220, "Press fire to join", align_right);
+            drawText(window, 310, 220, "Press fire to join", align_right, 0.7);
     }else{
         drawText(window, 310, 220, to_string(P<ScoreManager>(engine->getObject("score"))->get()), align_right);
     }

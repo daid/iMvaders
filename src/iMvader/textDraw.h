@@ -11,6 +11,6 @@ enum textAlign
     align_right = 2
 };
 
-void drawText(sf::RenderTarget& window, float x, float y, std::string str, textAlign align = align_center);
+void drawText(sf::RenderTarget& window, float x, float y, std::string str, textAlign align = align_center, float scale = 1.0);
 
 #endif//TEXT_DRAW_H

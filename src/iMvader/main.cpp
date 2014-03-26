@@ -1,4 +1,5 @@
 #include <string.h>
+#include <time.h>
 
 #include "engine.h"
 #include "windowManager.h"
@@ -7,7 +8,26 @@
 #include "player.h"
 #include "scoreManager.h"
 
+#include "textDraw.h"
 #include "scriptInterface.h"
+
+class WallClock : public Renderable
+{
+public:
+    WallClock() {}
+    virtual ~WallClock() {}
+    
+    virtual void preRender(sf::RenderTarget& window)
+    {
+        time_t t = time(NULL);
+        struct tm* tt = localtime(&t);
+        char buffer[10];
+        sprintf(buffer, "%2d:%02d", tt->tm_hour, tt->tm_min);
+        drawText(window, 0, 0, buffer, align_left, 0.5);
+    }
+    virtual void render(sf::RenderTarget& window) {}
+    virtual void postRender(sf::RenderTarget& window) {}
+};
 
 int main(int argc, char** argv)
 {
@@ -42,6 +62,7 @@ int main(int argc, char** argv)
     
     new StarBackground();
     new MainMenu();
+    new WallClock();
     engine->runMainLoop();
     
     delete engine;
