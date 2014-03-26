@@ -293,7 +293,8 @@ void BreLaser::render(sf::RenderTarget& window)
 void BreLaser::collision(Collisionable* other)
 {
     GameEntity* e = dynamic_cast<GameEntity*>(other);
-    e->takeDamage(getPosition(), 1, 1);
+    if (e)
+        e->takeDamage(getPosition(), 1, 1);
 }
 
 MoneyShield::MoneyShield(P<BreEnemy> owner, float startAngle, float endDistance, bool counterClockwise)

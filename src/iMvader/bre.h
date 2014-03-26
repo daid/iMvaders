@@ -53,6 +53,7 @@ class BreLaser: public GameEntity, public Collisionable
     P<BreEnemy> owner;
 public:
     BreLaser(P<BreEnemy> owner);
+    virtual ~BreLaser() {}
 
     virtual void update(float delta);
     virtual void render(sf::RenderTarget& window);
@@ -70,6 +71,7 @@ class MoneyShield: public GameEntity, public Collisionable
     P<BreEnemy> owner;
 public:
     MoneyShield(P<BreEnemy> owner, float startAngle, float endDistance, bool counterClockwise);
+    virtual ~MoneyShield() {}
     
     virtual void update(float delta);
     virtual void render(sf::RenderTarget& window);

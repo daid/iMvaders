@@ -213,6 +213,7 @@
 		<Unit filename="src/iMvader/EnemyGroup.h" />
 		<Unit filename="src/iMvader/StarBackground.cpp" />
 		<Unit filename="src/iMvader/StarBackground.h" />
+		<Unit filename="src/iMvader/bonusRound.cpp" />
 		<Unit filename="src/iMvader/bre.cpp" />
 		<Unit filename="src/iMvader/bre.h" />
 		<Unit filename="src/iMvader/bullet.cpp" />

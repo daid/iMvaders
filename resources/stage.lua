@@ -264,7 +264,11 @@ function round6Finished2()
 end
 function round6Finished3()
 	playtrough = playtrough + 1
-	round1Finished2()
+	Delay():time(3.0):call('launchBonus')
+end
+
+function launchBonus()
+	BonusRound():finished("Delay():time(3.0):call('round1Finished2')")
 end
 
 --[[ Utility functions --]]

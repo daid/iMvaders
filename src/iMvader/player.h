@@ -13,6 +13,8 @@ const int nukeButton = 2;
 const int skipButton = 3;
 const int slowButton = 4;
 
+extern bool playerBonusWeaponsActive;
+
 class PlayerInfo
 {
 public:
@@ -48,6 +50,7 @@ public:
     bool button(int idx) { return sf::Keyboard::isKeyPressed(keyBind[4 + idx]); }
 };
 
+class PlayerBonusLaser;
 class PlayerCraft: public GameEntity, public Collisionable
 {
 public:
@@ -61,6 +64,7 @@ public:
     static const float maxChargeShot = 2.0;
     float invulnerability;
     int health;
+    P<PlayerBonusLaser> bonusLaser;
 public:
     PlayerCraft(PlayerController* controller, PlayerInfo* info, int type);
 
@@ -71,6 +75,21 @@ public:
     virtual void render(sf::RenderTarget& window);
 
     virtual bool takeDamage(sf::Vector2f position, int damageType, int damageAmount);
+};
+
+class PlayerBonusLaser: public GameEntity, public Collisionable
+{
+    P<PlayerCraft> owner;
+public:
+    int type;
+    
+    PlayerBonusLaser(P<PlayerCraft> owner);
+    virtual ~PlayerBonusLaser() {}
+
+    virtual void update(float delta);
+    virtual void preRender(sf::RenderTarget& window);
+
+    virtual void collision(Collisionable* other);
 };
 
 #endif//PLAYER_H

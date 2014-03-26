@@ -8,6 +8,8 @@
 #include "explosion.h"
 #include "nuke.h"
 
+bool playerBonusWeaponsActive = false;
+
 PlayerCraft::PlayerCraft(PlayerController* controller, PlayerInfo* info, int type)
 : GameEntity(), Collisionable(10.0), controller(controller), info(info), type(type)
 {
@@ -60,46 +62,65 @@ void PlayerCraft::update(float delta)
     if (getPosition().y > 230)
         setPosition(sf::Vector2f(getPosition().x, 230));
 
-    if (controller->button(chargeShotButton))
+    if (playerBonusWeaponsActive)
     {
-        chargeShot += delta;
-        if (chargeShot > maxChargeShot) chargeShot = maxChargeShot;
-    }else if (chargeShot > 0)
-    {
-        int shots = 5 * (chargeShot - minChargeShot) / (maxChargeShot - minChargeShot);
-        chargeShot = 0.0;
-        for(int n=0; n<=shots; n++)
+        if (controller->button(fireButton) || controller->button(chargeShotButton))
         {
-            new Bullet(getPosition(), -1 - type, (float(n) - float(shots) / 2.0) / float(shots) * 15.0);
+            if (!bonusLaser)
+                bonusLaser = new PlayerBonusLaser(this);
+            if (controller->button(fireButton))
+                bonusLaser->type = type ? 2 : 1;
+            else
+                bonusLaser->type = type ? 1 : 2;
+        }else{
+            if (bonusLaser)
+                bonusLaser->destroy();
         }
-    }
-    
-    if (controller->button(fireButton) && fireCooldown <= 0 && invulnerability <= 0 && !controller->button(chargeShotButton))
-    {
-        if (type == 0)
+    }else{
+        if (bonusLaser)
+            bonusLaser->destroy();
+        
+        if (controller->button(chargeShotButton))
         {
-            new Bullet(getPosition(), -1, 0);
-            fireCooldown = 0.4;
-        }
-        if (type == 1)
+            chargeShot += delta;
+            if (chargeShot > maxChargeShot) chargeShot = maxChargeShot;
+        }else if (chargeShot > 0)
         {
-            new Bullet(getPosition() + sf::Vector2f(7, 0), -2, 0);
-            new Bullet(getPosition() + sf::Vector2f(-4, 0), -2, 0);
-            fireCooldown = 0.8;
+            int shots = 5 * (chargeShot - minChargeShot) / (maxChargeShot - minChargeShot);
+            chargeShot = 0.0;
+            for(int n=0; n<=shots; n++)
+            {
+                new Bullet(getPosition(), -1 - type, (float(n) - float(shots) / 2.0) / float(shots) * 15.0);
+            }
         }
-    }
-    if (!controller->button(fireButton))
-    {
-        if (type == 0 && fireCooldown > 0.1)
-            fireCooldown = 0.1;
-        if (type == 1 && fireCooldown > 0.25)
-            fireCooldown = 0.25;
-    }
-    if (nukeCooldown <= 0 && controller->button(nukeButton) && info->nukes > 0 && !controller->button(chargeShotButton))
-    {
-        nukeCooldown = 2.0;
-        info->nukes -= 1;
-        new Nuke(getPosition(), sf::Vector2f(0.0, -150.0), 10.0, type);
+        
+        if (controller->button(fireButton) && fireCooldown <= 0 && invulnerability <= 0 && !controller->button(chargeShotButton))
+        {
+            if (type == 0)
+            {
+                new Bullet(getPosition(), -1, 0);
+                fireCooldown = 0.4;
+            }
+            if (type == 1)
+            {
+                new Bullet(getPosition() + sf::Vector2f(7, 0), -2, 0);
+                new Bullet(getPosition() + sf::Vector2f(-4, 0), -2, 0);
+                fireCooldown = 0.8;
+            }
+        }
+        if (!controller->button(fireButton))
+        {
+            if (type == 0 && fireCooldown > 0.1)
+                fireCooldown = 0.1;
+            if (type == 1 && fireCooldown > 0.25)
+                fireCooldown = 0.25;
+        }
+        if (nukeCooldown <= 0 && controller->button(nukeButton) && info->nukes > 0 && !controller->button(chargeShotButton))
+        {
+            nukeCooldown = 2.0;
+            info->nukes -= 1;
+            new Nuke(getPosition(), sf::Vector2f(0.0, -150.0), 10.0, type);
+        }
     }
 }
 
@@ -143,4 +164,35 @@ bool PlayerCraft::takeDamage(sf::Vector2f position, int damageType, int damageAm
         //new Explosion(getPosition(), 12);
     }
     return true;
+}
+
+PlayerBonusLaser::PlayerBonusLaser(P<PlayerCraft> owner)
+: Collisionable(sf::Vector2f(0, -240)), owner(owner)
+{
+}
+
+void PlayerBonusLaser::update(float delta)
+{
+    if (owner)
+        setPosition(owner->getPosition());
+    else
+        destroy();
+}
+void PlayerBonusLaser::preRender(sf::RenderTarget& window)
+{
+    sf::RectangleShape laser(sf::Vector2f(6, 240));
+    laser.setOrigin(3, 240);
+    if (type == 1)
+        laser.setFillColor(sf::Color(24, 161, 212,128));
+    else
+        laser.setFillColor(sf::Color(231, 24, 118,128));
+    laser.setPosition(getPosition());
+    window.draw(laser);
+}
+
+void PlayerBonusLaser::collision(Collisionable* other)
+{
+    GameEntity* e = dynamic_cast<GameEntity*>(other);
+    if (e)
+        e->takeDamage(getPosition(), -type, 0);
 }

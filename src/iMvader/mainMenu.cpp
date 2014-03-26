@@ -81,7 +81,7 @@ void MainMenu::postRender(sf::RenderTarget& window)
             drawText(window, 160+80, 90 + 16 * (i+1), score->getHighscoreName(2, i) + " " + to_string(score->getHighScore(2, i)));
 
         if (int(blink * 1000) % 1000 < 500)
-            drawText(window, 160, 210, "INSERT COIN");
+            drawText(window, 160, 210, "INSERT COOKIE");
     }else{
         float f = (introTextPosition - introTextDelay) * intoTextSpeed;
         drawText(window, 160, 250 - f, "THE YEAR IS 2022"); f -= 15.0f;
