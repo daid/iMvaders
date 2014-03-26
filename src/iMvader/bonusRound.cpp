@@ -59,18 +59,22 @@ public:
     
     void score()
     {
-        P<ScoreManager>(engine->getObject("score"))->add(speed);
+        P<ScoreManager>(engine->getObject("score"))->add(35);
         
-        if (spawnDelay > 1.0)
-            spawnDelay -= 0.2;
-        speed += 1;
+        if (spawnDelay > 0.7)
+            spawnDelay -= 0.5;
+        speed += 2;
     }
     
     void fault()
     {
         faultCount ++;
-        spawnDelay = 3.0;
-        speed = 35;
+        spawnDelay += 1.0;
+        if (spawnDelay > 3.0)
+            spawnDelay = 3.0;
+        speed -= 10;
+        if (speed < 35)
+            speed = 35;
         
         if (faultCount == 3)
         {
