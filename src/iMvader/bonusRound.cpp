@@ -143,9 +143,9 @@ public:
     virtual bool takeDamage(sf::Vector2f position, int damageType, int damageAmount)
     {
         if (damageType == -1)
-            yMove =-1.0f;
+            yMove +=-1.0f;
         else
-            yMove = 1.0f;
+            yMove += 1.0f;
         return false;
     }
 };
