@@ -5,9 +5,12 @@
 #include "engine.h"
 #include "player.h"
 #include "explosion.h"
+#include "stringUtils.h"
+#include "transmission.h"
 #include "gameEntity.h"
 #include "Collisionable.h"
 
+class BonusRoundObject;
 class BonusRound : public GameEntity
 {
     sf::Sprite youmagineSprite;
@@ -15,9 +18,12 @@ class BonusRound : public GameEntity
     
     float introTimeout;
     float speed;
+    int spawnCount;
     float spawnTimeout;
     float spawnDelay;
     int faultCount;
+    int scoreCount;
+    PVector<BonusRoundObject> objects;
 public:
     ScriptCallback finished;
 
@@ -31,11 +37,13 @@ public:
         thingiverseSprite.setPosition(70, 180);
         youmagineSprite.setColor(sf::Color(255,255,255,128));
         thingiverseSprite.setColor(sf::Color(255,255,255,128));
-        spawnTimeout = 3.0;
-        spawnDelay = 3.0;
+        spawnCount = 25;
+        spawnTimeout = 2.0;
+        spawnDelay = 2.0;
         introTimeout = 3.0;
         speed = 35;
         faultCount = 0;
+        scoreCount = 0;
         playerBonusWeaponsActive = true;
     }
     virtual ~BonusRound()
@@ -59,29 +67,25 @@ public:
     
     void score()
     {
-        P<ScoreManager>(engine->getObject("score"))->add(35);
+        scoreCount++;
         
-        if (spawnDelay > 0.7)
-            spawnDelay -= 0.5;
-        speed += 2;
+        if (spawnDelay > 1.7)
+            spawnDelay -= 0.2;
+        if (spawnDelay > 1.0)
+            spawnDelay -= 0.3;
+        speed += 3;
     }
     
     void fault()
     {
         faultCount ++;
-        spawnDelay += 1.0;
-        if (spawnDelay > 3.0)
-            spawnDelay = 3.0;
-        speed -= 10;
+        
+        spawnDelay += 0.5;
+        if (spawnDelay > 2.0)
+            spawnDelay = 2.0;
+        speed -= 5;
         if (speed < 35)
             speed = 35;
-        
-        if (faultCount == 3)
-        {
-            finished();
-            destroy();
-            playerBonusWeaponsActive = false;
-        }
     }
 };
 
@@ -165,11 +169,29 @@ void BonusRound::update(float delta)
         else
             sprite.setRotation(0);
     }
-    if (spawnTimeout > 0.0)
+    if (spawnCount > 0)
     {
-        spawnTimeout -= delta;
+        if (spawnTimeout > 0.0)
+        {
+            spawnTimeout -= delta;
+        }else{
+            spawnTimeout += spawnDelay;
+            objects.push_back(new BonusRoundObject(this, speed));
+            spawnCount--;
+        }
     }else{
-        spawnTimeout += spawnDelay;
-        new BonusRoundObject(this, speed);
+        objects.update();
+        if (objects.size() < 1)
+        {
+            P<Transmission> t = new Transmission();
+            t->setFace("Henk1");
+            t->setText(("Scored " + to_string(scoreCount * 32) + "|bonus points").c_str());
+            t->top();
+            
+            P<ScoreManager>(engine->getObject("score"))->add(scoreCount * 32);
+            finished();
+            destroy();
+            playerBonusWeaponsActive = false;
+        }
     }
 }
