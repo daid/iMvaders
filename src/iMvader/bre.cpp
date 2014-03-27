@@ -133,6 +133,8 @@ void BreEnemy::update(float delta)
                 e->setTargetPosition(sf::Vector2f(random(20, 300), random(20, 200)));
                 e->wait(sprite.getPosition() + sf::Vector2f(0, 50), sprite.getPosition() + sf::Vector2f(0, 100));
                 e->flyIn();
+                if (enemySpawnCount % 5 == 0)
+                    e->giveShield();
                 enemyList.push_back(e);
                 enemySpawnCount --;
             }else{
