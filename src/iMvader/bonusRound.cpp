@@ -102,7 +102,7 @@ public:
     BonusRoundObject(P<BonusRound> owner, float speed)
     : Collisionable(15), owner(owner), speed(speed)
     {
-        setPosition(sf::Vector2f(350, random(50, 190)));
+        setPosition(sf::Vector2f(350, random(30, 210)));
         if (random(0, 100) < 50)
             type = 1;
         else
