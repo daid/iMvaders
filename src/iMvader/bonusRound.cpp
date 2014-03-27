@@ -1,6 +1,7 @@
 #include "scriptInterface.h"
 #include "random.h"
 #include "textureManager.h"
+#include "soundManager.h"
 #include "scoreManager.h"
 #include "engine.h"
 #include "player.h"
@@ -68,6 +69,7 @@ public:
     void score()
     {
         scoreCount++;
+        soundManager.playSound("bonus_score", random(0.95, 1.05));
         
         if (spawnDelay > 1.7)
             spawnDelay -= 0.2;
@@ -78,7 +80,8 @@ public:
     
     void fault()
     {
-        faultCount ++;
+        faultCount++;
+        soundManager.playSound("bonus_fault", random(0.95, 1.05));
         
         spawnDelay += 0.5;
         if (spawnDelay > 2.0)
@@ -128,11 +131,11 @@ public:
             else
                 setPosition(getPosition() + sf::Vector2f(0, -getPosition().y + 180) / 100.0f * speed * delta);
         }
-        if (getPosition().x < -30)
+        if (getPosition().x < -20)
         {
             if ((type == 1 && getPosition().y > 120) || (type != 1 && getPosition().y < 120))
                 owner->fault();
-            else if (type == 1)
+            else
                 owner->score();
             destroy();
         }
@@ -183,12 +186,16 @@ void BonusRound::update(float delta)
         objects.update();
         if (objects.size() < 1)
         {
-            P<Transmission> t = new Transmission();
-            t->setFace("Henk1");
-            t->setText(("Scored " + to_string(scoreCount * 32) + "|bonus points").c_str());
-            t->top();
-            
-            P<ScoreManager>(engine->getObject("score"))->add(scoreCount * 32);
+            if (scoreCount - faultCount > 0)
+            {
+                int points = (scoreCount - faultCount) * 31;
+                P<Transmission> t = new Transmission();
+                t->setFace("Henk1");
+                t->setText(("Scored " + to_string(points) + "|bonus points").c_str());
+                t->top();
+                
+                P<ScoreManager>(engine->getObject("score"))->add(points);
+            }
             finished();
             destroy();
             playerBonusWeaponsActive = false;
