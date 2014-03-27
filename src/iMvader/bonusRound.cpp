@@ -109,9 +109,15 @@ public:
             type = 0;
         
         if (type == 1)
-            textureManager.setTexture(sprite, "cool_print_1");
-        else
+        {
+            if (random(0, 100) < 50)
+                textureManager.setTexture(sprite, "cool_print_1");
+            else
+                textureManager.setTexture(sprite, "cool_print_2");
+        }else{
             textureManager.setTexture(sprite, "iphone_case");
+        }
+        sprite.setRotation(random(0, 360));
         yMove = 0;
     }
     
