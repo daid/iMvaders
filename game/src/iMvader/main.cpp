@@ -7,6 +7,7 @@
 #include "mainMenu.h"
 #include "player.h"
 #include "scoreManager.h"
+#include "postProcessManager.h"
 
 #include "textDraw.h"
 #include "scriptInterface.h"
@@ -63,6 +64,7 @@ int main(int argc, char** argv)
     new StarBackground();
     new MainMenu();
     new WallClock();
+    postProcessorManager.triggerPostProcess("crt", -100);
     engine->runMainLoop();
     
     delete engine;

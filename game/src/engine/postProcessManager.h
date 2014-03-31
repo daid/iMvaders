@@ -12,7 +12,7 @@ class PostProcessorManager
 {
 private:
     std::map<std::string, PostProcessor*> postProcessorMap;
-    sf::RenderTexture backBuffer;
+    sf::RenderTexture backBuffer[2];
     sf::Vector2i virtualSize;
 public:
     sf::RenderTarget& getPrimaryRenderTarget(sf::RenderTarget& window);
