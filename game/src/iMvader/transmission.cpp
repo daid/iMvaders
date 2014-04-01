@@ -46,7 +46,7 @@ void Transmission::postRender(sf::RenderTarget& window)
 {
     sf::RectangleShape transmissionShape(sf::Vector2f(280, 62));
     transmissionShape.setPosition(20, positionY);
-    transmissionShape.setFillColor(sf::Color::Black);
+    transmissionShape.setFillColor(sf::Color(0, 0, 0, 128));
     transmissionShape.setOutlineColor(sf::Color::White);
     transmissionShape.setOutlineThickness(1);
     window.draw(transmissionShape);
