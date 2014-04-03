@@ -9,6 +9,7 @@
 #include "scoreManager.h"
 #include "postProcessManager.h"
 
+#include "stringUtils.h"
 #include "textDraw.h"
 #include "scriptInterface.h"
 
@@ -18,7 +19,9 @@ public:
     WallClock() {}
     virtual ~WallClock() {}
     
-    virtual void preRender(sf::RenderTarget& window)
+    virtual void preRender(sf::RenderTarget& window) {}
+    virtual void render(sf::RenderTarget& window) {}
+    virtual void postRender(sf::RenderTarget& window)
     {
         time_t t = time(NULL);
         struct tm* tt = localtime(&t);
@@ -26,8 +29,61 @@ public:
         sprintf(buffer, "%2d:%02d", tt->tm_hour, tt->tm_min);
         drawText(window, 10, 5, buffer, align_left, 0.5);
     }
+};
+
+class AutoShutdown : public Updatable, public Renderable
+{
+    float idleTime;
+    const static float idleTimeout = 60 * 60;
+    const static float idleTimeoutWarning = 10 * 60;
+public:
+    AutoShutdown()
+    {
+        idleTime = 0.0;
+    }
+    virtual ~AutoShutdown() {}
+    
+    virtual void update(float delta)
+    {
+        idleTime += delta;
+        
+        P<PlayerController> pc[MAX_PLAYERS];
+        pc[0] = engine->getObject("playerController1");
+        pc[1] = engine->getObject("playerController2");
+        for(int n=0; n<MAX_PLAYERS; n++)
+        {
+            if (pc[n]->up() || pc[n]->down() || pc[n]->left() || pc[n]->right())
+                idleTime = 0.0;
+            for(int b=0; b<PlayerController::buttonCount; b++)
+                if (pc[n]->button(b))
+                    idleTime = 0.0;
+        }
+        
+        time_t t = time(NULL);
+        struct tm* tt = localtime(&t);
+        if (tt->tm_hour < 18)
+            idleTime = 0.0;
+        
+        if (idleTime > idleTimeout)
+            system("sudo poweroff");
+    }
+
+    virtual void preRender(sf::RenderTarget& window) {}
     virtual void render(sf::RenderTarget& window) {}
-    virtual void postRender(sf::RenderTarget& window) {}
+    virtual void postRender(sf::RenderTarget& window)
+    {
+        if (idleTime > idleTimeout - idleTimeoutWarning)
+        {
+            float f = idleTimeout - idleTime;
+            int tsec = int(f) % 60;
+            int tmin = int(f) / 60;
+            drawText(window, 160, 10, "Shutting down in");
+            if (tsec > 9)
+                drawText(window, 160, 25, to_string(tmin) + ":" + to_string(tsec));
+            else
+                drawText(window, 160, 25, to_string(tmin) + ":0" + to_string(tsec));
+        }
+    }
 };
 
 int main(int argc, char** argv)
@@ -64,6 +120,7 @@ int main(int argc, char** argv)
     new StarBackground();
     new MainMenu();
     new WallClock();
+    new AutoShutdown();
     postProcessorManager.triggerPostProcess("crt", -100);
     engine->runMainLoop();
     
