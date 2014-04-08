@@ -24,7 +24,7 @@ SoundManager::~SoundManager()
 {
 }
 
-void SoundManager::playSound(std::string name, float pitch, float volume)
+void SoundManager::playSound(string name, float pitch, float volume)
 {
     sf::SoundBuffer* data = soundMap[name];
     if (data == NULL)
@@ -33,17 +33,17 @@ void SoundManager::playSound(std::string name, float pitch, float volume)
     playSoundData(data, pitch, volume);
 }
 
-void SoundManager::setTextToSpeachVoice(std::string name)
+void SoundManager::setTextToSpeachVoice(string name)
 {
 }
 
-std::string url_encode(const std::string &value) {
+string url_encode(const string &value) {
     std::ostringstream escaped;
     escaped.fill('0');
     escaped << std::hex;
 
-    for (std::string::const_iterator i = value.begin(), n = value.end(); i != n; ++i) {
-        std::string::value_type c = (*i);
+    for (string::const_iterator i = value.begin(), n = value.end(); i != n; ++i) {
+        string::value_type c = (*i);
         if (isalnum(c) || c == '-' || c == '_' || c == '.' || c == '~') {
             escaped << c;
         }
@@ -58,9 +58,9 @@ std::string url_encode(const std::string &value) {
     return escaped.str();
 }
 
-void SoundManager::playTextToSpeech(std::string text)
+void SoundManager::playTextToSpeech(string text)
 {
-    std::string name = "TTS:" + text;
+    string name = "TTS:" + text;
     sf::SoundBuffer* data = soundMap[name];
     if (data != NULL)
     {
@@ -75,7 +75,7 @@ void SoundManager::playTextToSpeech(std::string text)
     sf::Http::Response::Status status = response.getStatus();
     if (status == sf::Http::Response::Ok)
     {
-        std::string wave = response.getBody();
+        string wave = response.getBody();
         sf::SoundBuffer* data = new sf::SoundBuffer();
         data->loadFromMemory(wave.data(), wave.size());
         soundMap[name] = data;
@@ -103,7 +103,7 @@ void SoundManager::playSoundData(sf::SoundBuffer* data, float pitch, float volum
     }
 }
 
-sf::SoundBuffer* SoundManager::loadSound(std::string name)
+sf::SoundBuffer* SoundManager::loadSound(string name)
 {
     sf::SoundBuffer* data = soundMap[name];
     if (data)

@@ -9,7 +9,6 @@
 #include "scoreManager.h"
 #include "postProcessManager.h"
 
-#include "stringUtils.h"
 #include "textDraw.h"
 #include "scriptInterface.h"
 
@@ -79,9 +78,9 @@ public:
             int tmin = int(f) / 60;
             drawText(window, 160, 10, "Shutting down in");
             if (tsec > 9)
-                drawText(window, 160, 25, to_string(tmin) + ":" + to_string(tsec));
+                drawText(window, 160, 25, string(tmin) + ":" + string(tsec));
             else
-                drawText(window, 160, 25, to_string(tmin) + ":0" + to_string(tsec));
+                drawText(window, 160, 25, string(tmin) + ":0" + string(tsec));
         }
     }
 };

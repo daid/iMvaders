@@ -7,8 +7,8 @@
 class Transmission : public GameEntity
 {
     sf::Sprite face;
-    std::string faceName;
-    std::string text;
+    string faceName;
+    string text;
     float transmissionTime;
     float positionY;
 

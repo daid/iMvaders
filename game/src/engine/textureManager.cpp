@@ -12,7 +12,7 @@ TextureManager::~TextureManager()
 {
 }
 
-void TextureManager::setTexture(sf::Sprite& sprite, std::string name, unsigned int spriteIndex)
+void TextureManager::setTexture(sf::Sprite& sprite, string name, unsigned int spriteIndex)
 {
     TextureData& data = textureMap[name];
     if (data.texture.getSize().x < 1)
@@ -29,7 +29,7 @@ void TextureManager::setTexture(sf::Sprite& sprite, std::string name, unsigned i
     }
 }
 
-sf::Texture* TextureManager::getTexture(std::string name)
+sf::Texture* TextureManager::getTexture(string name)
 {
     TextureData& data = textureMap[name];
     if (data.texture.getSize().x < 1)
@@ -37,7 +37,7 @@ sf::Texture* TextureManager::getTexture(std::string name)
     return &data.texture;
 }
 
-const sf::IntRect& TextureManager::getSpriteRect(std::string name, unsigned int spriteIndex)
+const sf::IntRect& TextureManager::getSpriteRect(string name, unsigned int spriteIndex)
 {
     TextureData& data = textureMap[name];
     if (data.texture.getSize().x < 1)
@@ -50,7 +50,7 @@ const sf::IntRect& TextureManager::getSpriteRect(std::string name, unsigned int 
     return noRect;
 }
 
-void TextureManager::loadTexture(std::string name)
+void TextureManager::loadTexture(string name)
 {
     TextureData& data = textureMap[name];
     

@@ -2,7 +2,7 @@
 #define ENGINE_H
 
 #include <map>
-#include <string>
+#include "stringImproved.h"
 #include "P.h"
 #include "windowManager.h"
 
@@ -14,7 +14,7 @@ class Engine
     WindowManager* windowManager;
     float q;
     
-    std::map<std::string, P<PObject> > objectMap;
+    std::map<string, P<PObject> > objectMap;
     float elapsedTime;
     float gameSpeed;
 public:
@@ -24,8 +24,8 @@ public:
     void setGameSpeed(float speed);
     float getElapsedTime();
 
-    void registerObject(std::string name, P<PObject> obj);
-    P<PObject> getObject(std::string name);
+    void registerObject(string name, P<PObject> obj);
+    P<PObject> getObject(string name);
     
     void runMainLoop();
 };

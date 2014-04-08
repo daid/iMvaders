@@ -6,7 +6,6 @@
 #include "engine.h"
 #include "player.h"
 #include "explosion.h"
-#include "stringUtils.h"
 #include "transmission.h"
 #include "gameEntity.h"
 #include "Collisionable.h"
@@ -197,7 +196,7 @@ void BonusRound::update(float delta)
                 int points = (scoreCount - faultCount) * 31;
                 P<Transmission> t = new Transmission();
                 t->setFace("Henk1");
-                t->setText(("Scored " + to_string(points) + "|bonus points").c_str());
+                t->setText(("Scored " + string(points) + "|bonus points").c_str());
                 t->top();
                 
                 P<ScoreManager>(engine->getObject("score"))->add(points);

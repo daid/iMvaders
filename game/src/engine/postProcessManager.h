@@ -3,6 +3,7 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "stringImproved.h"
 #include "Updatable.h"
 
 class PostProcessor;
@@ -11,7 +12,7 @@ extern PostProcessorManager postProcessorManager;
 class PostProcessorManager
 {
 private:
-    std::map<std::string, PostProcessor*> postProcessorMap;
+    std::map<string, PostProcessor*> postProcessorMap;
     sf::RenderTexture backBuffer[2];
     sf::Vector2i virtualSize;
 public:

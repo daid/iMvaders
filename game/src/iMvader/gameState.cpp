@@ -1,5 +1,4 @@
 #include <string.h>
-#include "stringUtils.h"
 #include "gameState.h"
 #include "EnemyGroup.h"
 #include "textDraw.h"
@@ -109,7 +108,7 @@ public:
                 e->destroy();
             
             P<ScoreManager> score = engine->getObject("score");
-            std::string finalName = name[0];
+            string finalName = name[0];
             for(int p=1; p<playerCount; p++)
             {
                 finalName += " ";
@@ -125,7 +124,7 @@ public:
     {
         drawText(window, 160, 25, "NEW HIGHSCORE", align_center);
         drawText(window, 160, 40, "ENTER YOUR NAME", align_center);
-        std::string finalName = name[0];
+        string finalName = name[0];
         for(int p=1; p<playerCount; p++)
         {
             finalName += " ";
@@ -198,7 +197,7 @@ public:
     {
         P<ScoreManager> score = engine->getObject("score");
         drawText(window, 160, 120, "GAME OVER", align_center);
-        drawText(window, 160, 140, "SCORE " + to_string(score->get()), align_center);
+        drawText(window, 160, 140, "SCORE " + string(score->get()), align_center);
     }
 };
 
@@ -354,6 +353,6 @@ void GameState::postRender(sf::RenderTarget& window)
         if (player2SpawnDelay > 0.0 && fmodf(player2SpawnDelay, 1.0) < 0.5)
             drawText(window, 310, 220, "Press fire to join", align_right, 0.7);
     }else{
-        drawText(window, 310, 220, to_string(P<ScoreManager>(engine->getObject("score"))->get()), align_right);
+        drawText(window, 310, 220, string(P<ScoreManager>(engine->getObject("score"))->get()), align_right);
     }
 }

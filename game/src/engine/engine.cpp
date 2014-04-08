@@ -23,12 +23,12 @@ Engine::~Engine()
 {
 }
 
-void Engine::registerObject(std::string name, P<PObject> obj)
+void Engine::registerObject(string name, P<PObject> obj)
 {
     objectMap[name] = obj;
 }
 
-P<PObject> Engine::getObject(std::string name)
+P<PObject> Engine::getObject(string name)
 {
     if (!objectMap[name])
         return NULL;

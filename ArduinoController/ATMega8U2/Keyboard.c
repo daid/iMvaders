@@ -311,6 +311,10 @@ bool CALLBACK_HID_Device_CreateHIDReport(USB_ClassInfo_HID_Device_t* const HIDIn
 
         if (playerState[0].buttons & 0x01)
             MouseReport->Button |= _BV(0);
+        if (playerState[0].buttons & 0x02)
+            MouseReport->Button |= _BV(2);
+        if (playerState[0].buttons & 0x04)
+            MouseReport->Button |= _BV(1);
 
         *ReportSize = sizeof(USB_MouseReport_Data_t);
         return MouseReport->X || MouseReport->Y || MouseReport->Button;

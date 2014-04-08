@@ -86,7 +86,7 @@ int main()
         if (!READ(60)) buttons |= 0x08;
         
         Serial.write(uint8_t(0x5F));
-        Serial.write(uint8_t(0x02));
+        Serial.write(uint8_t(0x00));
         Serial.write(uint8_t(buttons));
 
         WRITE(13, 0);
@@ -101,7 +101,7 @@ int main()
         if (!READ(25)) buttons |= 0x80;
 
         Serial.write(uint8_t(0x5F));
-        Serial.write(uint8_t(0x03));
+        Serial.write(uint8_t(0x01));
         Serial.write(uint8_t(buttons));
     }
 }

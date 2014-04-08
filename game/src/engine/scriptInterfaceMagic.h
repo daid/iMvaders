@@ -8,6 +8,7 @@
 */
 
 #include "P.h"
+#include "stringImproved.h"
 #include "lua/lua.hpp"
 
 typedef void (*registerObjectFunction)(lua_State* L);
@@ -84,7 +85,7 @@ template<class T> struct convert< P<T> >
 
 //Specialized template for const char* so we can convert lua strings to C strings. This overrules the general T* template for const char*
 template<> void convert<const char*>::param(lua_State* L, int& idx, const char*& str);
-template<> void convert<std::string>::param(lua_State* L, int& idx, std::string& str);
+template<> void convert<string>::param(lua_State* L, int& idx, string& str);
 
 /* Convert parameters to sf::Vector2 objects. */
 template<typename T> struct convert<sf::Vector2<T> >

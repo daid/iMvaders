@@ -5,6 +5,7 @@
 
 #include <map>
 #include <vector>
+#include "stringImproved.h"
 
 class TextureManager;
 extern TextureManager textureManager;
@@ -16,17 +17,17 @@ struct TextureData
 class TextureManager
 {
 private:
-    std::map<std::string, TextureData> textureMap;
+    std::map<string, TextureData> textureMap;
 public:
     TextureManager();
     ~TextureManager();
     
-    void setTexture(sf::Sprite& sprite, std::string name, unsigned int spriteIndex = 0);
-    const sf::IntRect& getSpriteRect(std::string name, unsigned int spriteIndex = 0);
+    void setTexture(sf::Sprite& sprite, string name, unsigned int spriteIndex = 0);
+    const sf::IntRect& getSpriteRect(string name, unsigned int spriteIndex = 0);
 
-    sf::Texture* getTexture(std::string name);
+    sf::Texture* getTexture(string name);
 private:
-    void loadTexture(std::string name);
+    void loadTexture(string name);
 };
 
 #endif//TEXTURE_MANAGER_H

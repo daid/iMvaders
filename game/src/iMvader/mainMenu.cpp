@@ -2,7 +2,6 @@
 #include "player.h"
 #include "gameState.h"
 #include "textDraw.h"
-#include "stringUtils.h"
 #include "scoreManager.h"
 #include "engine.h"
 
@@ -75,10 +74,10 @@ void MainMenu::postRender(sf::RenderTarget& window)
 
         drawText(window, 80, 90, "1 PLAYER");
         for(int i=0; i<ScoreManager::highscoreListSize; i++)
-            drawText(window, 80, 90 + 16 * (i+1), score->getHighscoreName(1, i) + " " + to_string(score->getHighScore(1, i)));
+            drawText(window, 80, 90 + 16 * (i+1), score->getHighscoreName(1, i) + " " + string(score->getHighScore(1, i)));
         drawText(window, 160+80, 90, "2 PLAYERS");
         for(int i=0; i<ScoreManager::highscoreListSize; i++)
-            drawText(window, 160+80, 90 + 16 * (i+1), score->getHighscoreName(2, i) + " " + to_string(score->getHighScore(2, i)));
+            drawText(window, 160+80, 90 + 16 * (i+1), score->getHighscoreName(2, i) + " " + string(score->getHighScore(2, i)));
 
         if (int(blink * 1000) % 1000 < 500)
             drawText(window, 160, 210, "INSERT COOKIE");

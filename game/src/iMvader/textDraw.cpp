@@ -1,7 +1,7 @@
 #include "textDraw.h"
 #include "textureManager.h"
 
-static int textWidth(std::string str)
+static int textWidth(string str)
 {
     int width = 0;
     int ret = 0;
@@ -27,7 +27,7 @@ static int textWidth(std::string str)
     return std::max(ret, width);
 }
 
-void drawText(sf::RenderTarget& window, float x, float y, std::string str, textAlign align, float scale)
+void drawText(sf::RenderTarget& window, float x, float y, string str, textAlign align, float scale)
 {
     sf::Sprite letter;
     if (align == align_center)

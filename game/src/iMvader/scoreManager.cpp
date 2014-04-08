@@ -50,7 +50,7 @@ bool ScoreManager::isHighscore(int playerCount)
     return false;
 }
 
-void ScoreManager::enterHighscore(int playerCount, std::string name)
+void ScoreManager::enterHighscore(int playerCount, string name)
 {
     assert(playerCount > 0 && playerCount <= MAX_PLAYERS);
     if (int(name.size()) < playerCount)
@@ -72,7 +72,7 @@ int ScoreManager::getHighScore(int playerCount, int idx)
     assert(playerCount > 0 && playerCount <= MAX_PLAYERS);
     return highscoreList[playerCount-1][idx].score;
 }
-std::string ScoreManager::getHighscoreName(int playerCount, int idx)
+string ScoreManager::getHighscoreName(int playerCount, int idx)
 {
     assert(idx >= 0 && idx < highscoreListSize);
     assert(playerCount > 0 && playerCount <= MAX_PLAYERS);
@@ -84,7 +84,7 @@ void ScoreManager::update(float delta)
     
 }
 
-void ScoreManager::loadHighscore(std::string filename)
+void ScoreManager::loadHighscore(string filename)
 {
     FILE* f = fopen(filename.c_str(), "r");
     if (!f)
@@ -107,7 +107,7 @@ void ScoreManager::loadHighscore(std::string filename)
     fclose(f);
 }
 
-void ScoreManager::saveHighscore(std::string filename)
+void ScoreManager::saveHighscore(string filename)
 {
     FILE* f = fopen(filename.c_str(), "w");
     if (!f)

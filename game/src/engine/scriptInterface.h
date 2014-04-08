@@ -29,7 +29,7 @@ class ScriptCallback
 {
 public:
     P<ScriptObject> script;
-    std::string functionName;
+    string functionName;
 
     void operator() ();
     
