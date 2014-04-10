@@ -310,9 +310,11 @@ function update(delta)
 			return
 		end
 		if allowFlyIn then
-			g = groupList[math.random(#groupList)];
-			if g:isValid() and g:isAll("Outside") then
-				g:flyInBy(random(0, 320), -20, 160, 160);
+			for _ = 1, playtrough do
+				g = groupList[math.random(#groupList)];
+				if g:isValid() and g:isAll("Outside") then
+					g:flyInBy(random(0, 320), -20, 160, 160);
+				end
 			end
 		end
 
