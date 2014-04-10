@@ -197,7 +197,8 @@
 		<Unit filename="src/engine/scriptInterfaceMagic.h" />
 		<Unit filename="src/engine/soundManager.cpp" />
 		<Unit filename="src/engine/soundManager.h" />
-		<Unit filename="src/engine/stringUtils.h" />
+		<Unit filename="src/engine/stringImproved.cpp" />
+		<Unit filename="src/engine/stringImproved.h" />
 		<Unit filename="src/engine/textureManager.cpp" />
 		<Unit filename="src/engine/textureManager.h" />
 		<Unit filename="src/engine/vectorUtils.h" />

@@ -318,7 +318,7 @@ void GameState::postRender(sf::RenderTarget& window)
         life.setColor(sf::Color(255,255,255,192));
         for(int n=0; n<playerInfo[p].lives; n++)
         {
-            life.setPosition(10 + 13 * n, 230 - p * 10);
+            life.setPosition(20 + 13 * n, 230 - p * 10);
             window.draw(life);
         }
 
@@ -328,7 +328,7 @@ void GameState::postRender(sf::RenderTarget& window)
             nukeIcon.setColor(sf::Color(231, 24, 118));
         for(int n=0; n<playerInfo[p].nukes; n++)
         {
-            nukeIcon.setPosition(50 + 10 * n, 230 - p * 10);
+            nukeIcon.setPosition(60 + 10 * n, 230 - p * 10);
             window.draw(nukeIcon);
         }
     }
@@ -339,20 +339,20 @@ void GameState::postRender(sf::RenderTarget& window)
         reviveBarBG.setFillColor(sf::Color::Transparent);
         reviveBarBG.setOutlineColor(sf::Color(128, 128, 128, 128));
         reviveBarBG.setOutlineThickness(1);
-        reviveBarBG.setPosition(5, 200);
+        reviveBarBG.setPosition(15, 200);
         window.draw(reviveBarBG);
 
         sf::RectangleShape reviveBar(sf::Vector2f(40 * ((reviveTimeout - 0.5) - reviveDelay) / (reviveTimeout - 0.5), 8));
         reviveBar.setFillColor(sf::Color(24, 161, 212, 128));
-        reviveBar.setPosition(5, 200);
+        reviveBar.setPosition(15, 200);
         window.draw(reviveBar);
     }
 
     if (P<ScoreManager>(engine->getObject("score"))->get() < 1)
     {
         if (player2SpawnDelay > 0.0 && fmodf(player2SpawnDelay, 1.0) < 0.5)
-            drawText(window, 310, 220, "Press fire to join", align_right, 0.7);
+            drawText(window, 300, 220, "Press fire to join", align_right, 0.7);
     }else{
-        drawText(window, 310, 220, string(P<ScoreManager>(engine->getObject("score"))->get()), align_right);
+        drawText(window, 300, 220, string(P<ScoreManager>(engine->getObject("score"))->get()), align_right);
     }
 }

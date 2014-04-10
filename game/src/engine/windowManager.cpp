@@ -25,6 +25,8 @@ WindowManager::WindowManager(int virtualWidth, int virtualHeight, bool fullscree
             scale += 1;
         windowWidth *= scale - 1;
         windowHeight *= scale - 1;
+        
+        windowHeight *= (1.33333 / 1.25);
     }
 
     if (fullscreen)
@@ -35,7 +37,7 @@ WindowManager::WindowManager(int virtualWidth, int virtualHeight, bool fullscree
     window.setFramerateLimit(60);
     window.setMouseCursorVisible(false);
     sf::View view(sf::Vector2f(virtualWidth/2,virtualHeight/2), sf::Vector2f(virtualWidth, virtualHeight));
-    if (windowWidth > windowHeight * virtualWidth / virtualHeight)
+    if (windowWidth * 1.1 > windowHeight * virtualWidth / virtualHeight)
     {
         float aspect = float(windowHeight) * float(virtualWidth) / float(virtualHeight) / float(windowWidth);
         float offset = 0.5 - 0.5 * aspect;

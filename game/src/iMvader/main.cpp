@@ -26,7 +26,7 @@ public:
         struct tm* tt = localtime(&t);
         char buffer[10];
         sprintf(buffer, "%2d:%02d", tt->tm_hour, tt->tm_min);
-        drawText(window, 10, 5, buffer, align_left, 0.5);
+        drawText(window, 20, 5, buffer, align_left, 0.5);
     }
 };
 
