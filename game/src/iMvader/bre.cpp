@@ -68,7 +68,7 @@ void BreEnemy::update(float delta)
         {
             shotDelay -= delta;
             if (difficulty > 1)
-                shotDelay -= delta * 0.3;
+                shotDelay -= delta * 0.2;
         }else{
             if (random(0, 100) < 30)
             {
