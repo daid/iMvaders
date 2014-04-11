@@ -155,7 +155,6 @@ bool PlayerCraft::takeDamage(sf::Vector2f position, int damageType, int damageAm
     invulnerability = 1.0;
     if(health <= 0)
     {
-        postProcessorManager.triggerPostProcess("pixel", 1.0);
         destroy();
         for(unsigned int n=0; n<4; n++)
         {
