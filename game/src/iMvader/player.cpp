@@ -88,9 +88,12 @@ void PlayerCraft::update(float delta)
         {
             int shots = 5 * (chargeShot - minChargeShot) / (maxChargeShot - minChargeShot);
             chargeShot = 0.0;
-            for(int n=0; n<=shots; n++)
+            if (shots > 0)
             {
-                new Bullet(getPosition(), -1 - type, (float(n) - float(shots) / 2.0) / float(shots) * 15.0);
+                for(int n=0; n<=shots; n++)
+                {
+                    new Bullet(getPosition(), -1 - type, (float(n) - float(shots) / 2.0) / float(shots) * 15.0);
+                }
             }
         }
         
