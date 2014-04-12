@@ -19,10 +19,27 @@ PlayerCraft::PlayerCraft(PlayerController* controller, PlayerInfo* info, int typ
     chargeShot = 0;
     health = 2;
     if (type == 0)
+    {
         textureManager.setTexture(sprite, "player1");
+        color = sf::Color(24, 161, 212, 255);
+    }
+    else if (type < 0)
+    {
+        textureManager.setTexture(sprite, "BasicEnemy", 0);
+        color = sf::Color(212, 0, 0, 255);
+        sprite.setScale(1.2, 1.2);
+        sprite.setColor(color);
+    }
     else
+    {
         textureManager.setTexture(sprite, "player2");
-    setPosition(sf::Vector2f(160, 220));
+        color = sf::Color(231, 24, 118, 255);
+    }
+    
+    if (type >= 0)
+        setPosition(sf::Vector2f(160, 220));
+    else
+        setPosition(sf::Vector2f(160, 20));
 }
 
 PlayerCraft::~PlayerCraft()
@@ -61,6 +78,10 @@ void PlayerCraft::update(float delta)
         setPosition(sf::Vector2f(getPosition().x, 10));
     if (getPosition().y > 230)
         setPosition(sf::Vector2f(getPosition().x, 230));
+    if (getPosition().y < 20 && type >= 0)
+        setPosition(sf::Vector2f(getPosition().x, 20));
+    if (getPosition().y > 220 && type < 0)
+        setPosition(sf::Vector2f(getPosition().x, 220));
 
     if (playerBonusWeaponsActive)
     {
@@ -92,7 +113,7 @@ void PlayerCraft::update(float delta)
             {
                 for(int n=0; n<=shots; n++)
                 {
-                    new Bullet(getPosition(), -1 - type, (float(n) - float(shots) / 2.0) / float(shots) * 15.0);
+                    new Bullet(getPosition(), -1 - type, (float(n) - float(shots) / 2.0) / float(shots) * 15.0 + ((type >= 0) ? 0 : 180));
                 }
             }
         }
@@ -104,6 +125,11 @@ void PlayerCraft::update(float delta)
                 new Bullet(getPosition(), -1, 0);
                 fireCooldown = 0.4;
             }
+            if (type == -1)
+            {
+                new Bullet(getPosition(), 0, 180);
+                fireCooldown = 0.4;
+            }
             if (type == 1)
             {
                 new Bullet(getPosition() + sf::Vector2f(7, 0), -2, 0);
@@ -113,7 +139,7 @@ void PlayerCraft::update(float delta)
         }
         if (!controller->button(fireButton))
         {
-            if (type == 0 && fireCooldown > 0.1)
+            if (type <= 0 && fireCooldown > 0.1)
                 fireCooldown = 0.1;
             if (type == 1 && fireCooldown > 0.25)
                 fireCooldown = 0.25;
@@ -132,7 +158,10 @@ void PlayerCraft::render(sf::RenderTarget& window)
     if (fmod(invulnerability, 4.0/60.0) > 2.0/60.0)
         return;
     sprite.setPosition(getPosition());
-    sprite.setRotation(velocity.x / 10.0);
+    if (type < 0)
+        sprite.setRotation(velocity.x / 10.0 + 180);
+    else
+        sprite.setRotation(velocity.x / 10.0);
     window.draw(sprite);
     
     if (chargeShot > minChargeShot)
@@ -140,20 +169,25 @@ void PlayerCraft::render(sf::RenderTarget& window)
         float r = 0.5 + 3 * (chargeShot - minChargeShot) / (maxChargeShot - minChargeShot);
         sf::CircleShape circle(r, random(3, 5));
         circle.setOrigin(r, r);
-        if (type == 0)
-            circle.setFillColor(sf::Color(24, 161, 212, 200));
-        else
-            circle.setFillColor(sf::Color(231, 24, 118, 200));
+        sf::Color col = color;
+        col.a = 200;
+        circle.setFillColor(col);
         circle.setRotation(random(0, 360));
-        circle.setPosition(getPosition() + sf::vector2FromAngle(velocity.x / 10.0f) * 10.0f);
+        circle.setPosition(getPosition() + sf::vector2FromAngle(sprite.getRotation()) * 10.0f);
         window.draw(circle);
     }
 }
 
 bool PlayerCraft::takeDamage(sf::Vector2f position, int damageType, int damageAmount)
 {
-    if (damageType < 0 || invulnerability > 0)
-        return false;
+    if (type < 0)
+    {
+        if (damageType >= 0 || invulnerability > 0)
+            return false;
+    }else{
+        if (damageType < 0 || invulnerability > 0)
+            return false;
+    }
     health -= damageAmount;
     invulnerability = 1.0;
     if(health <= 0)

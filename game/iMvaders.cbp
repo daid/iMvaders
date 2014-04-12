@@ -235,6 +235,7 @@
 		<Unit filename="src/iMvader/nuke.h" />
 		<Unit filename="src/iMvader/objectListWatcher.cpp" />
 		<Unit filename="src/iMvader/oldPrinters.cpp" />
+		<Unit filename="src/iMvader/oldPrinters.h" />
 		<Unit filename="src/iMvader/player.cpp" />
 		<Unit filename="src/iMvader/player.h" />
 		<Unit filename="src/iMvader/powerup.cpp" />
@@ -249,6 +250,8 @@
 		<Unit filename="src/iMvader/textDraw.h" />
 		<Unit filename="src/iMvader/transmission.cpp" />
 		<Unit filename="src/iMvader/transmission.h" />
+		<Unit filename="src/iMvader/versusGameMode.cpp" />
+		<Unit filename="src/iMvader/versusGameMode.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />

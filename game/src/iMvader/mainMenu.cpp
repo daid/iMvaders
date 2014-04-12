@@ -4,6 +4,82 @@
 #include "textDraw.h"
 #include "scoreManager.h"
 #include "engine.h"
+#include "versusGameMode.h"
+
+class SecretMenu : public Updatable, public Renderable
+{
+    int selectionIndex;
+    float delay;
+    float timeout;
+public:
+    SecretMenu()
+    {
+        selectionIndex = 0;
+        delay = 0;
+        timeout = 10 * 60;
+    }
+
+    void update(float delta)
+    {
+        P<PlayerController> pc1 = engine->getObject("playerController1");
+        P<PlayerController> pc2 = engine->getObject("playerController2");
+        timeout -= delta;
+        
+        if (pc1->button(fireButton) || timeout < 0)
+        {
+            if (timeout < 0)
+                selectionIndex = 0;
+            switch(selectionIndex)
+            {
+            case 0:
+                destroy();
+                new MainMenu();
+                break;
+            case 1:
+                destroy();
+                sf::Listener::setGlobalVolume(100);
+                new VersusGameState();
+                break;
+            }
+        }
+        
+        if (delay > 0)
+        {
+            delay -= delta;
+        }else{
+            if (pc1->down())
+            {
+                selectionIndex++;
+                delay = 0.2;
+            }
+            if (pc1->up())
+            {
+                selectionIndex--;
+                delay = 0.2;
+            }
+        }
+        selectionIndex = std::max(0, selectionIndex);
+        selectionIndex = std::min(2, selectionIndex);
+    }
+    
+    void preRender(sf::RenderTarget& window) {}
+    void render(sf::RenderTarget& window) {}
+    void postRender(sf::RenderTarget& window)
+    {
+        drawText(window, 160, 20, "Choose your destiny");
+
+        sf::RectangleShape selection(sf::Vector2f(320, 12));
+        selection.setFillColor(sf::Color(24, 161, 212));
+        selection.setPosition(sf::Vector2f(0, 50 + 20 * selectionIndex));
+        window.draw(selection);
+        
+        int n=0;
+        drawText(window, 160, 50 + 20 * n, "Play iMvaders");n++;
+        drawText(window, 160, 50 + 20 * n, "Play VS iMvaders");n++;
+        drawText(window, 160, 50 + 20 * n, "Play Jamestown");n++;
+        drawText(window, 160, 50 + 20 * n, "Clear highscores");n++;
+    }
+};
 
 MainMenu::MainMenu()
 {
@@ -62,6 +138,16 @@ void MainMenu::update(float delta)
     {
         P<WindowManager> windowManager = engine->getObject("windowManager");
         windowManager->close();
+    }
+
+    //Magic 4 button menu combo
+    if ((pc1->button(slowButton) && pc1->button(chargeShotButton) && pc2->button(slowButton) && pc2->button(chargeShotButton)) || sf::Keyboard::isKeyPressed(sf::Keyboard::BackSpace))
+    {
+        foreach(GameEntity, e, entityList)
+            e->destroy();
+        destroy();
+        
+        new SecretMenu();
     }
 }
 

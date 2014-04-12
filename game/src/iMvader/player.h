@@ -64,6 +64,7 @@ public:
     static const float maxChargeShot = 2.0;
     float invulnerability;
     int health;
+    sf::Color color;
     P<PlayerBonusLaser> bonusLaser;
 public:
     PlayerCraft(PlayerController* controller, PlayerInfo* info, int type);
