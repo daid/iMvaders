@@ -13,7 +13,7 @@ REGISTER_SCRIPT_CLASS(PowerupCarrier)
 }
 
 PowerupCarrier::PowerupCarrier()
-: GameEntity(), Collisionable(12.0)
+: GameEntity(), Collisionable(sf::Vector2f(28, 20))
 {
     direction = 1.0;
     speed = 40;

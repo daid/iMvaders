@@ -3,7 +3,7 @@
 #include "random.h"
 #include "vectorUtils.h"
 
-Explosion::Explosion(sf::Vector2f position, float radius)
+Explosion::Explosion(sf::Vector2f position, float radius, sf::Vector2f addedVelocity)
 {
     soundManager.playSound("explosion", random(0.8, 1.2), radius * 10.0);
     unsigned int count = int(radius*radius*8);
@@ -12,7 +12,7 @@ Explosion::Explosion(sf::Vector2f position, float radius)
     {
         float a = random(0, 360);
         sf::Vector2f p = position + sf::vector2FromAngle(random(0, 360)) * random(0, radius);
-        sf::Vector2f v = sf::vector2FromAngle(a) * random(30, 80) * radius / 10.0f;
+        sf::Vector2f v = sf::vector2FromAngle(a) * random(30, 80) * radius / 10.0f + addedVelocity;
         particles.push_back(Particle(p, v));
     }
     life = 1.0;

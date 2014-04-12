@@ -82,7 +82,7 @@ bool Digitizer::takeDamage(sf::Vector2f position, int damageType, int damageAmou
 }
 
 DigitizerLaser::DigitizerLaser(P<Digitizer> owner)
-: Collisionable(sf::Vector2f(1, 240), sf::Vector2f(0.5, 120))
+: Collisionable(sf::Vector2f(1, 240), sf::Vector2f(0, 120))
 {
     this->owner = owner;
     activateDelay = activateDelayMax;

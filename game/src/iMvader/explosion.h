@@ -24,7 +24,7 @@ private:
     float life;
     static const float lifeTime = 0.5;
 public:
-    Explosion(sf::Vector2f position, float radius);
+    Explosion(sf::Vector2f position, float radius, sf::Vector2f addedVelocity = sf::Vector2f(0, 0));
     virtual ~Explosion();
     
     virtual void update(float delta);

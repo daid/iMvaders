@@ -22,6 +22,7 @@ class ReplicatorZ18Part : public GameEntity, public Collisionable
 {
     float speed;
     int health;
+    float tinyExplosionDelay;
     static const int maxHealth = 2;
 public:
     ReplicatorZ18Part(P<ReplicatorZ18> owner, int index);

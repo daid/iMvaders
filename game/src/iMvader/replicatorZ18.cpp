@@ -45,11 +45,25 @@ ReplicatorZ18Part::ReplicatorZ18Part(P<ReplicatorZ18> owner, int index)
     speed = 16;
     textureManager.setTexture(sprite, "Replicator_Z18", index);
     health = maxHealth;
+    tinyExplosionDelay = 0.0;
 }
 
 void ReplicatorZ18Part::update(float delta)
 {
     setPosition(getPosition() + sf::Vector2f(0, speed) * delta);
+    if (health <= 0)
+    {
+        setRotation(getRotation() + 1000 * delta);
+        speed += delta * 300;
+        
+        if (tinyExplosionDelay > 0)
+        {
+            tinyExplosionDelay -= delta;
+        }else{
+            tinyExplosionDelay += 0.1;
+            new Explosion(getPosition() + sf::Vector2f(random(-6, 6), random(-6, 6)), 2, sf::Vector2f(0, speed));
+        }
+    }
     if (getPosition().y > 260)
         destroy();
 }
@@ -57,25 +71,36 @@ void ReplicatorZ18Part::update(float delta)
 void ReplicatorZ18Part::render(sf::RenderTarget& window)
 {
     sprite.setPosition(getPosition());
+    sprite.setRotation(getRotation());
+    if (health <= 0)
+    {
+        sprite.setColor(sf::Color(255,255,255,128));
+    }
     window.draw(sprite);
 }
 
 void ReplicatorZ18Part::collision(Collisionable* other)
 {
+    if (health <= 0)
+        return;
+    
     GameEntity* e = dynamic_cast<GameEntity*>(other);
     if (e && e->takeDamage(getPosition(), 0, 1))
-        destroy();
+    {
+        //destroy();
+        health = 0;
+    }
 }
 
 bool ReplicatorZ18Part::takeDamage(sf::Vector2f position, int damageType, int damageAmount)
 {
-    if (damageType >= 0)
+    if (damageType >= 0 || health <= 0)
         return false;
     health -= damageAmount;
     if (health <= 0)
     {
         new Explosion(getPosition(), 8);
-        destroy();
+        //destroy();
         P<ScoreManager>(engine->getObject("score"))->add(5);
     }
     return true;
