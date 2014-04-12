@@ -33,7 +33,7 @@ public:
     P<BreLaser> laser[2];
     ScriptCallback destroyed;
 
-    static const int maxHealth = 100;
+    static const int maxHealth = 10;
     static const int normalShotDelay = 1.2;
     static const int laserChargeTime = 2.0;
 
@@ -63,7 +63,6 @@ public:
 
 class MoneyShield: public GameEntity, public Collisionable
 {
-    float angle;
     float distance;
     float endDistance;
     bool counterClockwise;

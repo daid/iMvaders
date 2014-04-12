@@ -14,14 +14,14 @@ REGISTER_SCRIPT_CLASS(OldPrinter)
 }
 
 OldPrinter::OldPrinter()
-: Collisionable(10)
+: Collisionable(sf::Vector2f(16, 20))
 {
     health = maxHealth;
     if (random(0, 100) < 50)
         textureManager.setTexture(sprite, "thingomatic");
     else
         textureManager.setTexture(sprite, "cupcake");
-    sprite.setRotation(random(0, 360));
+    setRotation(random(0, 360));
     velocity = sf::Vector2f(random(-1, 1), random(-1, 1)) * 3.0f + sf::Vector2f(0.0f, 25.0f);
     setPosition(sf::Vector2f(random(-20, 340), -20));
 }
@@ -40,6 +40,7 @@ void OldPrinter::update(float delta)
 void OldPrinter::render(sf::RenderTarget& window)
 {
     sprite.setPosition(getPosition());
+    sprite.setRotation(getRotation());
     window.draw(sprite);
 }
 

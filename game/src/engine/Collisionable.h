@@ -2,36 +2,49 @@
 #define COLLISIONABLE_H
 
 #include "P.h"
+#include "Box2D/Box2D.h"
 
-class Collisionable;
-extern PVector<Collisionable> collisionableList;
 enum ECollisionType
 {
     CT_Circle,
     CT_Line
 };
 
+class Collisionable;
+class CollisionManager
+{
+public:
+    static void initialize();
+    static void handleCollisions(float delta);
+private:
+    static b2World* world;
+    
+    friend class Collisionable;
+    friend class CollisionDebugDraw;
+};
+
 class Collisionable: public virtual PObject
 {
 private:
     sf::Vector2f position;
-    sf::Vector2f collisionLineVector;
-    ECollisionType collisionType;
-    float collisionRadius;
+    float rotation;
+    b2Body* body;
 public:
     Collisionable(float radius);
-    Collisionable(sf::Vector2f lineVector);
+    Collisionable(sf::Vector2f boxSize, sf::Vector2f boxOrigin = sf::Vector2f(0, 0));
     virtual ~Collisionable();
     virtual void collision(Collisionable* target);
     
     void setCollisionRadius(float radius);
-    void setCollisionLineVector(sf::Vector2f lineVector);
-    sf::Vector2f getCollisionLineVector();
+    void setCollisionBox(sf::Vector2f boxSize, sf::Vector2f boxOrigin = sf::Vector2f(0, 0));
+    void setCollisionShape(std::vector<sf::Vector2f> shape);
+    
     void setPosition(sf::Vector2f v);
     sf::Vector2f getPosition();
-
-
-    static void handleCollisions();
+    void setRotation(float angle);
+    float getRotation();
+    
+    friend class CollisionManager;
 };
 
 #endif // COLLISIONABLE_H

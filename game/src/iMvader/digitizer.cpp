@@ -11,7 +11,7 @@ REGISTER_SCRIPT_CLASS(Digitizer)
 }
 
 Digitizer::Digitizer()
-: GameEntity(), Collisionable(15.0f)
+: GameEntity(), Collisionable(sf::Vector2f(28.0f, 35.0f))
 {
     textureManager.setTexture(sprite, "Digitizer", 0);
     health = maxHealth;
@@ -33,10 +33,10 @@ void Digitizer::update(float delta)
             state = 1;
             laser[0] = new DigitizerLaser(this);
             laser[0]->setPosition(getPosition() + sf::Vector2f( 12.0, -13.0));
-            laser[0]->setCollisionLineVector(sf::vector2FromAngle( 25.0f) * -240.0f);
+            laser[0]->setRotation(25.0f);
             laser[1] = new DigitizerLaser(this);
             laser[1]->setPosition(getPosition() + sf::Vector2f(-12.0, -13.0));
-            laser[1]->setCollisionLineVector(sf::vector2FromAngle(-25.0f) * -240.0f);
+            laser[1]->setRotation(-25.0f);
         }
         break;
     case 1:
@@ -82,7 +82,7 @@ bool Digitizer::takeDamage(sf::Vector2f position, int damageType, int damageAmou
 }
 
 DigitizerLaser::DigitizerLaser(P<Digitizer> owner)
-: Collisionable(sf::Vector2f(0, 240))
+: Collisionable(sf::Vector2f(1, 240), sf::Vector2f(0.5, 120))
 {
     this->owner = owner;
     activateDelay = activateDelayMax;
@@ -106,18 +106,18 @@ void DigitizerLaser::render(sf::RenderTarget& window)
     if (activateDelay < 0)
     {
         sf::RectangleShape laser(sf::Vector2f(3, 240));
-        laser.setOrigin(1.5, 240);
+        laser.setOrigin(1.5, 0);
         laser.setFillColor(sf::Color(255,0,0,192));
-        laser.setRotation(sf::vector2ToAngle(getCollisionLineVector()));
+        laser.setRotation(getRotation());
         laser.setPosition(getPosition());
         window.draw(laser);
     }
     else
     {
         sf::RectangleShape laser(sf::Vector2f(1, 240));
-        laser.setOrigin(0.5, 240);
+        laser.setOrigin(0.5, 0);
         laser.setFillColor(sf::Color(255,0,0,64 + 64 * ((activateDelayMax - activateDelay) / activateDelayMax)));
-        laser.setRotation(sf::vector2ToAngle(getCollisionLineVector()));
+        laser.setRotation(getRotation());
         laser.setPosition(getPosition());
         window.draw(laser);
     }
@@ -132,4 +132,3 @@ void DigitizerLaser::collision(Collisionable* other)
             e->takeDamage(getPosition(), 1, 1);
     }
 }
-

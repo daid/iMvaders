@@ -157,12 +157,12 @@ void BreEnemy::update(float delta)
     if (laser[0])
     {
         laser[0]->setPosition(getPosition() + sf::Vector2f(18, 7));
-        laser[0]->setCollisionLineVector(sf::vector2FromAngle(-shotDelay*30.0f) * -240.0f);
+        laser[0]->setRotation(-shotDelay*30.0f);
     }
     if (laser[1])
     {
         laser[1]->setPosition(getPosition() + sf::Vector2f(-18, 7));
-        laser[1]->setCollisionLineVector(sf::vector2FromAngle(shotDelay*30.0f) * -240.0f);
+        laser[1]->setRotation(shotDelay*30.0f);
     }
     
     mouth.setPosition(sprite.getPosition() + sf::Vector2f(0, mouthPos));
@@ -271,7 +271,7 @@ bool BreEnemy::takeDamage(sf::Vector2f position, int damageType, int damageAmoun
 }
 
 BreLaser::BreLaser(P<BreEnemy> owner)
-: Collisionable(sf::Vector2f(0, 240))
+: Collisionable(sf::Vector2f(3, 240), sf::Vector2f(1.5, 120))
 {
     this->owner = owner;
 }
@@ -285,9 +285,9 @@ void BreLaser::update(float delta)
 void BreLaser::render(sf::RenderTarget& window)
 {
     sf::RectangleShape laser(sf::Vector2f(6, 240));
-    laser.setOrigin(3, 240);
+    laser.setOrigin(3, 0);
     laser.setFillColor(sf::Color(255,0,0,192));
-    laser.setRotation(sf::vector2ToAngle(getCollisionLineVector()));
+    laser.setRotation(getRotation());
     laser.setPosition(getPosition());
     window.draw(laser);
 }
@@ -300,10 +300,10 @@ void BreLaser::collision(Collisionable* other)
 }
 
 MoneyShield::MoneyShield(P<BreEnemy> owner, float startAngle, float endDistance, bool counterClockwise)
-: Collisionable(10), endDistance(endDistance), counterClockwise(counterClockwise)
+: Collisionable(sf::Vector2f(31, 15)), endDistance(endDistance), counterClockwise(counterClockwise)
 {
     this->owner = owner;
-    angle = startAngle;
+    setRotation(startAngle);
     distance = 0;
     textureManager.setTexture(sprite, "Money");
 }
@@ -317,20 +317,20 @@ void MoneyShield::update(float delta)
     }
     
     if (counterClockwise)
-        angle -= delta * 50.0f;
+        setRotation(getRotation() - delta * 50.0f);
     else
-        angle += delta * 50.0f;
+        setRotation(getRotation() + delta * 50.0f);
     distance += delta * endDistance;
     if (distance > endDistance)
         distance = endDistance;
 
-    setPosition(owner->getPosition() + sf::vector2FromAngle(angle) * distance);
+    setPosition(owner->getPosition() + sf::vector2FromAngle(getRotation()) * distance);
 }
 
 void MoneyShield::render(sf::RenderTarget& window)
 {
     sprite.setPosition(getPosition());
-    sprite.setRotation(angle);
+    sprite.setRotation(getRotation());
     
     window.draw(sprite);
 }

@@ -2,8 +2,6 @@
 #include <stdio.h>
 
 #include "httpServer.h"
-#include "stringUtils.h"
-
 
 HttpServer::HttpServer(std::string fileBasePath, int portNr)
 : thread(&HttpServer::handleSocketsThread, this)

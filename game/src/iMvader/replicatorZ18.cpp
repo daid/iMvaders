@@ -40,7 +40,7 @@ void ReplicatorZ18::setSpeed(float speed)
 }
 
 ReplicatorZ18Part::ReplicatorZ18Part(P<ReplicatorZ18> owner, int index)
-: Collisionable(7)
+: Collisionable(sf::Vector2f(16, 16))
 {
     speed = 16;
     textureManager.setTexture(sprite, "Replicator_Z18", index);

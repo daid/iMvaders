@@ -203,7 +203,7 @@ bool PlayerCraft::takeDamage(sf::Vector2f position, int damageType, int damageAm
 }
 
 PlayerBonusLaser::PlayerBonusLaser(P<PlayerCraft> owner)
-: Collisionable(sf::Vector2f(0, -240)), owner(owner)
+: Collisionable(sf::Vector2f(6, 240), sf::Vector2f(0, -120)), owner(owner)
 {
 }
 

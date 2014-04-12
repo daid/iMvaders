@@ -17,6 +17,7 @@ Engine::Engine()
     engine = this;
     initRandom();
     windowManager = NULL;
+    CollisionManager::initialize();
     gameSpeed = 1.0;
 }
 Engine::~Engine()
@@ -72,7 +73,7 @@ void Engine::runMainLoop()
 #ifdef DEBUG
         if (debugOutputClock.getElapsedTime().asSeconds() > 1.0)
         {
-            printf("Object count: %4d %4d %4d %4d %4d\n", DEBUG_PobjCount, updatableList.size(), entityList.size(), collisionableList.size(), renderableList.size());
+            printf("Object count: %4d %4d %4d %4d\n", DEBUG_PobjCount, updatableList.size(), entityList.size(), renderableList.size());
             debugOutputClock.restart();
         }
 #endif
@@ -91,7 +92,7 @@ void Engine::runMainLoop()
         foreach(Updatable, u, updatableList)
             u->update(delta);
         elapsedTime += delta;
-        Collisionable::handleCollisions();
+        CollisionManager::handleCollisions(delta);
 
         // Clear the window
         windowManager->render();
