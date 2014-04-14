@@ -29,6 +29,8 @@ private:
     sf::Vector2f position;
     float rotation;
     b2Body* body;
+    
+    void createBody(b2Shape* shape);
 public:
     Collisionable(float radius);
     Collisionable(sf::Vector2f boxSize, sf::Vector2f boxOrigin = sf::Vector2f(0, 0));

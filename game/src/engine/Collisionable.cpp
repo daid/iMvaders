@@ -145,64 +145,43 @@ Collisionable::~Collisionable()
 
 void Collisionable::setCollisionRadius(float radius)
 {
-    if (body)
-        CollisionManager::world->DestroyBody(body);
-
-    b2BodyDef bodyDef;
-    bodyDef.type = b2_dynamicBody;
-    bodyDef.userData = this;
-    bodyDef.allowSleep = false;
-    bodyDef.bullet = true;
-    body = CollisionManager::world->CreateBody(&bodyDef);
-    
     b2CircleShape shape;
     shape.m_radius = radius;
-    b2FixtureDef shapeDef;
-    shapeDef.shape = &shape;
-    shapeDef.density = 1.0;
-    shapeDef.isSensor = true;
-    body->CreateFixture(&shapeDef);
+
+    createBody(&shape);
 }
 
 void Collisionable::setCollisionBox(sf::Vector2f boxSize, sf::Vector2f boxOrigin)
 {
-    if (body)
-        CollisionManager::world->DestroyBody(body);
-    
-    b2BodyDef bodyDef;
-    bodyDef.type = b2_dynamicBody;
-    bodyDef.userData = this;
-    bodyDef.allowSleep = false;
-    bodyDef.bullet = true;
-    body = CollisionManager::world->CreateBody(&bodyDef);
-    
     b2PolygonShape shape;
     shape.SetAsBox(boxSize.x / 2.0, boxSize.y / 2.0, b2Vec2(boxOrigin.x, boxOrigin.y), 0);
-    b2FixtureDef shapeDef;
-    shapeDef.shape = &shape;
-    shapeDef.density = 1.0;
-    shapeDef.isSensor = true;
-    body->CreateFixture(&shapeDef);
+
+    createBody(&shape);
 }
 
 void Collisionable::setCollisionShape(std::vector<sf::Vector2f> shapeList)
 {
-    if (body)
-        CollisionManager::world->DestroyBody(body);
-    
-    b2BodyDef bodyDef;
-    bodyDef.type = b2_dynamicBody;
-    bodyDef.userData = this;
-    bodyDef.allowSleep = false;
-    bodyDef.bullet = true;
-    body = CollisionManager::world->CreateBody(&bodyDef);
-    
     b2PolygonShape shape;
     shape.m_count = shapeList.size();
     for(unsigned int n=0; n<shapeList.size(); n++)
         shape.m_vertices[n] = b2Vec2(shapeList[n].x, shapeList[n].y);
+    
+    createBody(&shape);
+}
+
+void Collisionable::createBody(b2Shape* shape)
+{
+    if (body)
+        CollisionManager::world->DestroyBody(body);
+
+    b2BodyDef bodyDef;
+    bodyDef.type = b2_dynamicBody;
+    bodyDef.userData = this;
+    bodyDef.allowSleep = false;
+    body = CollisionManager::world->CreateBody(&bodyDef);
+    
     b2FixtureDef shapeDef;
-    shapeDef.shape = &shape;
+    shapeDef.shape = shape;
     shapeDef.density = 1.0;
     shapeDef.isSensor = true;
     body->CreateFixture(&shapeDef);
