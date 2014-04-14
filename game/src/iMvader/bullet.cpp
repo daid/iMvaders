@@ -11,7 +11,7 @@ Bullet::Bullet(sf::Vector2f position, int type, float angle, float speed)
     soundManager.playSound("laser", random(0.75, 1.25));
     textureManager.setTexture(sprite, "bullet");
     setPosition(position);
-    sprite.setRotation(angle);
+    setRotation(angle);
     if (type == 0)
         sprite.setColor(sf::Color::Red);
     else if (type == 1)
@@ -24,7 +24,7 @@ Bullet::Bullet(sf::Vector2f position, int type, float angle, float speed)
 
 void Bullet::update(float delta)
 {
-    setPosition(getPosition() + sf::vector2FromAngle(sprite.getRotation()) * speed * delta);
+    setPosition(getPosition() + sf::vector2FromAngle(getRotation()) * speed * delta);
     if (getPosition().x < -10) destroy();
     if (getPosition().y < -10) destroy();
     if (getPosition().x > 330) destroy();
@@ -37,12 +37,13 @@ void Bullet::collision(Collisionable* other)
     if (e && e->takeDamage(getPosition(), type, 1))
     {
         destroy();
-        new Explosion(getPosition(), 3);
+        new Explosion(getPosition(), 3, sf::vector2FromAngle(getRotation()) * speed / 5.0f);
     }
 }
 
 void Bullet::render(sf::RenderTarget& window)
 {
     sprite.setPosition(getPosition());
+    sprite.setRotation(getRotation());
     window.draw(sprite);
 }

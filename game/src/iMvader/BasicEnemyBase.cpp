@@ -63,7 +63,7 @@ void BasicEnemyBase::update(float delta)
         if (flyInCurve[flyIncurveNr].delta < 1.0)
         {
             flyInCurve[flyIncurveNr].moveDistance(flySpeed * delta);
-            sprite.setRotation(flyInCurve[flyIncurveNr].angle());
+            setRotation(flyInCurve[flyIncurveNr].angle());
         }
         else
         {
@@ -72,7 +72,7 @@ void BasicEnemyBase::update(float delta)
                 flyIncurveNr++;
                 flyInCurve[flyIncurveNr].delta = 0.0;
             }else{
-                sprite.setRotation(180);
+                setRotation(180);
                 state = ES_CenterField;
             }
         }
@@ -85,7 +85,7 @@ void BasicEnemyBase::update(float delta)
         if (diveCurve.delta < 1.0)
         {
             diveCurve.moveDistance(flySpeed * delta);
-            sprite.setRotation(diveCurve.angle());
+            setRotation(diveCurve.angle());
         }
         else
         {
@@ -159,6 +159,7 @@ void BasicEnemyBase::giveShield()
 void BasicEnemyBase::render(sf::RenderTarget& window)
 {
     sprite.setPosition(getPosition());
+    sprite.setRotation(getRotation());
     window.draw(sprite);
 
 #ifdef DEBUG
