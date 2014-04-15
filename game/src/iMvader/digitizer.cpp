@@ -76,7 +76,7 @@ bool Digitizer::takeDamage(sf::Vector2f position, int damageType, int damageAmou
     {
         new Explosion(getPosition(), 8);
         destroy();
-        P<ScoreManager>(engine->getObject("score"))->add(30);
+        P<ScoreManager>(engine->getObject("score"))->add(40);
     }
     return true;
 }
