@@ -22,13 +22,12 @@ OldPrinter::OldPrinter()
     else
         textureManager.setTexture(sprite, "cupcake");
     setRotation(random(0, 360));
-    velocity = sf::Vector2f(random(-1, 1), random(-1, 1)) * 3.0f + sf::Vector2f(0.0f, 25.0f);
+    setVelocity(sf::Vector2f(random(-1, 1), random(-1, 1)) * 3.0f + sf::Vector2f(0.0f, 25.0f));
     setPosition(sf::Vector2f(random(-20, 340), -20));
 }
 
 void OldPrinter::update(float delta)
 {
-    setPosition(getPosition() + velocity * delta);
     if (getPosition().y > 260)
         destroy();
     if (getPosition().x < -30)

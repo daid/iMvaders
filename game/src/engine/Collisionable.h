@@ -26,9 +26,9 @@ private:
 class Collisionable: public virtual PObject
 {
 private:
-    sf::Vector2f position;
     float rotation;
     b2Body* body;
+    bool enablePhysics;
     
     void createBody(b2Shape* shape);
 public:
@@ -45,6 +45,8 @@ public:
     sf::Vector2f getPosition();
     void setRotation(float angle);
     float getRotation();
+    void setVelocity(sf::Vector2f velocity);
+    sf::Vector2f getVelocity();
     
     friend class CollisionManager;
 };

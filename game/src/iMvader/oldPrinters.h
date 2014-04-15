@@ -9,7 +9,6 @@ class OldPrinter : public GameEntity, public Collisionable
 protected:
     int health;
     static const int maxHealth = 10;
-    sf::Vector2f velocity;
 public:
     OldPrinter();
     virtual ~OldPrinter() {}
