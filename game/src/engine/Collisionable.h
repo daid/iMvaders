@@ -29,6 +29,7 @@ private:
     float rotation;
     b2Body* body;
     bool enablePhysics;
+    bool staticPhysics;
     
     void createBody(b2Shape* shape);
 public:
@@ -40,6 +41,7 @@ public:
     void setCollisionRadius(float radius);
     void setCollisionBox(sf::Vector2f boxSize, sf::Vector2f boxOrigin = sf::Vector2f(0, 0));
     void setCollisionShape(std::vector<sf::Vector2f> shape);
+    void setCollisionPhysics(bool enablePhysics, bool staticPhysics);
     
     void setPosition(sf::Vector2f v);
     sf::Vector2f getPosition();

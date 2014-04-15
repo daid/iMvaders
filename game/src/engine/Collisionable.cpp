@@ -145,6 +145,7 @@ Collisionable::Collisionable(float radius)
 {
     rotation = 0.0;
     enablePhysics = false;
+    staticPhysics = false;
     body = NULL;
     
     setCollisionRadius(radius);
@@ -154,6 +155,7 @@ Collisionable::Collisionable(sf::Vector2f boxSize, sf::Vector2f boxOrigin)
 {
     rotation = 0.0;
     enablePhysics = false;
+    staticPhysics = false;
     body = NULL;
     
     setCollisionBox(boxSize, boxOrigin);
@@ -191,13 +193,25 @@ void Collisionable::setCollisionShape(std::vector<sf::Vector2f> shapeList)
     createBody(&shape);
 }
 
+void Collisionable::setCollisionPhysics(bool enablePhysics, bool staticPhysics)
+{
+    this->enablePhysics = enablePhysics;
+    this->staticPhysics = staticPhysics;
+
+    if (!body)
+        return;
+
+    body->GetFixtureList()->SetSensor(!enablePhysics);
+    body->SetType(staticPhysics ? b2_kinematicBody : b2_dynamicBody);
+}
+
 void Collisionable::createBody(b2Shape* shape)
 {
     if (body)
         CollisionManager::world->DestroyBody(body);
 
     b2BodyDef bodyDef;
-    bodyDef.type = b2_dynamicBody;
+    bodyDef.type = staticPhysics ? b2_kinematicBody : b2_dynamicBody;
     bodyDef.userData = this;
     bodyDef.allowSleep = false;
     body = CollisionManager::world->CreateBody(&bodyDef);

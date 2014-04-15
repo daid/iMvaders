@@ -16,6 +16,8 @@ REGISTER_SCRIPT_CLASS(OldPrinter)
 OldPrinter::OldPrinter()
 : Collisionable(sf::Vector2f(16, 20))
 {
+    setCollisionPhysics(true, false);
+
     health = maxHealth;
     if (random(0, 100) < 50)
         textureManager.setTexture(sprite, "thingomatic");

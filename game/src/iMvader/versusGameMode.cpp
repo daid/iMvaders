@@ -14,10 +14,10 @@ public:
         if (random(0, 100) < 50)
         {
             setPosition(sf::Vector2f(-20, random(40, 200)));
-            setVelocity(sf::Vector2f(random(-1, 1), random(-1, 1)) * 3.0f + sf::Vector2f( 25.0f, 0.0f));
+            setVelocity(sf::Vector2f(random(-1, 1), random(-2, 2)) * 3.0f + sf::Vector2f( 25.0f, 0.0f));
         }else{
             setPosition(sf::Vector2f(340, random(40, 200)));
-            setVelocity(sf::Vector2f(random(-1, 1), random(-1, 1)) * 3.0f + sf::Vector2f(-25.0f, 0.0f));
+            setVelocity(sf::Vector2f(random(-1, 1), random(-2, 2)) * 3.0f + sf::Vector2f(-25.0f, 0.0f));
         }
     }
     virtual ~VersusOldPrinter() {}
@@ -59,7 +59,7 @@ VersusGameState::VersusGameState()
     for(unsigned int n=0; n<50; n++)
     {
         VersusOldPrinter* p = new VersusOldPrinter();
-        p->update(float(n) * printerSpawnTime);
+        p->setPosition(p->getPosition() + p->getVelocity() * float(n) * printerSpawnTime);
     }
     printerSpawnDelay = printerSpawnTime;
     victoryDelay = 5.0;
