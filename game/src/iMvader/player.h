@@ -81,6 +81,8 @@ public:
 class PlayerBonusLaser: public GameEntity, public Collisionable
 {
     P<PlayerCraft> owner;
+    P<GameEntity> damageTarget;
+    float length;
 public:
     int type;
     

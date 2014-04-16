@@ -219,6 +219,7 @@ void Collisionable::createBody(b2Shape* shape)
     b2FixtureDef shapeDef;
     shapeDef.shape = shape;
     shapeDef.density = 1.0;
+    shapeDef.friction = 1.0;
     shapeDef.isSensor = !enablePhysics;
     body->CreateFixture(&shapeDef);
 }

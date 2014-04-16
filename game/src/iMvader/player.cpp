@@ -205,24 +205,32 @@ bool PlayerCraft::takeDamage(sf::Vector2f position, int damageType, int damageAm
 PlayerBonusLaser::PlayerBonusLaser(P<PlayerCraft> owner)
 : Collisionable(sf::Vector2f(6, 240), sf::Vector2f(0, -120)), owner(owner)
 {
+    length = 240.0;
 }
 
 void PlayerBonusLaser::update(float delta)
 {
+    length = 240.0;
+    if (damageTarget)
+    {
+        damageTarget->takeDamage(getPosition(), -type, 1);
+    }
     if (owner)
         setPosition(owner->getPosition());
     else
         destroy();
 }
+
 void PlayerBonusLaser::preRender(sf::RenderTarget& window)
 {
-    sf::RectangleShape laser(sf::Vector2f(6, 240));
-    laser.setOrigin(3, 240);
+    sf::RectangleShape laser(sf::Vector2f(6, length));
+    laser.setOrigin(3, length);
     if (type == 1)
         laser.setFillColor(sf::Color(24, 161, 212,128));
     else
         laser.setFillColor(sf::Color(231, 24, 118,128));
     laser.setPosition(getPosition());
+    laser.setRotation(getRotation());
     window.draw(laser);
 }
 
@@ -230,5 +238,15 @@ void PlayerBonusLaser::collision(Collisionable* other)
 {
     GameEntity* e = dynamic_cast<GameEntity*>(other);
     if (e)
-        e->takeDamage(getPosition(), -type, 0);
+    {
+        if (e->takeDamage(getPosition(), -type, 0))
+        {
+            float dist = sf::length(other->getPosition() - getPosition());
+            if (dist < length)
+            {
+                length = dist;
+                damageTarget = e;
+            }
+        }
+    }
 }
