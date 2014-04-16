@@ -2,8 +2,7 @@
 function init()
 	playtrough = 1
 	groupList = nil
-	--Transmission():setFace("Daid1"):setText("Welcome heroes|of earth"):top():transmissionDone("intro2")
-	Delay():time(0.1):call('launchBonus')
+	Transmission():setFace("Daid1"):setText("Welcome heroes|of earth"):top():transmissionDone("intro2")
 end
 function intro2()
 	Transmission():setFace("Daid1"):setText("You misssion is to|destroy the|M corperation"):top():transmissionDone("intro3")
