@@ -112,7 +112,7 @@ void CollisionManager::initialize()
 
 void CollisionManager::handleCollisions(float delta)
 {
-    Collisionable* destroy = NULL;
+    //Collisionable* destroy = NULL;
     world->Step(delta, 4, 8);
     for(b2Contact* contact = world->GetContactList(); contact; contact = contact->GetNext())
     {
@@ -125,20 +125,20 @@ void CollisionManager::handleCollisions(float delta)
                 A->collision(B);
                 B->collision(A);
             }else{
-                if (A->isDestroyed())
+                /*if (A->isDestroyed())
                     destroy = A;
                 if (B->isDestroyed())
-                    destroy = B;
+                    destroy = B;*/
             }
         }
     }
     
     //Lazy cleanup of already destroyed bodies. We cannot destroy the bodies while we are walking trough the ContactList, as it would invalidate the contact we are iterating on.
-    if (destroy)
+    /*if (destroy)
     {
         world->DestroyBody(destroy->body);
         destroy->body = NULL;
-    }
+    }*/
 }
 
 Collisionable::Collisionable(float radius)
