@@ -110,10 +110,22 @@ void CollisionManager::initialize()
 #endif
 }
 
+class Collision
+{
+public:
+    P<Collisionable> A;
+    P<Collisionable> B;
+    
+    Collision(P<Collisionable> A, P<Collisionable> B)
+    : A(A), B(B)
+    {}
+};
+
 void CollisionManager::handleCollisions(float delta)
 {
-    //Collisionable* destroy = NULL;
+    Collisionable* destroy = NULL;
     world->Step(delta, 4, 8);
+    std::vector<Collision> collisions;
     for(b2Contact* contact = world->GetContactList(); contact; contact = contact->GetNext())
     {
         if (contact->IsTouching() && contact->IsEnabled())
@@ -122,23 +134,32 @@ void CollisionManager::handleCollisions(float delta)
             Collisionable* B = (Collisionable*)contact->GetFixtureB()->GetBody()->GetUserData();
             if (!A->isDestroyed() && !B->isDestroyed())
             {
-                A->collision(B);
-                B->collision(A);
+                collisions.push_back(Collision(A, B));
             }else{
-                /*if (A->isDestroyed())
+                if (A->isDestroyed())
                     destroy = A;
                 if (B->isDestroyed())
-                    destroy = B;*/
+                    destroy = B;
             }
+        }
+    }
+    for(unsigned int n=0; n<collisions.size(); n++)
+    {
+        Collisionable* A = *collisions[n].A;
+        Collisionable* B = *collisions[n].B;
+        if (A && B)
+        {
+            A->collision(B);
+            B->collision(A);
         }
     }
     
     //Lazy cleanup of already destroyed bodies. We cannot destroy the bodies while we are walking trough the ContactList, as it would invalidate the contact we are iterating on.
-    /*if (destroy)
+    if (destroy)
     {
         world->DestroyBody(destroy->body);
         destroy->body = NULL;
-    }*/
+    }
 }
 
 Collisionable::Collisionable(float radius)
