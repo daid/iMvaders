@@ -2,6 +2,7 @@
 #include <stdio.h>
 
 #include "httpServer.h"
+#include "stringImproved.h"
 
 HttpServer::HttpServer(std::string fileBasePath, int portNr)
 : thread(&HttpServer::handleSocketsThread, this)
@@ -160,7 +161,7 @@ void HttpServerConnection::sendReply()
         fseek(f, 0, SEEK_SET);
     }
     reply += "Content-type: text/html\r\n";
-    reply += "Content-length: " + to_string(replyDataSize) + "\r\n";
+    reply += "Content-length: " + string(replyDataSize) + "\r\n";
     reply += "\r\n";
     socket.send(reply.c_str(), reply.size());
     if (replyData.size() > 0)
