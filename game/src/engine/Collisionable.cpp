@@ -61,7 +61,7 @@ public:
         shape.setPosition(b2v(center));
         shape.setFillColor(sf::Color::Transparent);
         shape.setOutlineColor(sf::Color(color.r * 255, color.g * 255, color.b * 255, color.a * 255));
-        shape.setOutlineThickness(1.0);
+        shape.setOutlineThickness(0.3);
         renderTarget->draw(shape);
 	}
 	
@@ -73,7 +73,7 @@ public:
         shape.setPosition(b2v(center));
         shape.setFillColor(sf::Color::Transparent);
         shape.setOutlineColor(sf::Color(color.r * 255, color.g * 255, color.b * 255, color.a * 255));
-        shape.setOutlineThickness(1.0);
+        shape.setOutlineThickness(0.3);
         renderTarget->draw(shape);
 	}
 	
