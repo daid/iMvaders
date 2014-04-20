@@ -19,7 +19,6 @@
     and automaticly removes any pointer from the list that points to an Pobject which has been destroyed.
  */
 #ifdef DEBUG
-#include <list>
 class PObject;
 extern int DEBUG_PobjCount;
 extern PObject* DEBUG_PobjListStart;

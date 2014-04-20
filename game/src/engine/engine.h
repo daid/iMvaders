@@ -4,7 +4,15 @@
 #include <map>
 #include "stringImproved.h"
 #include "P.h"
+
+#include "input.h"
 #include "windowManager.h"
+#include "postProcessManager.h"
+#include "scriptInterface.h"
+#include "textureManager.h"
+#include "gameEntity.h"
+#include "Collisionable.h"
+#include "random.h"
 
 class Engine;
 extern Engine* engine;

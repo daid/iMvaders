@@ -89,22 +89,11 @@ int main(int argc, char** argv)
 {
     new Engine();
     
-    P<PlayerController> pc1 = new PlayerController();
-    P<PlayerController> pc2 = new PlayerController();
+    P<PlayerController> pc1 = new PlayerController(0);
+    P<PlayerController> pc2 = new PlayerController(1);
     engine->registerObject("playerController1", pc1);
     engine->registerObject("playerController2", pc2);
     engine->registerObject("score", new ScoreManager());
-    
-    pc2->keyBind[0] = sf::Keyboard::A;
-    pc2->keyBind[1] = sf::Keyboard::D;
-    pc2->keyBind[2] = sf::Keyboard::W;
-    pc2->keyBind[3] = sf::Keyboard::S;
-    pc2->keyBind[4] = sf::Keyboard::Q;
-    pc2->keyBind[5] = sf::Keyboard::E;
-    pc2->keyBind[6] = sf::Keyboard::R;
-    pc2->keyBind[7] = sf::Keyboard::F;
-    pc2->keyBind[8] = sf::Keyboard::T;
-    pc2->keyBind[9] = sf::Keyboard::G;
     
     bool fullscreen = true;
     for(int n=1; n<argc; n++)

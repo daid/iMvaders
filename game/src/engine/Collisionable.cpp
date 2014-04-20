@@ -35,8 +35,12 @@ public:
 	{
         sf::VertexArray a(sf::LinesStrip, vertexCount+1);
         for(int32 n=0; n<vertexCount; n++)
+        {
             a[n].position = b2v(vertices[n]);
+            a[n].color = sf::Color(color.r * 255, color.g * 255, color.b * 255, color.a * 255);
+        }
         a[vertexCount].position = b2v(vertices[0]);
+        a[vertexCount].color = sf::Color(color.r * 255, color.g * 255, color.b * 255, color.a * 255);
         renderTarget->draw(a);
 	}
 
@@ -50,6 +54,7 @@ public:
             a[n].color = sf::Color(color.r * 255, color.g * 255, color.b * 255, color.a * 255);
         }
         a[vertexCount].position = b2v(vertices[0]);
+        a[vertexCount].color = sf::Color(color.r * 255, color.g * 255, color.b * 255, color.a * 255);
         renderTarget->draw(a);
 	}
 
@@ -222,7 +227,8 @@ void Collisionable::setCollisionPhysics(bool enablePhysics, bool staticPhysics)
     if (!body)
         return;
 
-    body->GetFixtureList()->SetSensor(!enablePhysics);
+    for(b2Fixture* f = body->GetFixtureList(); f; f = f->GetNext())
+        f->SetSensor(!enablePhysics);
     body->SetType(staticPhysics ? b2_kinematicBody : b2_dynamicBody);
 }
 
