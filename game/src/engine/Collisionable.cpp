@@ -211,11 +211,12 @@ void Collisionable::setCollisionBox(sf::Vector2f boxSize, sf::Vector2f boxOrigin
 
 void Collisionable::setCollisionShape(std::vector<sf::Vector2f> shapeList)
 {
-    b2PolygonShape shape;
-    shape.m_count = shapeList.size();
+    b2Vec2 points[shapeList.size()];
     for(unsigned int n=0; n<shapeList.size(); n++)
-        shape.m_vertices[n] = v2b(shapeList[n]);
+        points[n] = v2b(shapeList[n]);
     
+    b2PolygonShape shape;
+    shape.Set(points, shapeList.size());
     createBody(&shape);
 }
 
@@ -234,10 +235,17 @@ void Collisionable::setCollisionPhysics(bool enablePhysics, bool staticPhysics)
 
 void Collisionable::createBody(b2Shape* shape)
 {
-    if (body)
-        CollisionManager::world->DestroyBody(body);
-
     b2BodyDef bodyDef;
+    
+    if (body)
+    {
+        bodyDef.position = body->GetPosition();
+        bodyDef.angle = body->GetAngle();
+        bodyDef.linearVelocity = body->GetLinearVelocity();
+        bodyDef.angularVelocity = body->GetAngularVelocity();
+        CollisionManager::world->DestroyBody(body);
+    }
+
     bodyDef.type = staticPhysics ? b2_kinematicBody : b2_dynamicBody;
     bodyDef.userData = this;
     bodyDef.allowSleep = false;
