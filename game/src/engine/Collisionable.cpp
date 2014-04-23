@@ -2,7 +2,7 @@
 #include "Renderable.h"
 #include "vectorUtils.h"
 
-#define BOX2D_SCALE 100.0f
+#define BOX2D_SCALE 20.0f
 static inline sf::Vector2f b2v(b2Vec2 v)
 {
     return sf::Vector2f(v.x * BOX2D_SCALE, v.y * BOX2D_SCALE);
@@ -187,6 +187,16 @@ Collisionable::Collisionable(sf::Vector2f boxSize, sf::Vector2f boxOrigin)
     setCollisionBox(boxSize, boxOrigin);
 }
 
+Collisionable::Collisionable(const std::vector<sf::Vector2f>& shape)
+{
+    rotation = 0.0;
+    enablePhysics = false;
+    staticPhysics = false;
+    body = NULL;
+    
+    setCollisionShape(shape);
+}
+
 Collisionable::~Collisionable()
 {
     if (body)
@@ -209,15 +219,45 @@ void Collisionable::setCollisionBox(sf::Vector2f boxSize, sf::Vector2f boxOrigin
     createBody(&shape);
 }
 
-void Collisionable::setCollisionShape(std::vector<sf::Vector2f> shapeList)
+void Collisionable::setCollisionShape(const std::vector<sf::Vector2f>& shapeList)
 {
-    b2Vec2 points[shapeList.size()];
-    for(unsigned int n=0; n<shapeList.size(); n++)
-        points[n] = v2b(shapeList[n]);
-    
-    b2PolygonShape shape;
-    shape.Set(points, shapeList.size());
-    createBody(&shape);
+    for(unsigned int offset=1; offset<shapeList.size(); offset+=b2_maxPolygonVertices-2)
+    {
+        unsigned int len = b2_maxPolygonVertices;
+        if (len > shapeList.size() - offset + 1)
+            len = shapeList.size() - offset + 1;
+        if (len < 3)
+            break;
+        
+        b2Vec2 points[b2_maxPolygonVertices];
+        points[0] = v2b(shapeList[0]);
+        for(unsigned int n=0; n<len-1; n++)
+            points[n+1] = v2b(shapeList[n+offset]);
+        
+        b2PolygonShape shape;
+        bool valid = shape.Set(points, len);
+        if (!valid)
+        {
+            shape.SetAsBox(1.0/BOX2D_SCALE, 1.0/BOX2D_SCALE, points[0], 0);
+            printf("Failed to set valid collision shape: %i\n", shapeList.size());
+            for(unsigned int n=0; n<shapeList.size(); n++)
+            {
+                printf("%f %f\n", shapeList[n].x, shapeList[n].y);
+            }
+            destroy();
+        }
+        if (offset == 1)
+        {
+            createBody(&shape);
+        }else{
+            b2FixtureDef shapeDef;
+            shapeDef.shape = &shape;
+            shapeDef.density = 1.0;
+            shapeDef.friction = 1.0;
+            shapeDef.isSensor = !enablePhysics;
+            body->CreateFixture(&shapeDef);
+        }
+    }
 }
 
 void Collisionable::setCollisionPhysics(bool enablePhysics, bool staticPhysics)
@@ -235,21 +275,17 @@ void Collisionable::setCollisionPhysics(bool enablePhysics, bool staticPhysics)
 
 void Collisionable::createBody(b2Shape* shape)
 {
-    b2BodyDef bodyDef;
-    
     if (body)
     {
-        bodyDef.position = body->GetPosition();
-        bodyDef.angle = body->GetAngle();
-        bodyDef.linearVelocity = body->GetLinearVelocity();
-        bodyDef.angularVelocity = body->GetAngularVelocity();
-        CollisionManager::world->DestroyBody(body);
+        while(body->GetFixtureList())
+            body->DestroyFixture(body->GetFixtureList());
+    }else{
+        b2BodyDef bodyDef;
+        bodyDef.type = staticPhysics ? b2_kinematicBody : b2_dynamicBody;
+        bodyDef.userData = this;
+        bodyDef.allowSleep = false;
+        body = CollisionManager::world->CreateBody(&bodyDef);
     }
-
-    bodyDef.type = staticPhysics ? b2_kinematicBody : b2_dynamicBody;
-    bodyDef.userData = this;
-    bodyDef.allowSleep = false;
-    body = CollisionManager::world->CreateBody(&bodyDef);
     
     b2FixtureDef shapeDef;
     shapeDef.shape = shape;
@@ -291,4 +327,13 @@ void Collisionable::setVelocity(sf::Vector2f velocity)
 sf::Vector2f Collisionable::getVelocity()
 {
     return b2v(body->GetLinearVelocity());
+}
+
+sf::Vector2f Collisionable::toLocalSpace(sf::Vector2f v)
+{
+    return b2v(body->GetLocalPoint(v2b(v)));
+}
+sf::Vector2f Collisionable::toWorldSpace(sf::Vector2f v)
+{
+    return b2v(body->GetWorldPoint(v2b(v)));
 }

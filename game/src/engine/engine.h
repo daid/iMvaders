@@ -13,6 +13,7 @@
 #include "gameEntity.h"
 #include "Collisionable.h"
 #include "random.h"
+#include "vectorUtils.h"
 
 class Engine;
 extern Engine* engine;

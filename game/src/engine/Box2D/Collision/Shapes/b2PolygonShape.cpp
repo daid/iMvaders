@@ -112,18 +112,18 @@ static b2Vec2 ComputeCentroid(const b2Vec2* vs, int32 count)
 	}
 
 	// Centroid
-	b2Assert(area > b2_epsilon);
+	//b2Assert(area > b2_epsilon);
 	c *= 1.0f / area;
 	return c;
 }
 
-void b2PolygonShape::Set(const b2Vec2* vertices, int32 count)
+bool b2PolygonShape::Set(const b2Vec2* vertices, int32 count)
 {
-	b2Assert(3 <= count && count <= b2_maxPolygonVertices);
-	if (count < 3)
+	//b2Assert(3 <= count && count <= b2_maxPolygonVertices);
+	if (count < 3 || count > b2_maxPolygonVertices)
 	{
 		SetAsBox(1.0f, 1.0f);
-		return;
+		return false;
 	}
 	
 	int32 n = b2Min(count, b2_maxPolygonVertices);
@@ -155,9 +155,9 @@ void b2PolygonShape::Set(const b2Vec2* vertices, int32 count)
 	if (n < 3)
 	{
 		// Polygon is degenerate.
-		b2Assert(false);
+		//b2Assert(false);
 		SetAsBox(1.0f, 1.0f);
-		return;
+		return false;
 	}
 
 	// Create the convex hull using the Gift wrapping algorithm
@@ -220,9 +220,9 @@ void b2PolygonShape::Set(const b2Vec2* vertices, int32 count)
 	if (m < 3)
 	{
 		// Polygon is degenerate.
-		b2Assert(false);
+		//b2Assert(false);
 		SetAsBox(1.0f, 1.0f);
-		return;
+		return false;
 	}
 
 	m_count = m;
@@ -239,13 +239,16 @@ void b2PolygonShape::Set(const b2Vec2* vertices, int32 count)
 		int32 i1 = i;
 		int32 i2 = i + 1 < m ? i + 1 : 0;
 		b2Vec2 edge = m_vertices[i2] - m_vertices[i1];
-		b2Assert(edge.LengthSquared() > b2_epsilon * b2_epsilon);
+		//b2Assert(edge.LengthSquared() > b2_epsilon * b2_epsilon);
+		if (edge.LengthSquared() < b2_epsilon * b2_epsilon)
+            return false;
 		m_normals[i] = b2Cross(edge, 1.0f);
 		m_normals[i].Normalize();
 	}
 
 	// Compute the polygon centroid.
 	m_centroid = ComputeCentroid(m_vertices, m);
+	return true;
 }
 
 bool b2PolygonShape::TestPoint(const b2Transform& xf, const b2Vec2& p) const
@@ -427,7 +430,7 @@ void b2PolygonShape::ComputeMass(b2MassData* massData, float32 density) const
 	massData->mass = density * area;
 
 	// Center of mass
-	b2Assert(area > b2_epsilon);
+	//b2Assert(area > b2_epsilon);
 	center *= 1.0f / area;
 	massData->center = center + s;
 

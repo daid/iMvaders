@@ -35,12 +35,13 @@ private:
 public:
     Collisionable(float radius);
     Collisionable(sf::Vector2f boxSize, sf::Vector2f boxOrigin = sf::Vector2f(0, 0));
+    Collisionable(const std::vector<sf::Vector2f>& shape);
     virtual ~Collisionable();
     virtual void collision(Collisionable* target);
     
     void setCollisionRadius(float radius);
     void setCollisionBox(sf::Vector2f boxSize, sf::Vector2f boxOrigin = sf::Vector2f(0, 0));
-    void setCollisionShape(std::vector<sf::Vector2f> shape);
+    void setCollisionShape(const std::vector<sf::Vector2f>& shape);
     void setCollisionPhysics(bool enablePhysics, bool staticPhysics);
     
     void setPosition(sf::Vector2f v);
@@ -49,6 +50,9 @@ public:
     float getRotation();
     void setVelocity(sf::Vector2f velocity);
     sf::Vector2f getVelocity();
+    
+    sf::Vector2f toLocalSpace(sf::Vector2f v);
+    sf::Vector2f toWorldSpace(sf::Vector2f v);
     
     friend class CollisionManager;
 };
