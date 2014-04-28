@@ -40,6 +40,9 @@ public:
                 sf::Listener::setGlobalVolume(100);
                 new VersusGameState();
                 break;
+            case 3:
+                system("sudo poweroff");
+                break;
             }
         }
         
@@ -59,7 +62,7 @@ public:
             }
         }
         selectionIndex = std::max(0, selectionIndex);
-        selectionIndex = std::min(2, selectionIndex);
+        selectionIndex = std::min(3, selectionIndex);
     }
     
     void preRender(sf::RenderTarget& window) {}
@@ -77,7 +80,7 @@ public:
         drawText(window, 160, 50 + 20 * n, "Play iMvaders");n++;
         drawText(window, 160, 50 + 20 * n, "Play VS iMvaders");n++;
         drawText(window, 160, 50 + 20 * n, "Play Jamestown");n++;
-        drawText(window, 160, 50 + 20 * n, "Clear highscores");n++;
+        drawText(window, 160, 50 + 20 * n, "Shutdown");n++;
     }
 };
 

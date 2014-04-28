@@ -97,6 +97,20 @@ template<typename T> struct convert<sf::Vector2<T> >
     }
 };
 
+/* Convert parameters to std::vector<sf::Vector2> objects. */
+template<typename T> struct convert<std::vector<sf::Vector2<T> > >
+{
+    static void param(lua_State* L, int& idx, std::vector<sf::Vector2<T> >& v)
+    {
+        while(idx < lua_gettop(L))
+        {
+            T x = luaL_checknumber(L, idx++);
+            T y = luaL_checknumber(L, idx++);
+            v.push_back(sf::Vector2f(x, y));
+        }
+    }
+};
+
 template<class T, typename FuncProto> struct call
 {
     typedef P<T>* PT;

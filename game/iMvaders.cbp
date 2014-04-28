@@ -48,11 +48,11 @@
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
-			<Add directory="../SFML-2.1/include" />
+			<Add directory="../../SFML-2.1/include" />
 			<Add directory="src/engine" />
 		</Compiler>
 		<Linker>
-			<Add directory="../SFML-2.1/lib" />
+			<Add directory="../../SFML-2.1/lib" />
 		</Linker>
 		<Unit filename="src/engine/Box2D/Box2D.h" />
 		<Unit filename="src/engine/Box2D/Collision/Shapes/b2ChainShape.cpp" />
