@@ -39,6 +39,8 @@ BreEnemy::~BreEnemy()
 void BreEnemy::setDifficulty(int difficulty)
 {
     this->difficulty = difficulty;
+    if (difficulty > 1)
+        textureManager.setTexture(sprite, "bre1_v2");
 }
 
 void BreEnemy::update(float delta)
