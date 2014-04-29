@@ -12,15 +12,18 @@
 #include "textDraw.h"
 #include "scriptInterface.h"
 
+RenderLayer* backgroundLayer;
+RenderLayer* objectLayer;
+RenderLayer* effectLayer;
+RenderLayer* hudLayer;
+
 class WallClock : public Renderable
 {
 public:
-    WallClock() {}
+    WallClock() : Renderable(hudLayer) {}
     virtual ~WallClock() {}
     
-    virtual void preRender(sf::RenderTarget& window) {}
-    virtual void render(sf::RenderTarget& window) {}
-    virtual void postRender(sf::RenderTarget& window)
+    virtual void render(sf::RenderTarget& window)
     {
         time_t t = time(NULL);
         struct tm* tt = localtime(&t);
@@ -37,6 +40,7 @@ class AutoShutdown : public Updatable, public Renderable
     const static float idleTimeoutWarning = 10 * 60;
 public:
     AutoShutdown()
+    : Renderable(hudLayer)
     {
         idleTime = 0.0;
     }
@@ -67,9 +71,7 @@ public:
             system("sudo poweroff");
     }
 
-    virtual void preRender(sf::RenderTarget& window) {}
-    virtual void render(sf::RenderTarget& window) {}
-    virtual void postRender(sf::RenderTarget& window)
+    virtual void render(sf::RenderTarget& window)
     {
         if (idleTime > idleTimeout - idleTimeoutWarning)
         {
@@ -103,13 +105,25 @@ int main(int argc, char** argv)
         else if (strcmp(argv[n], "-w") == 0)
             fullscreen = false;
     }
-    engine->registerObject("windowManager", new WindowManager(320, 240, fullscreen));
-    
+
+    //Setup the rendering layers.
+    backgroundLayer = new RenderLayer();
+    objectLayer = new RenderLayer(backgroundLayer);
+    effectLayer = new RenderLayer(objectLayer);
+    hudLayer = new RenderLayer(effectLayer);
+    defaultRenderLayer = objectLayer;
+
+#ifdef DEBUG
+    new CollisionDebugDraw(hudLayer);
+#endif
+
+    engine->registerObject("windowManager", new WindowManager(320, 240, fullscreen, new PostProcessor("crt", hudLayer)));
+        
     new StarBackground();
     new MainMenu();
     new WallClock();
     new AutoShutdown();
-    postProcessorManager.triggerPostProcess("crt", -100);
+    
     engine->runMainLoop();
     
     delete engine;

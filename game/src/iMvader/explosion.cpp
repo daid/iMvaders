@@ -2,8 +2,10 @@
 #include "soundManager.h"
 #include "random.h"
 #include "vectorUtils.h"
+#include "main.h"
 
 Explosion::Explosion(sf::Vector2f position, float radius, sf::Vector2f addedVelocity)
+: GameEntity(effectLayer)
 {
     soundManager.playSound("explosion", random(0.8, 1.2), radius * 10.0);
     unsigned int count = int(radius*radius*8);
@@ -30,7 +32,7 @@ void Explosion::update(float delta)
         destroy();
 }
 
-void Explosion::postRender(sf::RenderTarget& window)
+void Explosion::render(sf::RenderTarget& window)
 {
     sf::VertexArray tmpArray(sf::Quads, particles.size() * 4);
     sf::Color color(255, 255 * (1.0 - life), 0, 255 * life);

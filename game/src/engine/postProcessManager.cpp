@@ -2,18 +2,7 @@
 
 #include "postProcessManager.h"
 
-PostProcessorManager postProcessorManager;
-
-void PostProcessorManager::triggerPostProcess(const char* name, float value)
-{
-    if (!sf::Shader::isAvailable())
-        return;
-    if (postProcessorMap.find(name) == postProcessorMap.end())
-        postProcessorMap[name] = new PostProcessor(name);
-    postProcessorMap[name]->trigger(value);
-}
-
-int powerOfTwo(int v)
+static int powerOfTwo(int v)
 {
     v--;
     v |= v >> 1;
@@ -25,100 +14,45 @@ int powerOfTwo(int v)
     return v;
 }
 
-sf::RenderTarget& PostProcessorManager::getPrimaryRenderTarget(sf::RenderTarget& window)
+PostProcessor::PostProcessor(string name, RenderChain* chain)
+: chain(chain)
 {
-    for(std::map<string, PostProcessor*>::iterator it = postProcessorMap.begin(); it != postProcessorMap.end(); it++)
+    if (shader.loadFromFile("resources/" + name + ".frag", sf::Shader::Fragment))
     {
-        if (it->second->active())
-        {
-            if (backBuffer[0].getSize().x < 1)
-            {
-                //Setup a backBuffer to render the game on. Then we can render the backbuffer back to the main screen with full-screen shader effects
-                int w = window.getView().getViewport().width * window.getSize().x;
-                int h = window.getView().getViewport().height * window.getSize().y;
-                int tw = powerOfTwo(w);
-                int th = powerOfTwo(h);
-                sf::View view(sf::Vector2f(virtualSize.x/2,virtualSize.y/2), sf::Vector2f(virtualSize));
-                view.setViewport(sf::FloatRect(0, 1.0 - float(h) / float(th), float(w) / float(tw), float(h) / float(th)));
-
-                backBuffer[0].create(tw, th, false);
-                backBuffer[0].setRepeated(true);
-                backBuffer[0].setSmooth(true);
-                backBuffer[0].setView(view);
-
-                backBuffer[1].create(tw, th, false);
-                backBuffer[1].setRepeated(true);
-                backBuffer[1].setSmooth(true);
-                backBuffer[1].setView(view);
-            }
-            return backBuffer[0];
-        }
-    }
-    return window;
-}
-
-void PostProcessorManager::postProcessRendering(sf::RenderTarget& window)
-{
-    int bufferNr = 0;
-    PostProcessor* postProcessor = NULL;
-    for(std::map<string, PostProcessor*>::iterator it = postProcessorMap.begin(); it != postProcessorMap.end(); it++)
-    {
-        if (it->second->active())
-        {
-            if (postProcessor)
-            {
-                backBuffer[bufferNr].display();
-                sf::Sprite backBufferSprite(backBuffer[bufferNr].getTexture(), sf::IntRect(0, backBuffer[0].getSize().y - window.getView().getViewport().height * window.getSize().y, window.getView().getViewport().width * window.getSize().x, window.getView().getViewport().height * window.getSize().y));
-                backBufferSprite.setScale(virtualSize.x/float(backBuffer[0].getSize().x)/backBuffer[0].getView().getViewport().width, virtualSize.y/float(backBuffer[0].getSize().y)/backBuffer[0].getView().getViewport().height);
-                if (postProcessor->value >= 0.0)
-                    postProcessor->shader.setParameter("value", postProcessor->value);
-                postProcessor->shader.setParameter("inputSize", sf::Vector2f(window.getSize().x, window.getSize().y));
-                postProcessor->shader.setParameter("textureSize", sf::Vector2f(backBuffer[0].getSize().x, backBuffer[0].getSize().y));
-                bufferNr = (bufferNr + 1) % 2;
-                backBuffer[bufferNr].draw(backBufferSprite, &postProcessor->shader);
-            }
-            postProcessor = it->second;
-        }
-    }
-    if (postProcessor)
-    {
-        backBuffer[bufferNr].display();
-        sf::Sprite backBufferSprite(backBuffer[bufferNr].getTexture(), sf::IntRect(0, backBuffer[0].getSize().y - window.getView().getViewport().height * window.getSize().y, window.getView().getViewport().width * window.getSize().x, window.getView().getViewport().height * window.getSize().y));
-        backBufferSprite.setScale(virtualSize.x/float(backBuffer[0].getSize().x)/backBuffer[0].getView().getViewport().width, virtualSize.y/float(backBuffer[0].getSize().y)/backBuffer[0].getView().getViewport().height);
-        if (postProcessor->value >= -10.0)
-            postProcessor->shader.setParameter("value", postProcessor->value);
-        postProcessor->shader.setParameter("inputSize", sf::Vector2f(window.getSize().x, window.getSize().y));
-        postProcessor->shader.setParameter("textureSize", sf::Vector2f(backBuffer[0].getSize().x, backBuffer[0].getSize().y));
-        window.draw(backBufferSprite, &postProcessor->shader);
-    }
-}
-
-PostProcessor::PostProcessor(const char* name)
-{
-    char buffer[128];
-    sprintf(buffer, "resources/%s.frag", name);
-    if (shader.loadFromFile(buffer, sf::Shader::Fragment))
-    {
-        printf("Loaded post-processor: %s\n", name);
+        printf(("Loaded shader: " + name + "\n").c_str());
     }else{
-        printf("Failed to load post-processor: %s\n", name);
+        printf(("Failed to load shader: " + name + "\n").c_str());
     }
-    value = 0.0;
-    speedFactor = 1.0;
 }
 
-void PostProcessor::trigger(float value)
+void PostProcessor::render(sf::RenderTarget& window)
 {
-    this->value = value;
-}
+    sf::Vector2i virtualSize(320, 240);
+    if (renderTexture.getSize().x < 1)
+    {
+        //Setup a backBuffer to render the game on. Then we can render the backbuffer back to the main screen with full-screen shader effects
+        int w = window.getView().getViewport().width * window.getSize().x;
+        int h = window.getView().getViewport().height * window.getSize().y;
+        int tw = powerOfTwo(w);
+        int th = powerOfTwo(h);
+        sf::View view(sf::Vector2f(virtualSize.x/2,virtualSize.y/2), sf::Vector2f(virtualSize));
+        view.setViewport(sf::FloatRect(0, 1.0 - float(h) / float(th), float(w) / float(tw), float(h) / float(th)));
 
-bool PostProcessor::active()
-{
-    return this->value > 0.0 || this->value < -10.0;
-}
-
-void PostProcessor::update(float delta)
-{
-    if (value > 0.0)
-        value -= delta * speedFactor;
+        renderTexture.create(tw, th, false);
+        renderTexture.setRepeated(true);
+        renderTexture.setSmooth(true);
+        renderTexture.setView(view);
+    }
+    
+    renderTexture.clear();
+    chain->render(renderTexture);
+    
+    renderTexture.display();
+    sf::Sprite backBufferSprite(renderTexture.getTexture(), sf::IntRect(0, renderTexture.getSize().y - window.getView().getViewport().height * window.getSize().y, window.getView().getViewport().width * window.getSize().x, window.getView().getViewport().height * window.getSize().y));
+    backBufferSprite.setScale(virtualSize.x/float(renderTexture.getSize().x)/renderTexture.getView().getViewport().width, virtualSize.y/float(renderTexture.getSize().y)/renderTexture.getView().getViewport().height);
+    
+    shader.setParameter("inputSize", sf::Vector2f(window.getSize().x, window.getSize().y));
+    shader.setParameter("textureSize", sf::Vector2f(renderTexture.getSize().x, renderTexture.getSize().y));
+    
+    window.draw(backBufferSprite, &shader);
 }

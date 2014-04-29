@@ -5,8 +5,8 @@
 #include "postProcessManager.h"
 #include "input.h"
 
-WindowManager::WindowManager(int virtualWidth, int virtualHeight, bool fullscreen)
-: virtualSize(virtualWidth, virtualHeight)
+WindowManager::WindowManager(int virtualWidth, int virtualHeight, bool fullscreen, RenderChain* renderChain)
+: virtualSize(virtualWidth, virtualHeight), renderChain(renderChain)
 {
     srand(time(NULL));
 
@@ -48,7 +48,6 @@ WindowManager::WindowManager(int virtualWidth, int virtualHeight, bool fullscree
         view.setViewport(sf::FloatRect(0, offset, 1, aspect));
     }
     window.setView(view);
-    postProcessorManager.setVirtualSize(virtualSize);
 }
 
 WindowManager::~WindowManager()
@@ -59,16 +58,13 @@ void WindowManager::render()
 {
     // Clear the window
     window.clear(sf::Color(0, 0, 0));
-    sf::RenderTarget& renderTarget = postProcessorManager.getPrimaryRenderTarget(window);
-    renderTarget.clear(sf::Color(0, 0, 0));
-    foreach(Renderable,r,renderableList)
-        r->preRender(renderTarget);
-    foreach(Renderable,r,renderableList)
-        r->render(renderTarget);
-    foreach(Renderable,r,renderableList)
-        r->postRender(renderTarget);
     
-    postProcessorManager.postProcessRendering(window);
+    //sf::RenderTarget& renderTarget = postProcessorManager.getPrimaryRenderTarget(window);
+    //renderTarget.clear(sf::Color(0, 0, 0));
+    //renderChain->render(renderTarget);
+    //postProcessorManager.postProcessRendering(window);
+
+    renderChain->render(window);
 
     // Display things on screen
     window.display();

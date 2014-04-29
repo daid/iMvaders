@@ -1,7 +1,9 @@
 #include "StarBackground.h"
+#include "main.h"
 #include "random.h"
 
 StarBackground::StarBackground()
+: Renderable(backgroundLayer)
 {
     for(int n=0; n<starCount; n++)
     {
@@ -23,7 +25,7 @@ void StarBackground::update(float delta)
     }
 }
 
-void StarBackground::preRender(sf::RenderTarget& window)
+void StarBackground::render(sf::RenderTarget& window)
 {
     for(int n=0; n<starCount; n++)
     {

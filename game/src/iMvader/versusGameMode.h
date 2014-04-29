@@ -17,7 +17,7 @@ public:
 
     virtual void update(float delta);
 
-    virtual void postRender(sf::RenderTarget& window);
+    virtual void render(sf::RenderTarget& window);
 };
 
 #endif//VERSUS_GAME_MODE_H

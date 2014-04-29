@@ -3,6 +3,7 @@
 #include "engine.h"
 #include "oldPrinters.h"
 #include "mainMenu.h"
+#include "main.h"
 #include "explosion.h"
 
 class VersusOldPrinter : public OldPrinter
@@ -45,6 +46,7 @@ public:
 };
 
 VersusGameState::VersusGameState()
+: GameEntity(hudLayer)
 {
     for(int n=0; n<MAX_PLAYERS; n++)
     {
@@ -107,7 +109,7 @@ void VersusGameState::update(float delta)
     }
 }
 
-void VersusGameState::postRender(sf::RenderTarget& window)
+void VersusGameState::render(sf::RenderTarget& window)
 {
     sf::Sprite life;
     for(int p=0; p<MAX_PLAYERS; p++)

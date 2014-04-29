@@ -73,7 +73,7 @@ void Engine::runMainLoop()
 #ifdef DEBUG
         if (debugOutputClock.getElapsedTime().asSeconds() > 1.0)
         {
-            printf("Object count: %4d %4d %4d %4d\n", DEBUG_PobjCount, updatableList.size(), entityList.size(), renderableList.size());
+            printf("Object count: %4d %4d %4d\n", DEBUG_PobjCount, updatableList.size(), entityList.size());
             debugOutputClock.restart();
         }
 #endif

@@ -44,8 +44,18 @@ public:
     
     virtual void update(float delta);
     virtual void render(sf::RenderTarget& window);
-    virtual void postRender(sf::RenderTarget& window);
     virtual bool takeDamage(sf::Vector2f position, int damageType, int damageAmount);
+};
+
+class BreEnemyHud: public GameEntity
+{
+public:
+    P<BreEnemy> owner;
+    
+    BreEnemyHud(P<BreEnemy> owner);
+    
+    virtual void update(float delta);
+    virtual void render(sf::RenderTarget& window);
 };
 
 class BreLaser: public GameEntity, public Collisionable

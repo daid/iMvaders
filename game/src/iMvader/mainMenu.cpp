@@ -5,6 +5,7 @@
 #include "scoreManager.h"
 #include "engine.h"
 #include "versusGameMode.h"
+#include "main.h"
 
 class SecretMenu : public Updatable, public Renderable
 {
@@ -13,6 +14,7 @@ class SecretMenu : public Updatable, public Renderable
     float timeout;
 public:
     SecretMenu()
+    : Renderable(hudLayer)
     {
         selectionIndex = 0;
         delay = 0;
@@ -65,9 +67,7 @@ public:
         selectionIndex = std::min(3, selectionIndex);
     }
     
-    void preRender(sf::RenderTarget& window) {}
-    void render(sf::RenderTarget& window) {}
-    void postRender(sf::RenderTarget& window)
+    void render(sf::RenderTarget& window)
     {
         drawText(window, 160, 20, "Choose your destiny");
 
@@ -85,6 +85,7 @@ public:
 };
 
 MainMenu::MainMenu()
+: GameEntity(hudLayer)
 {
     blink = 0;
     textureManager.setTexture(logoSprite, "iMvader");
@@ -154,7 +155,7 @@ void MainMenu::update(float delta)
     }
 }
 
-void MainMenu::postRender(sf::RenderTarget& window)
+void MainMenu::render(sf::RenderTarget& window)
 {
     P<ScoreManager> score = engine->getObject("score");
     if (introTextPosition < introTextDelay)

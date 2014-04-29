@@ -53,6 +53,7 @@ void BreEnemy::update(float delta)
             sprite.setPosition(sprite.getPosition() + sf::Vector2f(0, moveSpeed * delta));
         }else
         {
+            new BreEnemyHud(this);
             state = BS_MoveLeftRight;
             moveDir = random(0, 100) < 50 ? 1 : -1;
         }
@@ -201,10 +202,22 @@ void BreEnemy::render(sf::RenderTarget& window)
     window.draw(mouth);
 }
 
-void BreEnemy::postRender(sf::RenderTarget& window)
+BreEnemyHud::BreEnemyHud(P<BreEnemy> owner)
+: owner(owner)
 {
-    if (state == BS_FlyIn)
+}
+
+void BreEnemyHud::update(float delta)
+{
+    if (!owner)
+        destroy();
+}
+
+void BreEnemyHud::render(sf::RenderTarget& window)
+{
+    if (!owner)
         return;
+
     sf::RectangleShape healthBarBG(sf::Vector2f(280, 10));
     healthBarBG.setFillColor(sf::Color::Transparent);
     healthBarBG.setOutlineColor(sf::Color(128, 128, 128, 128));
@@ -212,7 +225,7 @@ void BreEnemy::postRender(sf::RenderTarget& window)
     healthBarBG.setPosition(20, 10);
     window.draw(healthBarBG);
 
-    sf::RectangleShape healthBar(sf::Vector2f(280 * health / maxHealth, 10));
+    sf::RectangleShape healthBar(sf::Vector2f(280 * owner->health / BreEnemy::maxHealth, 10));
     healthBar.setFillColor(sf::Color(212, 0, 0, 128));
     healthBar.setPosition(20, 10);
     window.draw(healthBar);

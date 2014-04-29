@@ -25,7 +25,7 @@ public:
     void top();
     void bottom();
     
-    virtual void postRender(sf::RenderTarget& window);
+    virtual void render(sf::RenderTarget& window);
     
     virtual void update(float delta);
 };

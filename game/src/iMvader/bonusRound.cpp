@@ -9,6 +9,7 @@
 #include "transmission.h"
 #include "gameEntity.h"
 #include "Collisionable.h"
+#include "main.h"
 
 class BonusRoundRow;
 class BonusRound : public GameEntity
@@ -32,8 +33,7 @@ public:
 
     virtual void update(float delta);
     
-    virtual void preRender(sf::RenderTarget& window) {}
-    virtual void postRender(sf::RenderTarget& window)
+    virtual void render(sf::RenderTarget& window)
     {
         if (introTimeout > 0.0)
             window.draw(sprite);
@@ -163,6 +163,7 @@ REGISTER_SCRIPT_CLASS(BonusRound)
 }
 
 BonusRound::BonusRound()
+: GameEntity(hudLayer)
 {
     textureManager.setTexture(sprite, "bonus");
     sprite.setPosition(160, 120);

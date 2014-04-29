@@ -221,7 +221,7 @@ void PlayerBonusLaser::update(float delta)
         destroy();
 }
 
-void PlayerBonusLaser::preRender(sf::RenderTarget& window)
+void PlayerBonusLaser::render(sf::RenderTarget& window)
 {
     sf::RectangleShape laser(sf::Vector2f(6, length));
     laser.setOrigin(3, length);

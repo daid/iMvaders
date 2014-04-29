@@ -5,6 +5,7 @@
 #include "player.h"
 #include "textureManager.h"
 #include "engine.h"
+#include "main.h"
 
 REGISTER_SCRIPT_CLASS(Transmission)
 {
@@ -16,6 +17,7 @@ REGISTER_SCRIPT_CLASS(Transmission)
 }
 
 Transmission::Transmission()
+: GameEntity(hudLayer)
 {
     faceName = "";
     text = "NO TEXT SET";
@@ -42,7 +44,7 @@ void Transmission::bottom()
     positionY = 160;
 }
 
-void Transmission::postRender(sf::RenderTarget& window)
+void Transmission::render(sf::RenderTarget& window)
 {
     sf::RectangleShape transmissionShape(sf::Vector2f(280, 62));
     transmissionShape.setPosition(20, positionY);

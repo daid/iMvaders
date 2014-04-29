@@ -9,6 +9,7 @@
 #include "powerupCarrier.h"
 #include "transmission.h"
 #include "engine.h"
+#include "main.h"
 
 class HighscoreEntry : public GameEntity
 {
@@ -21,7 +22,7 @@ public:
     float timeout;
     
     HighscoreEntry(int playerCount)
-    : playerCount(playerCount)
+    : GameEntity(hudLayer), playerCount(playerCount)
     {
         for(int p=0; p<MAX_PLAYERS; p++)
         {
@@ -120,7 +121,7 @@ public:
         }
     }
 
-    virtual void postRender(sf::RenderTarget& window)
+    virtual void render(sf::RenderTarget& window)
     {
         drawText(window, 160, 25, "NEW HIGHSCORE", align_center);
         drawText(window, 160, 40, "ENTER YOUR NAME", align_center);
@@ -163,7 +164,7 @@ class GameOverState : public GameEntity
     int playerCount;
 public:
     GameOverState(int playerCount)
-    : playerCount(playerCount)
+    : GameEntity(hudLayer), playerCount(playerCount)
     {
         gameOverDelay = gameOverWait;
     }
@@ -193,7 +194,7 @@ public:
         }
     }
 
-    virtual void postRender(sf::RenderTarget& window)
+    virtual void render(sf::RenderTarget& window)
     {
         P<ScoreManager> score = engine->getObject("score");
         drawText(window, 160, 120, "GAME OVER", align_center);
@@ -300,7 +301,7 @@ void GameState::update(float delta)
     }
 }
 
-void GameState::postRender(sf::RenderTarget& window)
+void GameState::render(sf::RenderTarget& window)
 {
     sf::Sprite nukeIcon;
     

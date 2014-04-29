@@ -5,41 +5,20 @@
 
 #include "stringImproved.h"
 #include "Updatable.h"
+#include "Renderable.h"
 
-class PostProcessor;
-class PostProcessorManager;
-extern PostProcessorManager postProcessorManager;
-class PostProcessorManager
+class PostProcessor : public RenderChain
 {
-private:
-    std::map<string, PostProcessor*> postProcessorMap;
-    sf::RenderTexture backBuffer[2];
-    sf::Vector2i virtualSize;
-public:
-    sf::RenderTarget& getPrimaryRenderTarget(sf::RenderTarget& window);
-    void postProcessRendering(sf::RenderTarget& window);
-    
-    void triggerPostProcess(const char* name, float value);
-    
-    void setVirtualSize(sf::Vector2i virtualSize) { this->virtualSize = virtualSize; }
-};
-
-class PostProcessor : public Updatable
-{
-    friend class PostProcessorManager;
 private:
     sf::Shader shader;
-    float value;
-    float speedFactor;
-
-    PostProcessor(const char* name);
+    sf::RenderTexture renderTexture;
+    
+    RenderChain* chain;
+public:
+    PostProcessor(string name, RenderChain* chain);
     virtual ~PostProcessor() {}
     
-    void trigger(float f);
-    void process(sf::RenderTarget& target, sf::Texture& source);
-    bool active();
-public:
-    virtual void update(float delta);
+    virtual void render(sf::RenderTarget& window);
 };
 
 #endif//POST_PROCESS_MANAGER_H

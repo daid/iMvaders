@@ -20,9 +20,7 @@ public:
     StarBackground();
     virtual ~StarBackground();
     virtual void update(float delta);
-    virtual void preRender(sf::RenderTarget& window);
-    virtual void render(sf::RenderTarget& window) {}
-    virtual void postRender(sf::RenderTarget& window) {};
+    virtual void render(sf::RenderTarget& window);
 };
 
 #endif//STAR_BACKGROUND_H

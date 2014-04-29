@@ -1,11 +1,31 @@
 #include "Renderable.h"
-PVector<Renderable> renderableList;
-Renderable::Renderable()
+
+RenderLayer* defaultRenderLayer;
+
+RenderLayer::RenderLayer()
+: link(NULL)
 {
-    renderableList.push_back(this);
 }
 
-Renderable::~Renderable()
+RenderLayer::RenderLayer(RenderChain* link)
+: link(link)
 {
-    //dtor
+}
+
+void RenderLayer::render(sf::RenderTarget& window)
+{
+    if (link)
+        link->render(window);
+    foreach(Renderable, r, renderableList)
+        r->render(window);
+}
+
+Renderable::Renderable()
+{
+    defaultRenderLayer->renderableList.push_back(this);
+}
+
+Renderable::Renderable(RenderLayer* renderLayer)
+{
+    renderLayer->renderableList.push_back(this);
 }

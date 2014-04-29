@@ -23,16 +23,18 @@ public:
     GameEntity()
     {
         entityList.push_back(this);
-        //printf("Created: %p\n", this);
+    }
+    GameEntity(RenderLayer* renderLayer)
+    : Renderable(renderLayer)
+    {
+        entityList.push_back(this);
     }
 
     virtual ~GameEntity();
 
     virtual void update(float delta);
 
-    virtual void preRender(sf::RenderTarget& window);
     virtual void render(sf::RenderTarget& window);
-    virtual void postRender(sf::RenderTarget& window);
 
     virtual bool takeDamage(sf::Vector2f position, int damageType, int damageAmount);
 };
