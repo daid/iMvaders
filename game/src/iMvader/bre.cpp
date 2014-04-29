@@ -154,6 +154,7 @@ void BreEnemy::update(float delta)
             shotDelay = normalShotDelay;
             state = BS_MoveLeftRight;
         }
+        break;
     }
     if (laser[0])
     {
@@ -269,18 +270,68 @@ bool BreEnemy::takeDamage(sf::Vector2f position, int damageType, int damageAmoun
         health = 0;
         destroy();
         destroyed();
+        for(unsigned int n=0; n<4; n++)
+        {
+            new BreDeath(getPosition(), n);
+        }
         foreach(BasicEnemyBase, e, enemyList)
             e->destroy();
         P<ScoreManager>(engine->getObject("score"))->add(500);
         if (difficulty > 1)
             P<ScoreManager>(engine->getObject("score"))->add(200);
-        for(unsigned int n=0; n<20; n++)
-        {
-            new Explosion(sprite.getPosition() + sf::Vector2f(random(-50, 50), random(-80, 80)), 10);
-        }
+        for(unsigned int n=0; n<30; n++)
+            new Explosion(sprite.getPosition() + sf::Vector2f(random(-60, 60), random(-80, 80)), 15);
     }
     invulnerability = 0.10;
     return true;
+}
+
+BreDeath::BreDeath(sf::Vector2f position, int index)
+{
+    switch(index)
+    {
+    case 0:
+        textureManager.setTexture(sprite, "bre_death1");
+        velocity = sf::Vector2f(random(-10, 10), random(40, 50));
+        break;
+    case 1:
+        textureManager.setTexture(sprite, "bre_death2");
+        velocity = sf::Vector2f(random(40, 50), random(-10, 10));
+        break;
+    case 2:
+        textureManager.setTexture(sprite, "bre_death3");
+        velocity = sf::Vector2f(random(-10, 10), random(-50, -40));
+        break;
+    case 3:
+        textureManager.setTexture(sprite, "bre_death4");
+        velocity = sf::Vector2f(random(-50, -40), random(-10, 10));
+        break;
+    }
+    angularVelocity = random(-30, 30);
+    sprite.setPosition(position);
+    lifeTime = 1.0;
+    engine->setGameSpeed(0.3);
+}
+
+void BreDeath::update(float delta)
+{
+    lifeTime -= delta;
+    if (lifeTime < 0)
+    {
+        engine->setGameSpeed(1.0);
+        destroy();
+    }
+    sprite.setPosition(sprite.getPosition() + velocity * delta);
+    sprite.setRotation(sprite.getRotation() + angularVelocity * delta);
+    if (lifeTime < 1.0)
+        sprite.setColor(sf::Color(255,255,255, 255 * lifeTime));
+    velocity *= powf(0.5, delta);
+    angularVelocity *= powf(0.5, delta);
+}
+
+void BreDeath::render(sf::RenderTarget& window)
+{
+    window.draw(sprite);
 }
 
 BreLaser::BreLaser(P<BreEnemy> owner)

@@ -33,7 +33,7 @@ public:
     P<BreLaser> laser[2];
     ScriptCallback destroyed;
 
-    static const int maxHealth = 100;
+    static const int maxHealth = 10;
     static const int normalShotDelay = 1.2;
     static const int laserChargeTime = 2.0;
 
@@ -53,6 +53,18 @@ public:
     P<BreEnemy> owner;
     
     BreEnemyHud(P<BreEnemy> owner);
+    
+    virtual void update(float delta);
+    virtual void render(sf::RenderTarget& window);
+};
+
+class BreDeath: public GameEntity
+{
+    float lifeTime;
+    sf::Vector2f velocity;
+    float angularVelocity;
+public:
+    BreDeath(sf::Vector2f position, int index);
     
     virtual void update(float delta);
     virtual void render(sf::RenderTarget& window);
