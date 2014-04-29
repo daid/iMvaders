@@ -29,7 +29,6 @@ void PostProcessor::render(sf::RenderTarget& window)
 {
     if (renderTexture.getSize().x < 1)
     {
-        printf("%f %f\n", window.getView().getSize().x, window.getView().getSize().y);
         //Setup a backBuffer to render the game on. Then we can render the backbuffer back to the main screen with full-screen shader effects
         int w = window.getView().getViewport().width * window.getSize().x;
         int h = window.getView().getViewport().height * window.getSize().y;
