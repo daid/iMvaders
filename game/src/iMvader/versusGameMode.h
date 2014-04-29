@@ -9,7 +9,7 @@ private:
     P<PlayerCraft> player[MAX_PLAYERS];
     PlayerInfo playerInfo[MAX_PLAYERS];
     float printerSpawnDelay;
-    const static float printerSpawnTime = 0.8;
+    const static float printerSpawnTime = 1.2;
     float victoryDelay;
 public:
     VersusGameState();

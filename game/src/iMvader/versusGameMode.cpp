@@ -12,13 +12,13 @@ public:
     VersusOldPrinter()
     : OldPrinter()
     {
-        if (random(0, 100) < 50)
+        if (random(0, 100) < 90)
         {
             setPosition(sf::Vector2f(-20, random(40, 200)));
             setVelocity(sf::Vector2f(random(-1, 1), random(-2, 2)) * 3.0f + sf::Vector2f( 25.0f, 0.0f));
         }else{
             setPosition(sf::Vector2f(340, random(40, 200)));
-            setVelocity(sf::Vector2f(random(-1, 1), random(-2, 2)) * 3.0f + sf::Vector2f(-25.0f, 0.0f));
+            setVelocity(sf::Vector2f(random(-1, 1), random(-2, 2)) * 3.0f + sf::Vector2f(-155.0f, 0.0f));
         }
     }
     virtual ~VersusOldPrinter() {}

@@ -1,7 +1,7 @@
 #include <string.h>
 #include <time.h>
 
-#include "engine.h"
+#include "main.h"
 #include "windowManager.h"
 #include "StarBackground.h"
 #include "mainMenu.h"
@@ -16,6 +16,7 @@ RenderLayer* backgroundLayer;
 RenderLayer* objectLayer;
 RenderLayer* effectLayer;
 RenderLayer* hudLayer;
+PostProcessor* crtPostProcessor;
 
 class WallClock : public Renderable
 {
@@ -111,13 +112,14 @@ int main(int argc, char** argv)
     objectLayer = new RenderLayer(backgroundLayer);
     effectLayer = new RenderLayer(objectLayer);
     hudLayer = new RenderLayer(effectLayer);
+    crtPostProcessor = new PostProcessor("crt", hudLayer);
     defaultRenderLayer = objectLayer;
 
 #ifdef DEBUG
     new CollisionDebugDraw(hudLayer);
 #endif
 
-    engine->registerObject("windowManager", new WindowManager(320, 240, fullscreen, new PostProcessor("crt", hudLayer)));
+    engine->registerObject("windowManager", new WindowManager(320, 240, fullscreen, crtPostProcessor));
         
     new StarBackground();
     new MainMenu();

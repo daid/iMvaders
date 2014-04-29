@@ -15,6 +15,8 @@ private:
     
     RenderChain* chain;
 public:
+    bool enabled;
+    
     PostProcessor(string name, RenderChain* chain);
     virtual ~PostProcessor() {}
     

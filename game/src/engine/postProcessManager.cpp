@@ -20,13 +20,20 @@ PostProcessor::PostProcessor(string name, RenderChain* chain)
     if (shader.loadFromFile("resources/" + name + ".frag", sf::Shader::Fragment))
     {
         printf(("Loaded shader: " + name + "\n").c_str());
+        enabled = true;
     }else{
         printf(("Failed to load shader: " + name + "\n").c_str());
+        enabled = false;
     }
 }
 
 void PostProcessor::render(sf::RenderTarget& window)
 {
+    if (!enabled)
+    {
+        chain->render(window);
+        return;
+    }
     if (renderTexture.getSize().x < 1)
     {
         //Setup a backBuffer to render the game on. Then we can render the backbuffer back to the main screen with full-screen shader effects

@@ -322,6 +322,7 @@
 		<Unit filename="src/iMvader/gameState.h" />
 		<Unit filename="src/iMvader/henk.cpp" />
 		<Unit filename="src/iMvader/main.cpp" />
+		<Unit filename="src/iMvader/main.h" />
 		<Unit filename="src/iMvader/mainMenu.cpp" />
 		<Unit filename="src/iMvader/mainMenu.h" />
 		<Unit filename="src/iMvader/nuke.cpp" />
