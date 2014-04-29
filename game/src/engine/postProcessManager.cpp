@@ -27,15 +27,15 @@ PostProcessor::PostProcessor(string name, RenderChain* chain)
 
 void PostProcessor::render(sf::RenderTarget& window)
 {
-    sf::Vector2i virtualSize(320, 240);
     if (renderTexture.getSize().x < 1)
     {
+        printf("%f %f\n", window.getView().getSize().x, window.getView().getSize().y);
         //Setup a backBuffer to render the game on. Then we can render the backbuffer back to the main screen with full-screen shader effects
         int w = window.getView().getViewport().width * window.getSize().x;
         int h = window.getView().getViewport().height * window.getSize().y;
         int tw = powerOfTwo(w);
         int th = powerOfTwo(h);
-        sf::View view(sf::Vector2f(virtualSize.x/2,virtualSize.y/2), sf::Vector2f(virtualSize));
+        sf::View view(sf::Vector2f(window.getView().getSize().x/2,window.getView().getSize().y/2), sf::Vector2f(window.getView().getSize()));
         view.setViewport(sf::FloatRect(0, 1.0 - float(h) / float(th), float(w) / float(tw), float(h) / float(th)));
 
         renderTexture.create(tw, th, false);
@@ -49,7 +49,7 @@ void PostProcessor::render(sf::RenderTarget& window)
     
     renderTexture.display();
     sf::Sprite backBufferSprite(renderTexture.getTexture(), sf::IntRect(0, renderTexture.getSize().y - window.getView().getViewport().height * window.getSize().y, window.getView().getViewport().width * window.getSize().x, window.getView().getViewport().height * window.getSize().y));
-    backBufferSprite.setScale(virtualSize.x/float(renderTexture.getSize().x)/renderTexture.getView().getViewport().width, virtualSize.y/float(renderTexture.getSize().y)/renderTexture.getView().getViewport().height);
+    backBufferSprite.setScale(window.getView().getSize().x/float(renderTexture.getSize().x)/renderTexture.getView().getViewport().width, window.getView().getSize().y/float(renderTexture.getSize().y)/renderTexture.getView().getViewport().height);
     
     shader.setParameter("inputSize", sf::Vector2f(window.getSize().x, window.getSize().y));
     shader.setParameter("textureSize", sf::Vector2f(renderTexture.getSize().x, renderTexture.getSize().y));
