@@ -22,6 +22,7 @@ BreEnemy::BreEnemy()
     sprite.setPosition(sf::Vector2f(160, -80));
     textureManager.setTexture(mouth, "bre2");
     mouth.setPosition(sf::Vector2f(160, -80));
+    textureManager.setTexture(shield, "bre_shield");
     state = BS_FlyIn;
     mouthPos = 0;
     shotDelay = 0;
@@ -30,6 +31,7 @@ BreEnemy::BreEnemy()
     moneyshieldDeployed = false;
     health = maxHealth;
     difficulty = 1;
+    shieldStrength = 0;
 }
 
 BreEnemy::~BreEnemy()
@@ -41,6 +43,11 @@ void BreEnemy::setDifficulty(int difficulty)
     this->difficulty = difficulty;
     if (difficulty > 1)
         textureManager.setTexture(sprite, "bre1_v2");
+    if (difficulty > 2)
+    {
+        shieldStrength = maxShieldStrength;
+        setCollisionRadius(65);
+    }
 }
 
 void BreEnemy::update(float delta)
@@ -168,8 +175,20 @@ void BreEnemy::update(float delta)
         laser[1]->setPosition(getPosition() + sf::Vector2f(-18, 7));
         laser[1]->setRotation(shotDelay*30.0f);
     }
+    if (difficulty > 2 && shieldStrength < maxShieldStrength)
+    {
+        shieldCharge += delta;
+        if (shieldCharge >= shieldChargeTime)
+        {
+            shieldCharge -= shieldChargeTime;
+            if (shieldStrength == 0)
+                setCollisionRadius(65);
+            shieldStrength ++;
+        }
+    }
     
     mouth.setPosition(sprite.getPosition() + sf::Vector2f(0, mouthPos));
+    shield.setPosition(sprite.getPosition());
     setPosition(sprite.getPosition()); // Set position for collision
     foreach(BasicEnemyBase, e, enemyList)
     {
@@ -187,8 +206,13 @@ void BreEnemy::render(sf::RenderTarget& window)
 {
     if (fmodf(invulnerability, 4.0/60) > 2.0/60.0)
     {
-        sprite.setColor(sf::Color(212, 0, 0));
-        mouth.setColor(sf::Color(212, 0, 0));
+        if (shieldStrength > 0)
+        {
+            shield.setColor(sf::Color(255,255,255,128));
+        }else{
+            sprite.setColor(sf::Color(212, 0, 0));
+            mouth.setColor(sf::Color(212, 0, 0));
+        }
     }
     else if (state == BS_LaserCharge)
     {
@@ -200,9 +224,12 @@ void BreEnemy::render(sf::RenderTarget& window)
     {
         sprite.setColor(sf::Color::White);
         mouth.setColor(sf::Color::White);
+        shield.setColor(sf::Color::White);
     }
     window.draw(sprite);
     window.draw(mouth);
+    if (shieldStrength > 0)
+        window.draw(shield);
 }
 
 BreEnemyHud::BreEnemyHud(P<BreEnemy> owner)
@@ -232,6 +259,29 @@ void BreEnemyHud::render(sf::RenderTarget& window)
     healthBar.setFillColor(sf::Color(212, 0, 0, 128));
     healthBar.setPosition(20, 10);
     window.draw(healthBar);
+    
+    if (owner->difficulty > 2)
+    {
+        sf::RectangleShape shieldBarBG(sf::Vector2f(280, 8));
+        shieldBarBG.setFillColor(sf::Color::Transparent);
+        shieldBarBG.setOutlineColor(sf::Color(128, 128, 128, 128));
+        shieldBarBG.setOutlineThickness(1);
+        shieldBarBG.setPosition(20, 25);
+        window.draw(shieldBarBG);
+
+        sf::RectangleShape shieldBar(sf::Vector2f(280 * owner->shieldStrength / BreEnemy::maxShieldStrength, 8));
+        shieldBar.setFillColor(sf::Color(100, 100, 212, 192));
+        shieldBar.setPosition(20, 25);
+        window.draw(shieldBar);
+        
+        if (owner->shieldStrength < BreEnemy::maxShieldStrength)
+        {
+            sf::RectangleShape shieldCharge(sf::Vector2f(280 * owner->shieldCharge / BreEnemy::shieldChargeTime, 3));
+            shieldCharge.setFillColor(sf::Color(100, 100, 212, 192));
+            shieldCharge.setPosition(20, 30);
+            window.draw(shieldCharge);
+        }
+    }
 }
 
 bool BreEnemy::takeDamage(sf::Vector2f position, int damageType, int damageAmount)
@@ -242,7 +292,21 @@ bool BreEnemy::takeDamage(sf::Vector2f position, int damageType, int damageAmoun
         return true;
 
     if (state != BS_FlyIn)
+    {
+        if (shieldStrength > 0)
+        {
+            shieldStrength -= damageAmount;
+            damageAmount = 0;
+            if (shieldStrength <= 0)
+            {
+                setCollisionRadius(50);
+                damageAmount = -shieldStrength;
+                shieldStrength = 0;
+            }
+        }
+        shieldCharge = 0.0;
         health -= damageAmount;
+    }
     if (health < maxHealth / 2 && !moneyshieldDeployed)
     {
         moneyshieldDeployed = true;

@@ -284,6 +284,8 @@
 		<Unit filename="src/engine/postProcessManager.cpp" />
 		<Unit filename="src/engine/postProcessManager.h" />
 		<Unit filename="src/engine/random.h" />
+		<Unit filename="src/engine/resources.cpp" />
+		<Unit filename="src/engine/resources.h" />
 		<Unit filename="src/engine/scriptInterface.cpp" />
 		<Unit filename="src/engine/scriptInterface.h" />
 		<Unit filename="src/engine/scriptInterfaceMagic.cpp" />

@@ -19,6 +19,7 @@ class BreEnemy: public GameEntity, public Collisionable
 {
 public:
     sf::Sprite mouth;
+    sf::Sprite shield;
     BreState state;
     int moveDir;
     int health;
@@ -28,12 +29,16 @@ public:
     float invulnerability;
     int enemySpawnCount;
     int difficulty;
+    int shieldStrength;
+    float shieldCharge;
     bool moneyshieldDeployed;
     PVector<BasicEnemyBase> enemyList;
     P<BreLaser> laser[2];
     ScriptCallback destroyed;
 
     static const int maxHealth = 100;
+    static const int maxShieldStrength = 20;
+    static const int shieldChargeTime = 1.5;
     static const int normalShotDelay = 1.2;
     static const int laserChargeTime = 2.0;
 

@@ -203,7 +203,7 @@ public:
 };
 
 GameState::GameState(int playerCount)
-: playerCount(playerCount)
+: GameEntity(hudLayer), playerCount(playerCount)
 {
     stageNr = 0;
     for(int n=0; n<MAX_PLAYERS; n++)
