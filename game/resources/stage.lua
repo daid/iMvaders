@@ -166,6 +166,24 @@ function launchRound4()
 	
 	w:add(Digitizer():setPosition(40, -50))
 	w:add(Digitizer():setPosition(320 - 40, -50))
+
+	if playtrough > 2 then
+		g = EnemyGroup()
+		w:add(g)
+		for n=0,7 do
+			g:add(BasicEnemy():setTargetPosition(160 - 4 * 20 + n * 20, 75));
+		end
+		table.insert(groupList, g)
+		g:flyInBy(340, 200, 100, 500);
+
+		local g = EnemyGroup()
+		w:add(g)
+		for n=0,7 do
+			g:add(BasicEnemy():setTargetPosition(160 + 3 * 20 - n * 20, 100));
+		end
+		table.insert(groupList, g)
+		g:flyInBy(-20, 200, 220, 500);
+	end
 end
 
 --[[ ROUND 4 finished --]]
