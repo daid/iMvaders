@@ -44,6 +44,9 @@ public:
                 sf::Listener::setGlobalVolume(100);
                 new VersusGameState();
                 break;
+            case 2:
+                system("/home/arcade/jamestown/Jamestown");
+                break;
             case 3:
                 system("sudo poweroff");
                 break;
