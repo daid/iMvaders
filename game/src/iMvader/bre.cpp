@@ -78,7 +78,7 @@ void BreEnemy::update(float delta)
         {
             shotDelay -= delta;
             if (difficulty > 1)
-                shotDelay -= delta * 0.2;
+                shotDelay -= delta * 0.1;
         }else{
             if (random(0, 100) < 30)
             {
@@ -88,7 +88,7 @@ void BreEnemy::update(float delta)
                     shotDelay = laserChargeTime;
                 }else{
                     state = BS_MouthOpen;
-                    enemySpawnCount = 2 + 3 * difficulty;
+                    enemySpawnCount = 3 + 2 * difficulty;
                 }
             }else{
                 for(int n=-2; n<=2; n++)
@@ -128,13 +128,13 @@ void BreEnemy::update(float delta)
         {
             mouthPos += delta * 40;
             if (difficulty > 1)
-                mouthPos += delta * 10;
+                mouthPos += delta * 5;
             shotDelay = 0.2;
         }else if (shotDelay > 0)
         {
             shotDelay -= delta;
             if (difficulty > 1)
-                shotDelay -= delta * 0.5;
+                shotDelay -= delta * 0.3;
         }else{
             shotDelay += 0.2;
             if (enemySpawnCount > 0)

@@ -37,8 +37,8 @@ public:
     ScriptCallback destroyed;
 
     static const int maxHealth = 100;
-    static const int maxShieldStrength = 20;
-    static const int shieldChargeTime = 1.5;
+    static const int maxShieldStrength = 10;
+    static const int shieldChargeTime = 2.5;
     static const int normalShotDelay = 1.2;
     static const int laserChargeTime = 2.0;
 

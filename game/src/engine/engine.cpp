@@ -85,8 +85,12 @@ void Engine::runMainLoop()
         if (delta < 0.001)
             delta = 0.001;
         delta *= gameSpeed;
+#ifdef DEBUG
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab))
             delta /= 5.0;
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tilde))
+            delta *= 5.0;
+#endif
         
         entityList.update();
         foreach(Updatable, u, updatableList)

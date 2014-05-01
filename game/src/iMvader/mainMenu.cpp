@@ -1,3 +1,5 @@
+#include <SFML/Network.hpp>
+
 #include "mainMenu.h"
 #include "player.h"
 #include "gameState.h"
@@ -81,6 +83,9 @@ public:
         drawText(window, 160, 50 + 20 * n, "Play VS iMvaders");n++;
         drawText(window, 160, 50 + 20 * n, "Play Jamestown");n++;
         drawText(window, 160, 50 + 20 * n, "Shutdown");n++;
+        
+        sf::IpAddress localIp = sf::IpAddress::getLocalAddress();
+        drawText(window, 30, 220, localIp.toString(), align_left, 0.5);
     }
 };
 

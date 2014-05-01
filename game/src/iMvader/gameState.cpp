@@ -267,6 +267,13 @@ void GameState::update(float delta)
             reviveDelay = reviveTimeout;
         }
     }
+#ifdef DEBUG
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::BackSlash))
+    {
+        playerInfo[0].lives ++;
+        playerInfo[0].nukes ++;
+    }
+#endif
 
     bool gameOver = true;
     for(int n=0; n<playerCount; n++)
