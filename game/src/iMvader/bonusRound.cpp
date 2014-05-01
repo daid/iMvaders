@@ -19,12 +19,14 @@ class BonusRound : public GameEntity
     float spawnTimeout;
     float spawnDelay;
     int scoreCount;
+    int colorCount;
     PVector<BonusRoundRow> objects;
     P<Transmission> endTransmission;
 public:
     ScriptCallback finished;
 
     BonusRound();
+    
     virtual ~BonusRound()
     {
         //Make sure the bonus weapons are disabled if the bonusround gets destroyed by other means then a normal end.
@@ -44,6 +46,11 @@ public:
         scoreCount++;
         soundManager.playSound("bonus_score", random(0.95, 1.05));
     }
+    
+    void setColorCount(int count)
+    {
+        colorCount = count;
+    }
 };
 
 class BonusRoundObject : public GameEntity, public Collisionable
@@ -51,18 +58,29 @@ class BonusRoundObject : public GameEntity, public Collisionable
     P<BonusRound> owner;
     float switchDelay;
     bool scored;
+    int colorCount;
+    int disallowColor;
+    static const int maxColorCount = 7;
 public:
     int type;
 
-    BonusRoundObject(P<BonusRound> owner, int idx)
-    : Collisionable(sf::Vector2f(20, 20)), owner(owner)
+    BonusRoundObject(P<BonusRound> owner, int idx, int colorCount, int disallowColor)
+    : Collisionable(sf::Vector2f(20, 20)), owner(owner), disallowColor(disallowColor)
     {
         setPosition(sf::Vector2f(70 + 20 * idx, -10));
         setVelocity(sf::Vector2f(0, 10.0));
         
+        if (colorCount > maxColorCount)
+            colorCount = maxColorCount;
+        
+        this->colorCount = colorCount;
+        
         textureManager.setTexture(sprite, "robot");
         sprite.setScale(0.25, 0.25);
-        type = irandom(0, 3);
+        do {
+            type = irandom(0, colorCount - 1);
+        } while(type == disallowColor);
+        
         switchDelay = 0.0;
         scored = false;
     }
@@ -94,6 +112,9 @@ public:
         case 1: sprite.setColor(sf::Color::Green); break;
         case 2: sprite.setColor(sf::Color::Blue); break;
         case 3: sprite.setColor(sf::Color::Yellow); break;
+        case 4: sprite.setColor(sf::Color::Cyan); break;
+        case 5: sprite.setColor(sf::Color::Magenta); break;
+        case 6: sprite.setColor(sf::Color::White); break;
         }
         
         sprite.setPosition(getPosition());
@@ -109,7 +130,9 @@ public:
         {
             if (switchDelay <= 0)
             {
-                type = (type + 1) % 4;
+                do {
+                    type = (type + 1) % colorCount;
+                } while(type == disallowColor);
             }
             switchDelay = 0.1;
         }
@@ -127,12 +150,15 @@ class BonusRoundRow : public GameEntity
     PVector<BonusRoundObject> items;
     P<BonusRound> owner;
 public:
-    BonusRoundRow(P<BonusRound> owner)
+    BonusRoundRow(P<BonusRound> owner, int colorCount)
     : owner(owner)
     {
+        int disallowColor = irandom(0, colorCount - 1);
+        if (colorCount < 5)
+            disallowColor = -1;
         for(int n=0; n<10; n++)
         {
-            items.push_back(new BonusRoundObject(owner, n));
+            items.push_back(new BonusRoundObject(owner, n, colorCount, disallowColor));
         }
     }
     virtual ~BonusRoundRow() {}
@@ -159,6 +185,7 @@ public:
 
 REGISTER_SCRIPT_CLASS(BonusRound)
 {
+    REGISTER_SCRIPT_CLASS_FUNCTION(BonusRound, setColorCount);
     REGISTER_SCRIPT_CLASS_CALLBACK(BonusRound, finished);
 }
 
@@ -172,6 +199,7 @@ BonusRound::BonusRound()
     spawnDelay = 2.0;
     introTimeout = 3.0;
     scoreCount = 0;
+    colorCount = 4;
     playerBonusWeaponsActive = true;
 }
 
@@ -192,7 +220,7 @@ void BonusRound::update(float delta)
             spawnTimeout -= delta;
         }else{
             spawnTimeout += spawnDelay;
-            objects.push_back(new BonusRoundRow(this));
+            objects.push_back(new BonusRoundRow(this, colorCount));
             spawnCount--;
         }
     }else{

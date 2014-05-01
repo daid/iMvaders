@@ -73,9 +73,7 @@ void ReplicatorZ18Part::render(sf::RenderTarget& window)
     sprite.setPosition(getPosition());
     sprite.setRotation(getRotation());
     if (health <= 0)
-    {
         sprite.setColor(sf::Color(255,255,255,128));
-    }
     window.draw(sprite);
 }
 
@@ -87,7 +85,6 @@ void ReplicatorZ18Part::collision(Collisionable* other)
     GameEntity* e = dynamic_cast<GameEntity*>(other);
     if (e && e->takeDamage(getPosition(), 0, 1))
     {
-        //destroy();
         health = 0;
     }
 }

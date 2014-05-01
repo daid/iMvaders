@@ -118,9 +118,8 @@ function launchRound3()
 	local w = ListWatcher():allDestroyed("round3Finished")
 	local r = ReplicatorZ18()
 	w:add(r)
-	if playtrough > 1 then
-		r:setSpeed(20)
-	end
+	if playtrough > 1 then r:setSpeed(20) end
+	if playtrough > 2 then r:setSpeed(22) end
 end
 
 --[[ ROUND 3 finished --]]
@@ -212,10 +211,19 @@ function spawnOldPrinter()
 		end
 	end
 end
+function spawnDiveBomber()
+	DiveBomber()
+	if spawnPrinters then
+		Delay():time(8):call("spawnDiveBomber")
+	end
+end
 function launchRound5()
 	Delay():time(5.0):call("delayedLaunchRound5")
 	spawnPrinters = true
 	spawnOldPrinter()
+	if playtrough > 2 then
+		Delay():time(5):call("spawnDiveBomber")
+	end
 end
 function delayedLaunchRound5()
 	local w = ListWatcher():delay(1.5):allDestroyed("delayedLaunchRound5_2")
@@ -286,7 +294,7 @@ function round6Finished3()
 end
 
 function launchBonus()
-	BonusRound():finished("Delay():time(1.0):call('round1Finished2')")
+	BonusRound():setColorCount(playtrough + 2):finished("Delay():time(1.0):call('round1Finished2')")
 end
 
 --[[ Utility functions --]]
