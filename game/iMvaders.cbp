@@ -318,6 +318,7 @@
 		<Unit filename="src/iMvader/curve.h" />
 		<Unit filename="src/iMvader/digitizer.cpp" />
 		<Unit filename="src/iMvader/digitizer.h" />
+		<Unit filename="src/iMvader/diveBomber.cpp" />
 		<Unit filename="src/iMvader/explosion.cpp" />
 		<Unit filename="src/iMvader/explosion.h" />
 		<Unit filename="src/iMvader/gameState.cpp" />
