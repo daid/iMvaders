@@ -41,10 +41,6 @@ ReplicatorZ18::ReplicatorZ18()
         int y = irandom(0, 33);
         int idx = x + y * 20;
         
-        if (x > 0) parts[idx - 1]->indestructible = true;
-        if (x < 19) parts[idx + 1]->indestructible = true;
-        if (y > 0) parts[idx - 20]->indestructible = true;
-        if (y < 33) parts[idx + 20]->indestructible = true;
         parts[idx]->indestructible = true;
     }
 }
