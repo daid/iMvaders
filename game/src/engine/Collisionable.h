@@ -26,7 +26,6 @@ private:
 class Collisionable: public virtual PObject
 {
 private:
-    float rotation;
     b2Body* body;
     bool enablePhysics;
     bool staticPhysics;

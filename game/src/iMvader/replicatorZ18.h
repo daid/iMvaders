@@ -23,10 +23,15 @@ class ReplicatorZ18Part : public GameEntity, public Collisionable
     float speed;
     int health;
     float tinyExplosionDelay;
-    static const int maxHealth = 2;
+    static const int maxHealth = 1;
 public:
+    bool indestructible;
+    P<ReplicatorZ18Part> neighbours[4];
+    
     ReplicatorZ18Part(P<ReplicatorZ18> owner, int index);
     virtual ~ReplicatorZ18Part() {}
+    
+    virtual void destroy();
 
     virtual void update(float delta);
     virtual void render(sf::RenderTarget& window);

@@ -72,7 +72,7 @@ public:
 #endif
     }
 
-    void destroy()
+    virtual void destroy()
     {
         _destroyed_flag = true;
     }

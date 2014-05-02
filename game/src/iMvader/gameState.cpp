@@ -270,8 +270,8 @@ void GameState::update(float delta)
 #ifdef DEBUG
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::BackSlash))
     {
-        playerInfo[0].lives ++;
-        playerInfo[0].nukes ++;
+        playerInfo[0].lives = 5;
+        playerInfo[0].nukes = 25;
     }
 #endif
 

@@ -32,7 +32,7 @@ public:
 
 void CollisionManager::handleCollisions(float delta)
 {
-    Collisionable* destroy = NULL;
+    P<Collisionable> destroy = NULL;
     world->Step(delta, 4, 8);
     std::vector<Collision> collisions;
     for(b2Contact* contact = world->GetContactList(); contact; contact = contact->GetNext())
@@ -73,7 +73,6 @@ void CollisionManager::handleCollisions(float delta)
 
 Collisionable::Collisionable(float radius)
 {
-    rotation = 0.0;
     enablePhysics = false;
     staticPhysics = false;
     body = NULL;
@@ -83,7 +82,6 @@ Collisionable::Collisionable(float radius)
 
 Collisionable::Collisionable(sf::Vector2f boxSize, sf::Vector2f boxOrigin)
 {
-    rotation = 0.0;
     enablePhysics = false;
     staticPhysics = false;
     body = NULL;
@@ -93,7 +91,6 @@ Collisionable::Collisionable(sf::Vector2f boxSize, sf::Vector2f boxOrigin)
 
 Collisionable::Collisionable(const std::vector<sf::Vector2f>& shape)
 {
-    rotation = 0.0;
     enablePhysics = false;
     staticPhysics = false;
     body = NULL;
@@ -205,40 +202,47 @@ void Collisionable::collision(Collisionable* target)
 
 void Collisionable::setPosition(sf::Vector2f position)
 {
-    body->SetTransform(v2b(position), rotation / 180.0 * M_PI);
+    if (body == NULL) return;
+    body->SetTransform(v2b(position), body->GetAngle());
 }
 
 sf::Vector2f Collisionable::getPosition()
 {
+    if (body == NULL) return sf::Vector2f(0, 0);
     return b2v(body->GetPosition());
 }
 
 void Collisionable::setRotation(float angle)
 {
-    rotation = angle;
-    body->SetTransform(body->GetPosition(), rotation / 180.0 * M_PI);
+    if (body == NULL) return;
+    body->SetTransform(body->GetPosition(), angle / 180.0 * M_PI);
 }
 
 float Collisionable::getRotation()
 {
+    if (body == NULL) return 0;
     return body->GetAngle() / M_PI * 180.0;
 }
 
 void Collisionable::setVelocity(sf::Vector2f velocity)
 {
+    if (body == NULL) return;
     body->SetLinearVelocity(v2b(velocity));
 }
 sf::Vector2f Collisionable::getVelocity()
 {
+    if (body == NULL) return sf::Vector2f(0, 0);
     return b2v(body->GetLinearVelocity());
 }
 
 sf::Vector2f Collisionable::toLocalSpace(sf::Vector2f v)
 {
+    if (body == NULL) return sf::Vector2f(0, 0);
     return b2v(body->GetLocalPoint(v2b(v)));
 }
 sf::Vector2f Collisionable::toWorldSpace(sf::Vector2f v)
 {
+    if (body == NULL) return sf::Vector2f(0, 0);
     return b2v(body->GetWorldPoint(v2b(v)));
 }
 
