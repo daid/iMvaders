@@ -235,6 +235,12 @@ sf::Vector2f Collisionable::getVelocity()
     return b2v(body->GetLinearVelocity());
 }
 
+void Collisionable::applyImpulse(sf::Vector2f position, sf::Vector2f impulse)
+{
+    if (body == NULL) return;
+    body->ApplyLinearImpulse(v2b(impulse), v2b(position), true);
+}
+
 sf::Vector2f Collisionable::toLocalSpace(sf::Vector2f v)
 {
     if (body == NULL) return sf::Vector2f(0, 0);

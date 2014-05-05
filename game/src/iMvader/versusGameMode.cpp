@@ -36,6 +36,10 @@ public:
     virtual bool takeDamage(sf::Vector2f position, int damageType, int damageAmount)
     {
         health -= damageAmount;
+        if (damageType >= 0)
+            applyImpulse(position, sf::Vector2f(0, 13));
+        else
+            applyImpulse(position, sf::Vector2f(0,-13));
         if (health <= 0)
         {
             new Explosion(getPosition(), 8);
