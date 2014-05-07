@@ -21,6 +21,13 @@ public:
     virtual void update(float delta);
     virtual void collision(Collisionable* target);
     
+    virtual void destroy()
+    {
+        laser[0] = NULL;
+        laser[1] = NULL;
+        GameEntity::destroy();
+    }
+    
     virtual void render(sf::RenderTarget& window);
     virtual bool takeDamage(sf::Vector2f position, int damageType, int damageAmount);
 };
@@ -38,6 +45,11 @@ public:
 
     virtual void update(float delta);
     virtual void render(sf::RenderTarget& window);
+    virtual void destroy()
+    {
+        owner = NULL;
+        GameEntity::destroy();
+    }
 
     virtual void collision(Collisionable* other);
 };

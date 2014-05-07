@@ -26,7 +26,7 @@ WindowManager::WindowManager(int virtualWidth, int virtualHeight, bool fullscree
         windowWidth *= scale - 1;
         windowHeight *= scale - 1;
         
-        windowHeight *= (1.33333 / 1.25);
+        //windowHeight *= (1.33333 / 1.25);
     }
 
     if (fullscreen)

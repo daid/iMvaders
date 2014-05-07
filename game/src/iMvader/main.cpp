@@ -92,6 +92,8 @@ int main(int argc, char** argv)
 {
     new Engine();
     
+    new DirectoryResourceProvider("resources/");
+    
     P<PlayerController> pc1 = new PlayerController(0);
     P<PlayerController> pc2 = new PlayerController(1);
     engine->registerObject("playerController1", pc1);

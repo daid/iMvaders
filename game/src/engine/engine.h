@@ -9,6 +9,8 @@
 #include "windowManager.h"
 #include "postProcessManager.h"
 #include "scriptInterface.h"
+#include "resources.h"
+#include "soundManager.h"
 #include "textureManager.h"
 #include "gameEntity.h"
 #include "Collisionable.h"
@@ -37,6 +39,7 @@ public:
     P<PObject> getObject(string name);
     
     void runMainLoop();
+    void shutdown();
 };
 
 #endif//ENGINE_H

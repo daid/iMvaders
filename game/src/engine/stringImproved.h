@@ -164,7 +164,7 @@ public:
     */
     int find(const string sub, int start=0) const
     {
-        if (sub.length() + start > length())
+        if (sub.length() + start > length() || sub.length() < 1)
             return -1;
         for(unsigned int n=start; n<=length() - sub.length(); n++)
         {
@@ -438,7 +438,26 @@ public:
         whitespace string is a separator and empty strings are removed
         from the result.
     */
-    std::vector<string> split(const string sep="", const int maxsplit=-1) const;
+    std::vector<string> split(const string sep="", int maxsplit=-1) const
+    {
+        std::vector<string> res;
+        int start = 0;
+        if(sep == ""){return res; }//TODO
+        while(maxsplit != 0 && start < int(length()))
+        {
+            int offset = find(sep, start);
+            if (offset < 0)
+            {
+                res.push_back(substr(start));
+                return res;
+            }
+            res.push_back(substr(start, offset));
+            start = offset + sep.length();
+            if (maxsplit > 0)
+                maxsplit--;
+        }
+        return res;
+    }
 
     /*
         Return a list of the lines in S, breaking at line boundaries.

@@ -11,7 +11,6 @@ public:
         switch(state)
         {
         case ES_Wait:
-            printf("Wait\n");
             break;
         case ES_FlyIn:
             if (fireDelay > 0)
@@ -24,7 +23,6 @@ public:
         case ES_CenterField:
         case ES_Diving:
         case ES_Outside:
-            printf("ES_Outside\n");
             {
                 sf::Vector2f start(random(0, 320), -20);
                 sf::Vector2f end(start.x + random(-100, 100), 300);

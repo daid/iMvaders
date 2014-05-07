@@ -5,6 +5,7 @@
 #include <iomanip>
 #include <sstream>
 
+#include "resources.h"
 #include "soundManager.h"
 
 #define MAX_SOUNDS 16
@@ -18,10 +19,28 @@ SoundManager::SoundManager()
 
     for(unsigned int n=0; n<MAX_SOUNDS; n++)
         activeSoundList.push_back(sf::Sound());
+    
+    musicStream = NULL;
 }
 
 SoundManager::~SoundManager()
 {
+}
+
+void SoundManager::playMusic(string name)
+{
+    music.stop();
+    musicStream = getResourceStream(name);
+    if (musicStream)
+    {
+        music.openFromStream(**musicStream);
+        music.play();
+    }
+}
+
+void SoundManager::stopMusic()
+{
+    music.stop();
 }
 
 void SoundManager::playSound(string name, float pitch, float volume)
@@ -110,15 +129,17 @@ sf::SoundBuffer* SoundManager::loadSound(string name)
         return data;
     
     data = new sf::SoundBuffer();
-    char buffer[128];
-    sprintf(buffer, "resources/%s.wav", name.c_str());
-    if (!data->loadFromFile(buffer))
+    
+    P<ResourceStream> stream = getResourceStream(name);
+    if (!stream) stream = getResourceStream(name + ".wav");
+    if (!stream || !data->loadFromStream(**stream))
     {
-        printf("Failed to load: %s\n", buffer);
-        return NULL;
+        printf("Failed to load: %s\n", name.c_str());
+        soundMap[name] = data;
+        return data;
     }
     
-    printf("Loaded: %s of %f seconds\n", buffer, data->getDuration().asSeconds());
+    printf("Loaded: %s of %f seconds\n", name.c_str(), data->getDuration().asSeconds());
     soundMap[name] = data;
     return data;
 }

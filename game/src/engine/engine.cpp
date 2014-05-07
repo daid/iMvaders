@@ -101,6 +101,7 @@ void Engine::runMainLoop()
         // Clear the window
         windowManager->render();
     }
+    soundManager.stopMusic();
 }
 
 void Engine::setGameSpeed(float speed)
@@ -111,4 +112,9 @@ void Engine::setGameSpeed(float speed)
 float Engine::getElapsedTime()
 {
     return elapsedTime;
+}
+
+void Engine::shutdown()
+{
+    windowManager->close();
 }
