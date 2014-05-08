@@ -59,6 +59,11 @@
 			USB_Descriptor_Interface_t            HID2_MouseInterface;
 			USB_HID_Descriptor_HID_t              HID2_MouseHID;
 			USB_Descriptor_Endpoint_t             HID2_ReportINEndpoint;
+
+			// Generic HID Interface
+			USB_Descriptor_Interface_t            HID3_GenericInterface;
+			USB_HID_Descriptor_HID_t              HID3_GenericHID;
+			USB_Descriptor_Endpoint_t             HID3_ReportINEndpoint;
 		} USB_Descriptor_Configuration_t;
 
 		/** Enum for the device string descriptor IDs within the device. Each string descriptor should
@@ -79,10 +84,15 @@
 		/** Endpoint address of the Mouse HID reporting IN endpoint. */
 		#define MOUSE_IN_EPADDR           (ENDPOINT_DIR_IN | 3)
 
+		/** Endpoint address of the Mouse HID reporting IN endpoint. */
+		#define GENERIC_IN_EPADDR           (ENDPOINT_DIR_IN | 2)
+
 		/** Size in bytes of the Keyboard HID reporting IN endpoint. */
 		#define KEYBOARD_EPSIZE              24
 		/** Size in bytes of the Mouse HID reporting IN endpoint. */
 		#define MOUSE_EPSIZE                 8
+		/** Size in bytes of the Generic HID reporting IN endpoint. */
+		#define GENERIC_EPSIZE               8
 
 	/* Function Prototypes: */
 		uint16_t CALLBACK_USB_GetDescriptor(const uint16_t wValue,
