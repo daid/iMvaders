@@ -46,9 +46,7 @@ public:
 
     virtual void update(float delta);
 
-    virtual void preRender(sf::RenderTarget& window);
     virtual void render(sf::RenderTarget& window);
-    virtual void postRender(sf::RenderTarget& window);
 };
 
 #endif//PLAYER_H

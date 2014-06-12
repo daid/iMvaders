@@ -51,11 +51,15 @@ void Engine::runMainLoop()
         {
             // Window closed or escape key pressed: exit
             if ((event.type == sf::Event::Closed) ||
-               ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Escape)))
+               ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Escape) && windowManager->hasFocus()))
             {
                 windowManager->window.close();
                 break;
             }
+            if (event.type == sf::Event::GainedFocus)
+                windowManager->windowHasFocus = true;
+            if (event.type == sf::Event::LostFocus)
+                windowManager->windowHasFocus = false;
 #ifdef DEBUG
             if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::L))
             {
@@ -67,7 +71,7 @@ void Engine::runMainLoop()
             }
 #endif
         }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape) && windowManager->hasFocus())
             windowManager->window.close();
 
 #ifdef DEBUG

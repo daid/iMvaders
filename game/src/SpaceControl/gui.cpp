@@ -3,7 +3,6 @@
 #include "input.h"
 #include "engine.h"
 #include "textDraw.h"
-#include "stringUtils.h"
 
 PVector<GuiComponent> guiComponentList;
 
@@ -120,7 +119,7 @@ void GuiGauge::render(sf::RenderTarget& window)
 
     drawText(window, rect.left, rect.top - 4, 0.3, caption, align_left);
     if (postfix.length() > 0)
-        drawText(window, rect.left, rect.top, 0.3, to_string(int(value)) + postfix, align_left);
+        drawText(window, rect.left, rect.top, 0.3, string(int(value)) + postfix, align_left);
 }
 
 GuiSlider::GuiSlider(P<PObject> owner, float& value, float minValue, float maxValue, int windowID, sf::FloatRect rect)

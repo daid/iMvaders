@@ -1,5 +1,4 @@
 #include "textureManager.h"
-#include "stringUtils.h"
 #include "textDraw.h"
 #include "Player.h"
 #include "engine.h"
@@ -113,7 +112,6 @@ void PlayerVessel::update(float delta)
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num4)) currentView = 4;
 }
 
-void PlayerVessel::preRender(sf::RenderTarget& window) {}
 void PlayerVessel::render(sf::RenderTarget& window)
 {
     if (currentView == 0 || currentView == 1)
@@ -123,7 +121,7 @@ void PlayerVessel::render(sf::RenderTarget& window)
 
         if (autoPilot->targetPlanet)
         {
-            drawText(window, 20, 230, 0.4, autoPilot->targetPlanet->getName() + " " + to_string(int(autoPilot->targetDistance)) + " " + to_string(int(autoPilot->targetPlanet->hillSphereRadius())), align_left);
+            drawText(window, 20, 230, 0.4, autoPilot->targetPlanet->getName() + " " + string(int(autoPilot->targetDistance)) + " " + string(int(autoPilot->targetPlanet->hillSphereRadius())), align_left);
 
             sf::VertexArray a(sf::Lines, 2);
             a[0].position = sf::Vector2f(160, 120) + autoPilot->targetVelocity / 10.0f;
@@ -145,10 +143,10 @@ void PlayerVessel::render(sf::RenderTarget& window)
     {
         renderSpace(window, sf::Vector3f(getPosition().x, getPosition().y, 0), getRotation(), 0, angularVelocity * 0.07);
     }
-}
+//}
 
-void PlayerVessel::postRender(sf::RenderTarget& window)
-{
+//void PlayerVessel::postRender(sf::RenderTarget& window)
+//{
     //Draw full screen temperature overlay when we are overheating.
     if (capsule->temperature > CrewCapsule::warningMaxTemperature)
     {

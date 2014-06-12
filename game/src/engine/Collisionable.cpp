@@ -52,6 +52,7 @@ void CollisionManager::handleCollisions(float delta)
             }
         }
     }
+
     for(unsigned int n=0; n<collisions.size(); n++)
     {
         Collisionable* A = *collisions[n].A;
@@ -233,6 +234,15 @@ sf::Vector2f Collisionable::getVelocity()
 {
     if (body == NULL) return sf::Vector2f(0, 0);
     return b2v(body->GetLinearVelocity());
+}
+
+void Collisionable::setAngularVelocity(float velocity)
+{
+    body->SetAngularVelocity(velocity);
+}
+float Collisionable::getAngularVelocity()
+{
+    return body->GetAngularVelocity();
 }
 
 void Collisionable::applyImpulse(sf::Vector2f position, sf::Vector2f impulse)

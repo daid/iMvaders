@@ -41,7 +41,7 @@ ReplicatorZ18::ReplicatorZ18()
         int y = irandom(0, 33);
         int idx = x + y * 20;
         
-        parts[idx]->indestructible = true;
+        //parts[idx]->indestructible = true;
     }
 }
 

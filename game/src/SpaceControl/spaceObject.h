@@ -2,7 +2,7 @@
 #define SPACE_OBJECT_H
 
 #include <SFML/Graphics.hpp>
-#include "Updatable.h"
+#include "engine.h"
 
 class SpaceObject;
 extern PVector<SpaceObject> spaceObjectList;

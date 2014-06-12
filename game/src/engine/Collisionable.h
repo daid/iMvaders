@@ -49,6 +49,8 @@ public:
     float getRotation();
     void setVelocity(sf::Vector2f velocity);
     sf::Vector2f getVelocity();
+    void setAngularVelocity(float velocity);
+    float getAngularVelocity();
     void applyImpulse(sf::Vector2f position, sf::Vector2f impulse);
     
     sf::Vector2f toLocalSpace(sf::Vector2f v);

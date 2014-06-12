@@ -9,6 +9,7 @@ WindowManager::WindowManager(int virtualWidth, int virtualHeight, bool fullscree
 : virtualSize(virtualWidth, virtualHeight), renderChain(renderChain)
 {
     srand(time(NULL));
+    windowHasFocus = true;
 
     // Create the window of the application
     int windowWidth = virtualWidth;
@@ -26,13 +27,18 @@ WindowManager::WindowManager(int virtualWidth, int virtualHeight, bool fullscree
         windowWidth *= scale - 1;
         windowHeight *= scale - 1;
         
+        while(windowWidth >= int(desktop.width) || windowHeight >= int(desktop.height))
+        {
+            windowWidth *= 0.8;
+            windowHeight *= 0.8;
+        }
         //windowHeight *= (1.33333 / 1.25);
     }
 
     if (fullscreen)
-        window.create(sf::VideoMode(windowWidth, windowHeight, 32), "iMvaders!", sf::Style::Fullscreen);
+        window.create(sf::VideoMode(windowWidth, windowHeight, 32), "Game", sf::Style::Fullscreen);
     else
-        window.create(sf::VideoMode(windowWidth, windowHeight, 32), "iMvaders!", sf::Style::None);
+        window.create(sf::VideoMode(windowWidth, windowHeight, 32), "Game", sf::Style::None);
     window.setVerticalSyncEnabled(false);
     window.setFramerateLimit(60);
     window.setMouseCursorVisible(false);
@@ -57,13 +63,9 @@ WindowManager::~WindowManager()
 void WindowManager::render()
 {
     // Clear the window
-    window.clear(sf::Color(0, 0, 0));
+    window.clear(sf::Color(20, 20, 20));
     
-    //sf::RenderTarget& renderTarget = postProcessorManager.getPrimaryRenderTarget(window);
-    //renderTarget.clear(sf::Color(0, 0, 0));
-    //renderChain->render(renderTarget);
-    //postProcessorManager.postProcessRendering(window);
-
+    //Call the first item of the rendering chain.
     renderChain->render(window);
 
     // Display things on screen

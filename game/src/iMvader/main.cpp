@@ -1,13 +1,12 @@
 #include <string.h>
 #include <time.h>
 
+#include "engine.h"
 #include "main.h"
-#include "windowManager.h"
 #include "StarBackground.h"
 #include "mainMenu.h"
 #include "player.h"
 #include "scoreManager.h"
-#include "postProcessManager.h"
 
 #include "textDraw.h"
 #include "scriptInterface.h"
@@ -16,6 +15,7 @@ RenderLayer* backgroundLayer;
 RenderLayer* objectLayer;
 RenderLayer* effectLayer;
 RenderLayer* hudLayer;
+PostProcessor* glitchPostProcessor;
 PostProcessor* crtPostProcessor;
 
 class WallClock : public Renderable
@@ -88,6 +88,30 @@ public:
     }
 };
 
+class GlitchHandler : public Updatable, public EventHandler
+{
+    float magtitude;
+public:
+    GlitchHandler() : EventHandler("glitch") { magtitude = 0; }
+    virtual ~GlitchHandler() {}
+    
+    virtual void event(string eventName, void* param)
+    {
+        magtitude = 10.0;
+    }
+    
+    virtual void update(float delta)
+    {
+        if (magtitude > 0)
+            magtitude -= delta * 10.0;
+        else
+            magtitude = 0;
+        glitchPostProcessor->enabled = magtitude > 0;
+        glitchPostProcessor->setUniform("magtitude", magtitude);
+        glitchPostProcessor->setUniform("delta", random(0, 100));
+    }
+};
+
 int main(int argc, char** argv)
 {
     new Engine();
@@ -114,13 +138,15 @@ int main(int argc, char** argv)
     objectLayer = new RenderLayer(backgroundLayer);
     effectLayer = new RenderLayer(objectLayer);
     hudLayer = new RenderLayer(effectLayer);
-    crtPostProcessor = new PostProcessor("crt", hudLayer);
+    glitchPostProcessor = new PostProcessor("glitch", hudLayer);
+    crtPostProcessor = new PostProcessor("crt", glitchPostProcessor);
     defaultRenderLayer = objectLayer;
 
 #ifdef DEBUG
     new CollisionDebugDraw(hudLayer);
 #endif
 
+    engine->registerObject("glitchHandler", new GlitchHandler());
     engine->registerObject("windowManager", new WindowManager(320, 240, fullscreen, crtPostProcessor));
         
     new StarBackground();

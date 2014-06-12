@@ -8,6 +8,7 @@
 class WindowManager : public virtual PObject
 {
 private:
+    bool windowHasFocus;
     sf::Vector2i virtualSize;
     sf::RenderWindow window;
     RenderChain* renderChain;
@@ -18,6 +19,7 @@ public:
     sf::Vector2i getVirtualSize() const { return virtualSize; }
     void render();
     void close();
+    bool hasFocus() { return windowHasFocus; }
 
     friend class InputHandler;
     friend class Engine;

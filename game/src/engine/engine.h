@@ -16,6 +16,8 @@
 #include "Collisionable.h"
 #include "random.h"
 #include "vectorUtils.h"
+#include "multiplayer.h"
+#include "event.h"
 
 class Engine;
 extern Engine* engine;

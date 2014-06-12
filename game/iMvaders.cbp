@@ -156,6 +156,8 @@
 		<Unit filename="src/engine/Updatable.h" />
 		<Unit filename="src/engine/engine.cpp" />
 		<Unit filename="src/engine/engine.h" />
+		<Unit filename="src/engine/event.cpp" />
+		<Unit filename="src/engine/event.h" />
 		<Unit filename="src/engine/gameEntity.cpp" />
 		<Unit filename="src/engine/gameEntity.h" />
 		<Unit filename="src/engine/input.cpp" />

@@ -37,11 +37,11 @@ Planet::Planet()
     setRotation(random(0, 360));
 }
 
-void Planet::setName(std::string name)
+void Planet::setName(string name)
 {
     this->name = name;
 }
-void Planet::setType(std::string type)
+void Planet::setType(string type)
 {
     textureManager.setTexture(sprite, type);
     sprite.setScale(radius/sprite.getTextureRect().width*2, radius/sprite.getTextureRect().height*2);

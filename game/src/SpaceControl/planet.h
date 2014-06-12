@@ -14,19 +14,19 @@ class Planet: public SpaceObject
     float mass;
     float density;
     float radius;
-    std::string name;
+    string name;
 public:
 
     Planet();
     
-    void setName(std::string name);
-    void setType(std::string type);
+    void setName(string name);
+    void setType(string type);
     void setRadius(float radius);
     void setDensity(float density);
     
     virtual void update(float delta);
     
-    std::string getName() const { return name; }
+    string getName() const { return name; }
     float getRadius() const { return radius; }
     
     float calcOrbitVelocity(float distance) const;

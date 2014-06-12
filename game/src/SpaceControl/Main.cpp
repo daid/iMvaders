@@ -10,7 +10,6 @@
 #include "SpaceRenderer.h"
 #include "Player.h"
 #include "scriptInterface.h"
-#include "stringUtils.h"
 #include "engine.h"
 #include "input.h"
 #include "planet.h"
@@ -161,9 +160,12 @@ public:
 int main()
 {
     new Engine();
+    new DirectoryResourceProvider("resources/");
     engine->registerObject("inputHandler", new InputHandler());
+    
+    defaultRenderLayer = new RenderLayer();
 
-    engine->registerObject("windowManager", new WindowManager(320, 240, false));
+    engine->registerObject("windowManager", new WindowManager(320, 240, false, defaultRenderLayer));
 
     PlayerVessel* player = new PlayerVessel();
     /*

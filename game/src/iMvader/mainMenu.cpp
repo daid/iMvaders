@@ -21,6 +21,7 @@ public:
         selectionIndex = 0;
         delay = 0;
         timeout = 10 * 60;
+        eventManager.fire("glitch");
     }
 
     void update(float delta)

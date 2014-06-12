@@ -21,6 +21,8 @@ public:
     virtual ~PostProcessor() {}
     
     virtual void render(sf::RenderTarget& window);
+    
+    void setUniform(string name, float value);
 };
 
 #endif//POST_PROCESS_MANAGER_H

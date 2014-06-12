@@ -48,6 +48,9 @@ void PostProcessor::render(sf::RenderTarget& window)
         renderTexture.setRepeated(true);
         renderTexture.setSmooth(true);
         renderTexture.setView(view);
+
+        shader.setParameter("inputSize", sf::Vector2f(window.getSize().x, window.getSize().y));
+        shader.setParameter("textureSize", sf::Vector2f(renderTexture.getSize().x, renderTexture.getSize().y));
     }
     
     renderTexture.clear();
@@ -57,8 +60,10 @@ void PostProcessor::render(sf::RenderTarget& window)
     sf::Sprite backBufferSprite(renderTexture.getTexture(), sf::IntRect(0, renderTexture.getSize().y - window.getView().getViewport().height * window.getSize().y, window.getView().getViewport().width * window.getSize().x, window.getView().getViewport().height * window.getSize().y));
     backBufferSprite.setScale(window.getView().getSize().x/float(renderTexture.getSize().x)/renderTexture.getView().getViewport().width, window.getView().getSize().y/float(renderTexture.getSize().y)/renderTexture.getView().getViewport().height);
     
-    shader.setParameter("inputSize", sf::Vector2f(window.getSize().x, window.getSize().y));
-    shader.setParameter("textureSize", sf::Vector2f(renderTexture.getSize().x, renderTexture.getSize().y));
-    
     window.draw(backBufferSprite, &shader);
+}
+
+void PostProcessor::setUniform(string name, float value)
+{
+    shader.setParameter(name, value);
 }
