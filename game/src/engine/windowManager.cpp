@@ -5,7 +5,7 @@
 #include "postProcessManager.h"
 #include "input.h"
 
-WindowManager::WindowManager(int virtualWidth, int virtualHeight, bool fullscreen, RenderChain* renderChain)
+WindowManager::WindowManager(int virtualWidth, int virtualHeight, bool fullscreen, RenderChain* renderChain, int fsaa)
 : virtualSize(virtualWidth, virtualHeight), renderChain(renderChain)
 {
     srand(time(NULL));
@@ -36,9 +36,9 @@ WindowManager::WindowManager(int virtualWidth, int virtualHeight, bool fullscree
     }
 
     if (fullscreen)
-        window.create(sf::VideoMode(windowWidth, windowHeight, 32), "Game", sf::Style::Fullscreen);
+        window.create(sf::VideoMode(windowWidth, windowHeight, 32), "Game", sf::Style::Fullscreen, sf::ContextSettings(24, 8, fsaa, 2, 0));
     else
-        window.create(sf::VideoMode(windowWidth, windowHeight, 32), "Game", sf::Style::None);
+        window.create(sf::VideoMode(windowWidth, windowHeight, 32), "Game", sf::Style::None, sf::ContextSettings(24, 8, fsaa, 2, 0));
     window.setVerticalSyncEnabled(false);
     window.setFramerateLimit(60);
     window.setMouseCursorVisible(false);

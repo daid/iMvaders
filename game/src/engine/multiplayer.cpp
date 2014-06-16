@@ -1,11 +1,13 @@
 #include "multiplayer.h"
 #include "Collisionable.h"
+#include "engine.h"
 
-static const int32_t CMD_CREATE = 0x0001;
-static const int32_t CMD_UPDATE_VALUE = 0x0002;
-static const int32_t CMD_DELETE = 0x0003;
-static const int32_t CMD_SET_CLIENT_ID = 0x0004;
-static const int32_t CMD_CLIENT_COMMAND = 0x0005;
+static const int16_t CMD_CREATE = 0x0001;
+static const int16_t CMD_UPDATE_VALUE = 0x0002;
+static const int16_t CMD_DELETE = 0x0003;
+static const int16_t CMD_SET_CLIENT_ID = 0x0004;
+static const int16_t CMD_SET_GAME_SPEED = 0x0005;
+static const int16_t CMD_CLIENT_COMMAND = 0x0006;
 
 P<GameServer> gameServer;
 P<GameClient> gameClient;
@@ -17,6 +19,7 @@ GameServer::GameServer(string serverName, int versionNumber, int listenPort)
     assert(!gameServer);
     assert(!gameClient);
     gameServer = this;
+    lastGameSpeed = engine->getGameSpeed();
 
     nextObjectId = 1;
     nextClientId = 1;
@@ -33,6 +36,13 @@ GameServer::GameServer(string serverName, int versionNumber, int listenPort)
     selector.add(broadcastListenSocket);
 }
 
+P<MultiplayerObject> GameServer::getObjectById(int32_t id)
+{
+    if (objectMap.find(id) != objectMap.end())
+        return objectMap[id];
+    return NULL;
+}
+
 void GameServer::update(float gameDelta)
 {
     //Calculate our own delta, as we want wall-time delta, the gameDelta can be modified by the current game speed (could even be 0 on pause)
@@ -40,6 +50,14 @@ void GameServer::update(float gameDelta)
     updateTimeClock.restart();
     
     sendDataCounter = 0;
+
+    if (lastGameSpeed != engine->getGameSpeed())
+    {
+        lastGameSpeed = engine->getGameSpeed();
+        sf::Packet packet;
+        packet << CMD_SET_GAME_SPEED << lastGameSpeed;
+        sendAll(packet);
+    }
     
     std::vector<int32_t> delList;
     for(std::map<int32_t, P<MultiplayerObject> >::iterator i=objectMap.begin(); i != objectMap.end(); i++)
@@ -67,7 +85,7 @@ void GameServer::update(float gameDelta)
                         sf::Packet packet;
                         packet << CMD_UPDATE_VALUE;
                         packet << int32_t(obj->multiplayerObjectId);
-                        packet << int32_t(n);
+                        packet << int16_t(n);
                         (obj->memberReplicationInfo[n].sendFunction)(obj->memberReplicationInfo[n].ptr, packet);
                         sendAll(packet);
                         
@@ -115,6 +133,11 @@ void GameServer::update(float gameDelta)
             packet << CMD_SET_CLIENT_ID << info.clientId;
             info.socket->send(packet);
         }
+        {
+            sf::Packet packet;
+            packet << CMD_SET_GAME_SPEED << lastGameSpeed;
+            info.socket->send(packet);
+        }
         
         onNewClient(info.clientId);
         
@@ -139,7 +162,7 @@ void GameServer::update(float gameDelta)
             sf::Packet packet;
             if (clientList[n].socket->receive(packet) == sf::TcpSocket::Done)
             {
-                int32_t command;
+                int16_t command;
                 packet >> command;
                 switch(command)
                 {
@@ -188,7 +211,7 @@ void GameServer::genenerateCreatePacketFor(P<MultiplayerObject> obj, sf::Packet&
 
     for(unsigned int n=0; n<obj->memberReplicationInfo.size(); n++)
     {
-        packet << int32_t(n);
+        packet << int16_t(n);
         (obj->memberReplicationInfo[n].sendFunction)(obj->memberReplicationInfo[n].ptr, packet);
     }
 }
@@ -222,6 +245,13 @@ GameClient::GameClient(sf::IpAddress server, int portNr)
     socket.setBlocking(false);
 }
 
+P<MultiplayerObject> GameClient::getObjectById(int32_t id)
+{
+    if (objectMap.find(id) != objectMap.end())
+        return objectMap[id];
+    return NULL;
+}
+
 void GameClient::update(float delta)
 {
     std::vector<int32_t> delList;
@@ -238,7 +268,7 @@ void GameClient::update(float delta)
     sf::Packet packet;
     while(socket.receive(packet) == sf::TcpSocket::Done)
     {
-        int32_t command;
+        int16_t command;
         packet >> command;
         switch(command)
         {
@@ -256,10 +286,10 @@ void GameClient::update(float delta)
                         obj->multiplayerObjectId = id;
                         objectMap[id] = obj;
                         
-                        int32_t idx;
+                        int16_t idx;
                         while(packet >> idx)
                         {
-                            if (idx < int32_t(obj->memberReplicationInfo.size()))
+                            if (idx < int16_t(obj->memberReplicationInfo.size()))
                                 (obj->memberReplicationInfo[idx].receiveFunction)(obj->memberReplicationInfo[idx].ptr, packet);
                         }
                     }
@@ -277,7 +307,7 @@ void GameClient::update(float delta)
         case CMD_UPDATE_VALUE:
             {
                 int32_t id;
-                int32_t idx;
+                int16_t idx;
                 packet >> id >> idx;
                 if (objectMap.find(id) != objectMap.end() && objectMap[id])
                 {
@@ -289,6 +319,13 @@ void GameClient::update(float delta)
             break;
         case CMD_SET_CLIENT_ID:
             packet >> clientId;
+            break;
+        case CMD_SET_GAME_SPEED:
+            {
+                float gamespeed;
+                packet >> gamespeed;
+                engine->setGameSpeed(gamespeed);
+            }
             break;
         default:
             printf("Unknown command from server: %d\n", command);
@@ -385,6 +422,23 @@ MultiplayerObject::MultiplayerObject(string multiplayerClassIdentifier)
     }
 }
 
+template <> bool multiplayerReplicationFunctions<string>::isChanged(void* data, void* prev_data_ptr)
+{
+    string* ptr = (string*)data;
+    int64_t* hash_ptr = (int64_t*)prev_data_ptr;
+    
+    int64_t hash = 5381;
+    hash = ((hash << 5) + hash) + ptr->length();
+    for(unsigned int n=0; n<ptr->length(); n++)
+        hash = (hash * 33) + (*ptr)[n];
+    if (*hash_ptr != hash)
+    {
+        *hash_ptr = hash;
+        return true;
+    }
+    return false;
+}
+
 bool collisionable_isChanged(void* data, void* prev_data_ptr)
 {
     int32_t* hashPtr = (int32_t*)prev_data_ptr;
@@ -439,6 +493,7 @@ void collisionable_receiveFunction(void* data, sf::Packet& packet)
 void MultiplayerObject::registerCollisionableReplication()
 {
     assert(!replicated);
+    assert(memberReplicationInfo.size() < 0xFFFF);
 
     MemberReplicationInfo info;
     info.ptr = dynamic_cast<Collisionable*>(this);

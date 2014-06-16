@@ -13,7 +13,7 @@ private:
     sf::RenderWindow window;
     RenderChain* renderChain;
 public:
-    WindowManager(int virtualWidth, int virtualHeight, bool fullScreen, RenderChain* chain);
+    WindowManager(int virtualWidth, int virtualHeight, bool fullScreen, RenderChain* chain, int fsaa = 0);
     virtual ~WindowManager();
     
     sf::Vector2i getVirtualSize() const { return virtualSize; }

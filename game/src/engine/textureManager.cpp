@@ -7,6 +7,8 @@ TextureManager textureManager;
 
 TextureManager::TextureManager()
 {
+    defaultRepeated = false;
+    defaultSmooth = false;
 }
 
 TextureManager::~TextureManager()
@@ -114,7 +116,8 @@ void TextureManager::loadTexture(string name, sf::Vector2i subDiv)
             }
         }
     }
-    data.texture.setRepeated(false);
+    data.texture.setRepeated(defaultRepeated);
+    data.texture.setSmooth(defaultSmooth);
     
     data.texture.loadFromImage(tmpImage);
     printf("Loaded: %s with %d sprites\n", name.c_str(), data.sprites.size());

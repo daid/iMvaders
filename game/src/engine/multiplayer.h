@@ -26,6 +26,7 @@ class GameServer : public Updatable
     int versionNumber;
     int sendDataCounter;
     float sendDataRate;
+    float lastGameSpeed;
     
     struct ClientInfo
     {
@@ -40,7 +41,9 @@ class GameServer : public Updatable
 public:
     GameServer(string serverName, int versionNumber, int listenPort = defaultServerPort);
     
+    P<MultiplayerObject> getObjectById(int32_t id);
     virtual void update(float delta);
+    float getSendDataRate() { return sendDataRate; }
 private:
     void registerObject(P<MultiplayerObject> obj);
     void sendAll(sf::Packet& packet);
@@ -62,6 +65,7 @@ class GameClient : public Updatable
 public:
     GameClient(sf::IpAddress server, int portNr = defaultServerPort);
     
+    P<MultiplayerObject> getObjectById(int32_t id);
     virtual void update(float delta);
     
     int32_t getClientId() { return clientId; }
@@ -97,27 +101,31 @@ public:
     std::vector<ServerInfo> getServerList();
 };
 
-template <typename T> bool multiplayerVariable_isChanged(void* data, void* prev_data_ptr)
+template <typename T> struct multiplayerReplicationFunctions
 {
-    T* ptr = (T*)data;
-    T* prev_data = (T*)prev_data_ptr;
-    if (*ptr != *prev_data)
+    static bool isChanged(void* data, void* prev_data_ptr)
     {
-        *prev_data = *ptr;
-        return true;
+        T* ptr = (T*)data;
+        T* prev_data = (T*)prev_data_ptr;
+        if (*ptr != *prev_data)
+        {
+            *prev_data = *ptr;
+            return true;
+        }
+        return false;
     }
-    return false;
-}
-template <typename T> void multiplayerVariable_sendData(void* data, sf::Packet& packet)
-{
-    T* ptr = (T*)data;
-    packet << *ptr;
-}
-template <typename T> void multiplayerVariable_receiveData(void* data, sf::Packet& packet)
-{
-    T* ptr = (T*)data;
-    packet >> *ptr;
-}
+    static void sendData(void* data, sf::Packet& packet)
+    {
+        T* ptr = (T*)data;
+        packet << *ptr;
+    }
+    static void receiveData(void* data, sf::Packet& packet)
+    {
+        T* ptr = (T*)data;
+        packet >> *ptr;
+    }
+};
+template <> bool multiplayerReplicationFunctions<string>::isChanged(void* data, void* prev_data_ptr);
 
 class MultiplayerObject : public virtual PObject
 {
@@ -148,20 +156,22 @@ public:
     template <typename T> void registerMemberReplication(T* member, float update_delay = 0.0)
     {
         assert(!replicated);
+        assert(memberReplicationInfo.size() < 0xFFFF);
         assert(sizeof(T) <= sizeof(MemberReplicationInfo::prev_data));
         MemberReplicationInfo info;
         info.ptr = member;
         info.prev_data = -1;
         info.update_delay = update_delay;
         info.update_timeout = 0.0;
-        info.isChangedFunction = &multiplayerVariable_isChanged<T>;
-        info.sendFunction = &multiplayerVariable_sendData<T>;
-        info.receiveFunction = &multiplayerVariable_receiveData<T>;
+        info.isChangedFunction = &multiplayerReplicationFunctions<T>::isChanged;
+        info.sendFunction = &multiplayerReplicationFunctions<T>::sendData;
+        info.receiveFunction = &multiplayerReplicationFunctions<T>::receiveData;
         memberReplicationInfo.push_back(info);
     }
     
     void registerCollisionableReplication();
     
+    int32_t getMultiplayerId() { return multiplayerObjectId; }
     void sendCommand(sf::Packet& packet);//Send a command from the client to the server.
     
     virtual void onReceiveCommand(int32_t clientId, sf::Packet& packet) {} //Got data from a client, handle it.

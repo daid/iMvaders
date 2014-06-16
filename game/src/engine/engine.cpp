@@ -49,9 +49,8 @@ void Engine::runMainLoop()
         sf::Event event;
         while (windowManager->window.pollEvent(event))
         {
-            // Window closed or escape key pressed: exit
-            if ((event.type == sf::Event::Closed) ||
-               ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Escape) && windowManager->hasFocus()))
+            // Window closed: exit
+            if ((event.type == sf::Event::Closed))
             {
                 windowManager->window.close();
                 break;
@@ -71,10 +70,11 @@ void Engine::runMainLoop()
             }
 #endif
         }
+
+#ifdef DEBUG
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape) && windowManager->hasFocus())
             windowManager->window.close();
 
-#ifdef DEBUG
         if (debugOutputClock.getElapsedTime().asSeconds() > 1.0)
         {
             printf("Object count: %4d %4d %4d\n", DEBUG_PobjCount, updatableList.size(), entityList.size());
@@ -111,6 +111,11 @@ void Engine::runMainLoop()
 void Engine::setGameSpeed(float speed)
 {
     gameSpeed = speed;
+}
+
+float Engine::getGameSpeed()
+{
+    return gameSpeed;
 }
 
 float Engine::getElapsedTime()

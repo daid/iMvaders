@@ -35,6 +35,7 @@ public:
     ~Engine();
     
     void setGameSpeed(float speed);
+    float getGameSpeed();
     float getElapsedTime();
 
     void registerObject(string name, P<PObject> obj);

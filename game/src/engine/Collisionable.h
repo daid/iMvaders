@@ -16,6 +16,7 @@ class CollisionManager
 public:
     static void initialize();
     static void handleCollisions(float delta);
+    static PVector<Collisionable> queryArea(sf::Vector2f lowerBound, sf::Vector2f upperBound);
 private:
     static b2World* world;
     
@@ -55,6 +56,8 @@ public:
     
     sf::Vector2f toLocalSpace(sf::Vector2f v);
     sf::Vector2f toWorldSpace(sf::Vector2f v);
+    
+    std::vector<sf::Vector2f> getCollisionShape(); //For debugging
     
     friend class CollisionManager;
 };

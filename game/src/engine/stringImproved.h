@@ -1,9 +1,11 @@
 #ifndef STRING_IMPROVED_H
 #define STRING_IMPROVED_H
 
+#include <stdlib.h>
 #include <string>
 #include <vector>
 #include <sstream>
+#include <iomanip>
 
 /*
     The improved string class. while this class is not always the most efficient in terms of execution speed.
@@ -34,6 +36,14 @@ public:
     string(const unsigned int nr) : std::string()
     {
         std::ostringstream stream;
+        stream << nr;
+        *this = stream.str();
+    }
+
+    string(const float nr, int decimals = 2) : std::string()
+    {
+        std::ostringstream stream;
+        stream << std::fixed << std::setprecision(decimals);
         stream << nr;
         *this = stream.str();
     }
@@ -442,7 +452,19 @@ public:
     {
         std::vector<string> res;
         int start = 0;
-        if(sep == ""){return res; }//TODO
+        if(sep == "")
+        {
+            res = split(" ", maxsplit);
+            for(unsigned int n=0; n<res.size(); n++)
+            {
+                if (res[n].length() < 1)
+                {
+                    res.erase(res.begin() + n);
+                    n--;
+                }
+            }
+            return res;
+        }
         while(maxsplit != 0 && start < int(length()))
         {
             int offset = find(sep, start);
@@ -555,6 +577,11 @@ public:
             return substr(0, 1) + string("0") * (width - length()) + substr(1);
         return string("0") * (width - length()) + *this;
     }
+    
+    
+    /* Convert this string to a number */
+    float toFloat() { return atof(c_str()); }
+    int toInt() { return atoi(c_str()); }
 };
 #undef _WHITESPACE
 

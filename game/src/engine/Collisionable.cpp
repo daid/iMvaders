@@ -19,6 +19,32 @@ void CollisionManager::initialize()
     world = new b2World(b2Vec2(0, 0));
 }
 
+class QueryCallback : public b2QueryCallback
+{
+public:
+    PVector<Collisionable> list;
+
+	/// Called for each fixture found in the query AABB.
+	/// @return false to terminate the query.
+	virtual bool ReportFixture(b2Fixture* fixture)
+	{
+        P<Collisionable> ptr = (Collisionable*)fixture->GetBody()->GetUserData();
+        if (ptr)
+            list.push_back(ptr);
+        return true;
+	}
+};
+
+PVector<Collisionable> CollisionManager::queryArea(sf::Vector2f lowerBound, sf::Vector2f upperBound)
+{
+    QueryCallback callback;
+    b2AABB aabb;
+    aabb.lowerBound = v2b(lowerBound);
+    aabb.upperBound = v2b(upperBound);
+    world->QueryAABB(&callback, aabb);
+    return callback.list;
+}
+
 class Collision
 {
 public:
@@ -32,6 +58,9 @@ public:
 
 void CollisionManager::handleCollisions(float delta)
 {
+    if (delta <= 0.0)
+        return;
+    
     P<Collisionable> destroy = NULL;
     world->Step(delta, 4, 8);
     std::vector<Collision> collisions;
@@ -155,7 +184,7 @@ void Collisionable::setCollisionShape(const std::vector<sf::Vector2f>& shapeList
             b2FixtureDef shapeDef;
             shapeDef.shape = &shape;
             shapeDef.density = 1.0;
-            shapeDef.friction = 1.0;
+            shapeDef.friction = 0.1;
             shapeDef.isSensor = !enablePhysics;
             body->CreateFixture(&shapeDef);
         }
@@ -192,7 +221,7 @@ void Collisionable::createBody(b2Shape* shape)
     b2FixtureDef shapeDef;
     shapeDef.shape = shape;
     shapeDef.density = 1.0;
-    shapeDef.friction = 1.0;
+    shapeDef.friction = 0.1;
     shapeDef.isSensor = !enablePhysics;
     body->CreateFixture(&shapeDef);
 }
@@ -238,11 +267,13 @@ sf::Vector2f Collisionable::getVelocity()
 
 void Collisionable::setAngularVelocity(float velocity)
 {
-    body->SetAngularVelocity(velocity);
+    if (body == NULL) return;
+    body->SetAngularVelocity(velocity / 180.0 * M_PI);
 }
 float Collisionable::getAngularVelocity()
 {
-    return body->GetAngularVelocity();
+    if (body == NULL) return 0;
+    return body->GetAngularVelocity() / M_PI * 180.0;
 }
 
 void Collisionable::applyImpulse(sf::Vector2f position, sf::Vector2f impulse)
@@ -260,6 +291,35 @@ sf::Vector2f Collisionable::toWorldSpace(sf::Vector2f v)
 {
     if (body == NULL) return sf::Vector2f(0, 0);
     return b2v(body->GetWorldPoint(v2b(v)));
+}
+
+std::vector<sf::Vector2f> Collisionable::getCollisionShape()
+{
+    std::vector<sf::Vector2f> ret;
+    if (body == NULL) return ret;
+    b2Fixture* f = body->GetFixtureList();
+    b2Shape* s = f->GetShape();
+    switch(s->GetType())
+    {
+    case b2Shape::e_circle:
+        {
+            b2CircleShape* cs = static_cast<b2CircleShape*>(s);
+            float radius = cs->m_radius * BOX2D_SCALE;
+            for(int n=0; n<32; n++)
+                ret.push_back(sf::Vector2f(sin(float(n)/32.0*M_PI*2) * radius, cos(float(n)/32.0*M_PI*2) * radius));
+        }
+        break;
+    case b2Shape::e_polygon:
+        {
+            b2PolygonShape* cs = static_cast<b2PolygonShape*>(s);
+            for(int n=0; n<cs->GetVertexCount(); n++)
+                ret.push_back(b2v(cs->GetVertex(n)));
+        }
+        break;
+    default:
+        break;
+    }
+    return ret;
 }
 
 #ifdef DEBUG
