@@ -5,19 +5,14 @@ ScoreManager::ScoreManager()
 {
     currentScore = 0;
     displayScore = 0;
-    highscoreList[0][0].score = 100;
-    highscoreList[0][0].name = "DAV";
-    highscoreList[0][1].score = 20;
-    highscoreList[0][1].name = "JME";
-    highscoreList[0][2].score = 10;
-    highscoreList[0][2].name = "MRV";
-
-    highscoreList[1][0].score = 100;
-    highscoreList[1][0].name = "DAV JME";
-    highscoreList[1][1].score = 20;
-    highscoreList[1][1].name = "JME MRV";
-    highscoreList[1][2].score = 10;
-    highscoreList[1][2].name = "MRV MRV";
+    for(int p=0; p<MAX_PLAYERS; p++)
+    {
+        for(int n=0; n<highscoreListSize; n++)
+        {
+            highscoreList[p][n].score = 0;
+            highscoreList[p][n].name = "NBY";
+        }
+    }
     
     loadHighscore("score.list");
 }
