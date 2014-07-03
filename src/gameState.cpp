@@ -222,7 +222,7 @@ GameState::GameState(int playerCount)
         if (e != this)
             e->destroy();
     
-    script = new ScriptObject("resources/stage.lua");
+    script = new ScriptObject("stage.lua");
 }
 GameState::~GameState() {}
 

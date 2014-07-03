@@ -3,10 +3,8 @@
 
 #define MAX_PLAYERS 2
 
-#include "gameEntity.h"
-#include "Collisionable.h"
-#include "input.h"
-#include "random.h"
+#include "engine.h"
+#include "playerController.h"
 
 const int fireButton = 0;
 const int chargeShotButton = 1;
