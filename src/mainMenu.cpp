@@ -145,12 +145,16 @@ void MainMenu::update(float delta)
             sf::Listener::setGlobalVolume(100);
         }
     }
+
+    if (InputHandler::keyboardIsPressed(sf::Keyboard::Escape))
+    {
+        engine->shutdown();
+    }
     
     //Magic 4 button exit combo, to quit&rebuild on the arcade machine.
     if (pc1->button(nukeButton) && pc1->button(skipButton) && pc2->button(nukeButton) && pc2->button(skipButton))
     {
-        P<WindowManager> windowManager = engine->getObject("windowManager");
-        windowManager->close();
+        engine->shutdown();
     }
 
     //Magic 4 button menu combo

@@ -295,6 +295,10 @@ void GameState::update(float delta)
             }
         }
     }
+    if (InputHandler::keyboardIsPressed(sf::Keyboard::Escape))
+    {
+        gameOver = true;
+    }
 
     if (gameOver)
     {
