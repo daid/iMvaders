@@ -4,7 +4,7 @@
 #define MAX_PLAYERS 2
 
 #include "engine.h"
-#include "playerController.h"
+#include "PlayerController.h"
 
 const int fireButton = 0;
 const int chargeShotButton = 1;
