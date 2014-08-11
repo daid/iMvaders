@@ -146,8 +146,6 @@
 		<Unit filename="../SeriousProton/src/Box2D/Dynamics/b2WorldCallbacks.h" />
 		<Unit filename="../SeriousProton/src/Box2D/Rope/b2Rope.cpp" />
 		<Unit filename="../SeriousProton/src/Box2D/Rope/b2Rope.h" />
-		<Unit filename="../SeriousProton/src/Collisionable.cpp" />
-		<Unit filename="../SeriousProton/src/Collisionable.h" />
 		<Unit filename="../SeriousProton/src/GL/glew.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -161,6 +159,8 @@
 		<Unit filename="../SeriousProton/src/Renderable.h" />
 		<Unit filename="../SeriousProton/src/Updatable.cpp" />
 		<Unit filename="../SeriousProton/src/Updatable.h" />
+		<Unit filename="../SeriousProton/src/collisionable.cpp" />
+		<Unit filename="../SeriousProton/src/collisionable.h" />
 		<Unit filename="../SeriousProton/src/engine.cpp" />
 		<Unit filename="../SeriousProton/src/engine.h" />
 		<Unit filename="../SeriousProton/src/event.cpp" />
@@ -294,6 +294,17 @@
 		<Unit filename="../SeriousProton/src/lua/lzio.h" />
 		<Unit filename="../SeriousProton/src/multiplayer.cpp" />
 		<Unit filename="../SeriousProton/src/multiplayer.h" />
+		<Unit filename="../SeriousProton/src/multiplayer_client.cpp" />
+		<Unit filename="../SeriousProton/src/multiplayer_client.h" />
+		<Unit filename="../SeriousProton/src/multiplayer_internal.h" />
+		<Unit filename="../SeriousProton/src/multiplayer_server.cpp" />
+		<Unit filename="../SeriousProton/src/multiplayer_server.h" />
+		<Unit filename="../SeriousProton/src/multiplayer_server_scanner.cpp" />
+		<Unit filename="../SeriousProton/src/multiplayer_server_scanner.h" />
+		<Unit filename="../SeriousProton/src/networkAudioStream.cpp" />
+		<Unit filename="../SeriousProton/src/networkAudioStream.h" />
+		<Unit filename="../SeriousProton/src/networkRecorder.cpp" />
+		<Unit filename="../SeriousProton/src/networkRecorder.h" />
 		<Unit filename="../SeriousProton/src/postProcessManager.cpp" />
 		<Unit filename="../SeriousProton/src/postProcessManager.h" />
 		<Unit filename="../SeriousProton/src/random.h" />
