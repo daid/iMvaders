@@ -1,8 +1,7 @@
 #ifndef POWERUP_H
 #define POWERUP_H
 
-#include "gameEntity.h"
-#include "Collisionable.h"
+#include "engine.h"
 
 class Powerup: public GameEntity, public Collisionable
 {

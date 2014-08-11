@@ -1,8 +1,7 @@
 #ifndef REPLICATOR_Z18_H
 #define REPLICATOR_Z18_H
 
-#include "gameEntity.h"
-#include "Collisionable.h"
+#include "engine.h"
 
 class ReplicatorZ18Part;
 class ReplicatorZ18 : public GameEntity

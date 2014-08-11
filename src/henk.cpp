@@ -1,13 +1,11 @@
 #include <math.h>
 
-#include "scriptInterface.h"
+#include "engine.h"
 #include "random.h"
 #include "textureManager.h"
 #include "scoreManager.h"
 #include "engine.h"
 #include "explosion.h"
-#include "gameEntity.h"
-#include "Collisionable.h"
 
 class SurfHenk : public GameEntity
 {

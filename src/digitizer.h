@@ -1,11 +1,8 @@
 #ifndef DIGITIZER_H
 #define DIGITIZER_H
 
-#include "gameEntity.h"
-#include "Collisionable.h"
-#include "textureManager.h"
+#include "engine.h"
 #include "explosion.h"
-#include "scriptInterface.h"
 
 class DigitizerLaser;
 class Digitizer: public GameEntity, public Collisionable

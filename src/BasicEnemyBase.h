@@ -1,9 +1,8 @@
 #ifndef BASICENEMYBASE_H
 #define BASICENEMYBASE_H
 #include "curve.h"
-#include "gameEntity.h"
+#include "engine.h"
 #include "random.h"
-#include "Collisionable.h"
 #include "textureManager.h"
 #include "explosion.h"
 #include "bullet.h"

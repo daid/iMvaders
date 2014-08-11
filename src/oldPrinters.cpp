@@ -5,8 +5,7 @@
 #include "scoreManager.h"
 #include "engine.h"
 #include "explosion.h"
-#include "gameEntity.h"
-#include "Collisionable.h"
+#include "engine.h"
 
 REGISTER_SCRIPT_CLASS(OldPrinter)
 {

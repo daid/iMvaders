@@ -1,8 +1,7 @@
 #ifndef OLDPRINTERS_H
 #define OLDPRINTERS_H
 
-#include "gameEntity.h"
-#include "Collisionable.h"
+#include "engine.h"
 
 class OldPrinter : public GameEntity, public Collisionable
 {

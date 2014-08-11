@@ -3,8 +3,7 @@
 
 #include <SFML/Audio.hpp>
 
-#include "gameEntity.h"
-#include "Collisionable.h"
+#include "engine.h"
 
 class Bullet: public GameEntity, public Collisionable
 {
