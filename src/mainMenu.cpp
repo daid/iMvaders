@@ -46,7 +46,7 @@ public:
                 new VersusGameState();
                 break;
             case 2:
-                system("/home/arcade/jamestown/Jamestown");
+                system("/usr/bin/zsnes Mortal\\ Kombat\\ 3.smc");
                 break;
             case 3:
                 system("sudo poweroff");
@@ -85,7 +85,7 @@ public:
         int n=0;
         drawText(window, 160, 50 + 20 * n, "Play iMvaders");n++;
         drawText(window, 160, 50 + 20 * n, "Play VS iMvaders");n++;
-        drawText(window, 160, 50 + 20 * n, "Play Jamestown");n++;
+        drawText(window, 160, 50 + 20 * n, "Play Mortal Kombat III");n++;
         drawText(window, 160, 50 + 20 * n, "Shutdown");n++;
         
         sf::IpAddress localIp = sf::IpAddress::getLocalAddress();
