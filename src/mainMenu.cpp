@@ -9,11 +9,19 @@
 #include "versusGameMode.h"
 #include "main.h"
 
+class SecretMenuOption
+{
+public:
+    string name;
+    string command;
+};
+
 class SecretMenu : public Updatable, public Renderable
 {
     int selectionIndex;
     float delay;
     float timeout;
+    std::vector<SecretMenuOption> options;
 public:
     SecretMenu()
     : Renderable(hudLayer)
@@ -22,6 +30,20 @@ public:
         delay = 0;
         timeout = 10 * 60;
         eventManager.fire("glitch");
+        
+        P<ResourceStream> s = getResourceStream("secretoptions.txt");
+        if (!s)
+            return;
+        for(string line = s->readLine(); line.length() > 0; line = s->readLine())
+        {
+            std::vector<string> parts = line.split(":", 1);
+            if (parts.size() == 2)
+            {
+                options.push_back(SecretMenuOption());
+                options[options.size()-1].name = parts[0];
+                options[options.size()-1].command = parts[1];
+            }
+        }
     }
 
     void update(float delta)
@@ -45,11 +67,14 @@ public:
                 sf::Listener::setGlobalVolume(100);
                 new VersusGameState();
                 break;
-            case 2:
-                system("/usr/bin/zsnes Mortal\\ Kombat\\ 3.smc");
-                break;
-            case 3:
-                system("sudo poweroff");
+            default:
+                {
+                    SecretMenuOption option = options[selectionIndex-2];
+                    FILE* f = fopen("run_after.sh", "w");
+                    fprintf(f, "#!/bin/sh\n%s\n", option.command.c_str());
+                    fclose(f);
+                    engine->shutdown();
+                }
                 break;
             }
         }
@@ -70,7 +95,7 @@ public:
             }
         }
         selectionIndex = std::max(0, selectionIndex);
-        selectionIndex = std::min(3, selectionIndex);
+        selectionIndex = std::min(int(options.size()) + 1, selectionIndex);
     }
     
     void render(sf::RenderTarget& window)
@@ -85,8 +110,10 @@ public:
         int n=0;
         drawText(window, 160, 50 + 20 * n, "Play iMvaders");n++;
         drawText(window, 160, 50 + 20 * n, "Play VS iMvaders");n++;
-        drawText(window, 160, 50 + 20 * n, "Play Mortal Kombat III");n++;
-        drawText(window, 160, 50 + 20 * n, "Shutdown");n++;
+        for(unsigned int i=0; i<options.size(); i++)
+        {
+            drawText(window, 160, 50 + 20 * n, options[i].name);n++;
+        }
         
         sf::IpAddress localIp = sf::IpAddress::getLocalAddress();
         drawText(window, 30, 220, localIp.toString(), align_left, 0.5);

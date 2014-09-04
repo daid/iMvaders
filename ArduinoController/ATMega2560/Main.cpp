@@ -50,6 +50,8 @@
 #define SETUP_LED_PIN(nr) do { SET_OUTPUT(nr); WRITE(nr, 1); } while(0)
 int main()
 {
+    uint16_t counter = 0;
+    
     Serial.begin(115200);
     SET_OUTPUT(13);
 
@@ -98,7 +100,17 @@ int main()
         if (!READ(43)) buttons |= 0x10;
         if (!READ(37)) buttons |= 0x20;
         if (!READ(31)) buttons |= 0x40;
-        if (!READ(25)) buttons |= 0x80;
+        if (buttons & 0x40)
+        {
+            counter++;
+            if (counter > 2000)
+            {
+                buttons &=~0x40;
+                buttons |= 0x80;
+            }
+        }else{
+            counter = 0;
+        }
 
         Serial.write(uint8_t(0x5F));
         Serial.write(uint8_t(0x01));

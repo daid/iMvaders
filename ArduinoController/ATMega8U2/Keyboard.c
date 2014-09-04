@@ -98,11 +98,11 @@ uint8_t keyboardConfig[2][4 + 8] = {
     {
         HID_KEYBOARD_SC_UP_ARROW, HID_KEYBOARD_SC_DOWN_ARROW, HID_KEYBOARD_SC_LEFT_ARROW, HID_KEYBOARD_SC_RIGHT_ARROW,
         HID_KEYBOARD_SC_SPACE,    HID_KEYBOARD_SC_Z,          HID_KEYBOARD_SC_X,          HID_KEYBOARD_SC_C,
-        HID_KEYBOARD_SC_V,        HID_KEYBOARD_SC_B,          HID_KEYBOARD_SC_1_AND_EXCLAMATION, 0xFF
+        HID_KEYBOARD_SC_V,        HID_KEYBOARD_SC_B,          HID_KEYBOARD_SC_1_AND_EXCLAMATION, HID_KEYBOARD_SC_3_AND_HASHMARK
     },{
         HID_KEYBOARD_SC_W, HID_KEYBOARD_SC_S, HID_KEYBOARD_SC_A, HID_KEYBOARD_SC_D,
         HID_KEYBOARD_SC_Q, HID_KEYBOARD_SC_E, HID_KEYBOARD_SC_R, HID_KEYBOARD_SC_F,
-        HID_KEYBOARD_SC_T, HID_KEYBOARD_SC_G, HID_KEYBOARD_SC_2_AND_AT, 0xFF
+        HID_KEYBOARD_SC_T, HID_KEYBOARD_SC_G, HID_KEYBOARD_SC_2_AND_AT, HID_KEYBOARD_SC_3_AND_HASHMARK
     }
 };
 uint8_t mousePlayer = 0xFF;
@@ -300,6 +300,8 @@ bool CALLBACK_HID_Device_CreateHIDReport(USB_ClassInfo_HID_Device_t* const HIDIn
                 KeyboardReport->KeyCode[UsedKeyCodes++] = keyboardConfig[p][9];
             if (playerState[p].buttons & _BV(6))
                 KeyboardReport->KeyCode[UsedKeyCodes++] = keyboardConfig[p][10];
+            if (playerState[p].buttons & _BV(7))
+                KeyboardReport->KeyCode[UsedKeyCodes++] = keyboardConfig[p][11];
         }
 
         *ReportSize = sizeof(USB_KeyboardReport22_Data_t);
