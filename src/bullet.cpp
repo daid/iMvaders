@@ -13,7 +13,7 @@ Bullet::Bullet(sf::Vector2f position, int type, float angle, float speed)
     setPosition(position);
     setRotation(angle);
     if (type != -1)
-        setVelocity(sf::vector2FromAngle(getRotation()) * speed);
+        setVelocity(sf::rotateVector(sf::Vector2f(0, -1), getRotation()) * speed);
     if (type == 0)
         sprite.setColor(sf::Color::Red);
     else if (type == 1)
@@ -27,7 +27,7 @@ Bullet::Bullet(sf::Vector2f position, int type, float angle, float speed)
 void Bullet::update(float delta)
 {
     if (type == -1)
-        setPosition(getPosition() + sf::vector2FromAngle(getRotation()) * speed * delta);
+        setPosition(getPosition() + sf::rotateVector(sf::Vector2f(0, -1), getRotation()) * speed * delta);
     if (getPosition().x < -10) destroy();
     if (getPosition().y < -10) destroy();
     if (getPosition().x > 330) destroy();
@@ -40,7 +40,7 @@ void Bullet::collision(Collisionable* other)
     if (e && e->takeDamage(getPosition(), type, 1))
     {
         destroy();
-        new Explosion(getPosition(), 3, sf::vector2FromAngle(getRotation()) * speed / 5.0f);
+        new Explosion(getPosition(), 3, sf::rotateVector(sf::Vector2f(0, -1), getRotation()) * speed / 5.0f);
     }
 }
 

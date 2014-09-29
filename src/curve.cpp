@@ -22,7 +22,7 @@ void Curve::moveDistance(float amount)
 float Curve::angle()
 {
     sf::Vector2f diff = getPosition(0.01) - getPosition();
-    return vector2ToAngle(diff);
+    return vector2ToAngle(diff) + 90;
 }
 
 //Shouldn't this be a Renderable?

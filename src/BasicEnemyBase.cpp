@@ -100,7 +100,7 @@ void BasicEnemyBase::update(float delta)
 void BasicEnemyBase::dive(sf::Vector2f target)
 {
     diveCurve.p0 = getPosition();
-    diveCurve.cp0 = diveCurve.p0 + sf::vector2FromAngle(sprite.getRotation()) * 30.0f;
+    diveCurve.cp0 = diveCurve.p0 + sf::rotateVector(sf::Vector2f(0, -1), sprite.getRotation()) * 30.0f;
     diveCurve.p1 = target;
     diveCurve.cp1 = sf::Vector2f(target.x, 180);
     diveCurve.delta = 0.0;

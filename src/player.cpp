@@ -173,7 +173,7 @@ void PlayerCraft::render(sf::RenderTarget& window)
         col.a = 200;
         circle.setFillColor(col);
         circle.setRotation(random(0, 360));
-        circle.setPosition(getPosition() + sf::vector2FromAngle(sprite.getRotation()) * 10.0f);
+        circle.setPosition(getPosition() + sf::rotateVector(sf::Vector2f(0, -1), sprite.getRotation()) * 10.0f);
         window.draw(circle);
     }
 }

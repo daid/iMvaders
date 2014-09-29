@@ -454,7 +454,7 @@ void MoneyShield::update(float delta)
     if (distance > endDistance)
         distance = endDistance;
 
-    setPosition(owner->getPosition() + sf::vector2FromAngle(getRotation()) * distance);
+    setPosition(owner->getPosition() + sf::rotateVector(sf::Vector2f(0, -1), getRotation()) * distance);
 }
 
 void MoneyShield::render(sf::RenderTarget& window)
