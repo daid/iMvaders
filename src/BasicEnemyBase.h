@@ -30,8 +30,8 @@ public:
     bool hasShield;
     float shieldPower;
     int flyIncurveNr, flyIncurveCount;
-    static const float shieldMaxPower = 0.5;
-    static const float flySpeed = 120.0;
+    static constexpr float shieldMaxPower = 0.5;
+    static constexpr float flySpeed = 120.0;
     float enemyOffset;
     sf::Color color;
 
@@ -51,7 +51,7 @@ public:
     }
     virtual ~BasicEnemyBase();
     virtual void update(float delta);
-    virtual void collision(Collisionable* target);
+    virtual void collide(Collisionable* target);
     
     void setTargetPosition(sf::Vector2f targetPosition) { this->targetPosition = targetPosition; }
 

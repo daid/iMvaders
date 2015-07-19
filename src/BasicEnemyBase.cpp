@@ -27,14 +27,14 @@ template<> void convert<EnemyState>::param(lua_State* L, int& idx, EnemyState& e
         else
             es = ES_Outside;
     }else{
-        const char* str = luaL_checkstring(L, idx++);
-        if (strcasecmp(str, "Wait") == 0)
+        string str = string(luaL_checkstring(L, idx++)).lower();
+        if (str == "wait")
             es = ES_Wait;
-        else if (strcasecmp(str, "FlyIn") == 0)
+        else if (str == "flyin")
             es = ES_FlyIn;
-        else if (strcasecmp(str, "CenterField") == 0)
+        else if (str == "centerfield")
             es = ES_CenterField;
-        else if (strcasecmp(str, "Diving") == 0)
+        else if (str == "diving")
             es = ES_Diving;
         else
             es = ES_Outside;
@@ -168,7 +168,7 @@ void BasicEnemyBase::render(sf::RenderTarget& window)
     diveCurve.draw(window);
 #endif
 }
-void BasicEnemyBase::collision(Collisionable* target)
+void BasicEnemyBase::collide(Collisionable* target)
 {
     GameEntity* e = dynamic_cast<GameEntity*>(target);
     if (e)

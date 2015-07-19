@@ -106,9 +106,13 @@ uint8_t keyboardConfig[2][4 + 8] = {
     }
 };
 uint8_t mousePlayer = 0xFF;
+uint16_t cmd_counter = 0;
+#define CMD_COUNTER_MAX 60000
 
 void handleCmd()
 {
+    if (cmd_counter < CMD_COUNTER_MAX)
+        cmd_counter ++;
 	//LEDs_ToggleLEDs(LEDS_LED2);
 	switch(cmd)
 	{
@@ -275,33 +279,36 @@ bool CALLBACK_HID_Device_CreateHIDReport(USB_ClassInfo_HID_Device_t* const HIDIn
         USB_KeyboardReport22_Data_t* KeyboardReport = (USB_KeyboardReport22_Data_t*)ReportData;
         uint8_t UsedKeyCodes = 0;
 
-        for(uint8_t p=0; p<2; p++)
+        if (cmd_counter == CMD_COUNTER_MAX)
         {
-            if (playerState[p].joystick & _BV(0) && keyboardConfig[p][0] != 0xFF)
-                KeyboardReport->KeyCode[UsedKeyCodes++] = keyboardConfig[p][0];
-            else if (playerState[p].joystick & _BV(1))
-                KeyboardReport->KeyCode[UsedKeyCodes++] = keyboardConfig[p][1];
-            if (playerState[p].joystick & _BV(2))
-                KeyboardReport->KeyCode[UsedKeyCodes++] = keyboardConfig[p][2];
-            else if (playerState[p].joystick & _BV(3))
-                KeyboardReport->KeyCode[UsedKeyCodes++] = keyboardConfig[p][3];
+            for(uint8_t p=0; p<2; p++)
+            {
+                if (playerState[p].joystick & _BV(0) && keyboardConfig[p][0] != 0xFF)
+                    KeyboardReport->KeyCode[UsedKeyCodes++] = keyboardConfig[p][0];
+                else if (playerState[p].joystick & _BV(1))
+                    KeyboardReport->KeyCode[UsedKeyCodes++] = keyboardConfig[p][1];
+                if (playerState[p].joystick & _BV(2))
+                    KeyboardReport->KeyCode[UsedKeyCodes++] = keyboardConfig[p][2];
+                else if (playerState[p].joystick & _BV(3))
+                    KeyboardReport->KeyCode[UsedKeyCodes++] = keyboardConfig[p][3];
 
-            if (playerState[p].buttons & _BV(0))
-                KeyboardReport->KeyCode[UsedKeyCodes++] = keyboardConfig[p][4];
-            if (playerState[p].buttons & _BV(1))
-                KeyboardReport->KeyCode[UsedKeyCodes++] = keyboardConfig[p][5];
-            if (playerState[p].buttons & _BV(2))
-                KeyboardReport->KeyCode[UsedKeyCodes++] = keyboardConfig[p][6];
-            if (playerState[p].buttons & _BV(3))
-                KeyboardReport->KeyCode[UsedKeyCodes++] = keyboardConfig[p][7];
-            if (playerState[p].buttons & _BV(4))
-                KeyboardReport->KeyCode[UsedKeyCodes++] = keyboardConfig[p][8];
-            if (playerState[p].buttons & _BV(5))
-                KeyboardReport->KeyCode[UsedKeyCodes++] = keyboardConfig[p][9];
-            if (playerState[p].buttons & _BV(6))
-                KeyboardReport->KeyCode[UsedKeyCodes++] = keyboardConfig[p][10];
-            if (playerState[p].buttons & _BV(7))
-                KeyboardReport->KeyCode[UsedKeyCodes++] = keyboardConfig[p][11];
+                if (playerState[p].buttons & _BV(0))
+                    KeyboardReport->KeyCode[UsedKeyCodes++] = keyboardConfig[p][4];
+                if (playerState[p].buttons & _BV(1))
+                    KeyboardReport->KeyCode[UsedKeyCodes++] = keyboardConfig[p][5];
+                if (playerState[p].buttons & _BV(2))
+                    KeyboardReport->KeyCode[UsedKeyCodes++] = keyboardConfig[p][6];
+                if (playerState[p].buttons & _BV(3))
+                    KeyboardReport->KeyCode[UsedKeyCodes++] = keyboardConfig[p][7];
+                if (playerState[p].buttons & _BV(4))
+                    KeyboardReport->KeyCode[UsedKeyCodes++] = keyboardConfig[p][8];
+                if (playerState[p].buttons & _BV(5))
+                    KeyboardReport->KeyCode[UsedKeyCodes++] = keyboardConfig[p][9];
+                if (playerState[p].buttons & _BV(6))
+                    KeyboardReport->KeyCode[UsedKeyCodes++] = keyboardConfig[p][10];
+                if (playerState[p].buttons & _BV(7))
+                    KeyboardReport->KeyCode[UsedKeyCodes++] = keyboardConfig[p][11];
+            }
         }
 
         *ReportSize = sizeof(USB_KeyboardReport22_Data_t);

@@ -23,7 +23,7 @@ void Powerup::update(float delta)
         destroy();
 }
 
-void Powerup::collision(Collisionable* other)
+void Powerup::collide(Collisionable* other)
 {
     P<PlayerCraft> craft = dynamic_cast<PlayerCraft*>(other);
     if (!craft)

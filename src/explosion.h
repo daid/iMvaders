@@ -22,7 +22,7 @@ private:
     sf::Sound sound;
     std::vector<Particle> particles;
     float life;
-    static const float lifeTime = 0.5;
+    static constexpr float lifeTime = 0.5;
 public:
     Explosion(sf::Vector2f position, float radius, sf::Vector2f addedVelocity = sf::Vector2f(0, 0));
     virtual ~Explosion();

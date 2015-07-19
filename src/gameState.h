@@ -17,7 +17,7 @@ private:
     float player2SpawnDelay;
     
     float reviveDelay;
-    const static float reviveTimeout = 3.0;
+    constexpr static float reviveTimeout = 3.0;
 public:
     GameState(int playerCount);
     virtual ~GameState();

@@ -23,7 +23,7 @@ public:
     }
     virtual ~VersusOldPrinter() {}
     
-    virtual void collision(Collisionable* other)
+    virtual void collide(Collisionable* other)
     {
         GameEntity* e = dynamic_cast<GameEntity*>(other);
         if (e && !dynamic_cast<OldPrinter*>(other))

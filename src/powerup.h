@@ -14,7 +14,7 @@ public:
 
     virtual void render(sf::RenderTarget& window);
     
-    virtual void collision(Collisionable* target);
+    virtual void collide(Collisionable* target);
 };
 
 #endif//POWERUP_H

@@ -60,7 +60,7 @@ void Digitizer::render(sf::RenderTarget& window)
     sprite.setPosition(getPosition());
     window.draw(sprite);
 }
-void Digitizer::collision(Collisionable* target)
+void Digitizer::collide(Collisionable* target)
 {
     GameEntity* e = dynamic_cast<GameEntity*>(target);
     if (e)
@@ -123,7 +123,7 @@ void DigitizerLaser::render(sf::RenderTarget& window)
     }
 }
 
-void DigitizerLaser::collision(Collisionable* other)
+void DigitizerLaser::collide(Collisionable* other)
 {
     if (activateDelay < 0)
     {

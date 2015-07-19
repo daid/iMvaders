@@ -9,7 +9,7 @@
 
 class SurfHenk : public GameEntity
 {
-    static const float speed = 80;
+    static constexpr float speed = 80;
 public:
     SurfHenk()
     {

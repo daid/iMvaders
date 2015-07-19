@@ -160,7 +160,7 @@ public:
 class GameOverState : public GameEntity
 {
     float gameOverDelay;
-    static const float gameOverWait = 5.0;
+    static constexpr float gameOverWait = 5.0;
     int playerCount;
 public:
     GameOverState(int playerCount)
@@ -304,7 +304,6 @@ void GameState::update(float delta)
     {
         if (script)
         {
-            script->clean();
             script->destroy();
         }
         destroy();

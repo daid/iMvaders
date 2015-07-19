@@ -35,7 +35,7 @@ public:
     virtual void update(float delta);
     virtual void render(sf::RenderTarget& window);
 
-    virtual void collision(Collisionable* other);
+    virtual void collide(Collisionable* other);
     virtual bool takeDamage(sf::Vector2f position, int damageType, int damageAmount);
     
     void setSpeed(float speed);

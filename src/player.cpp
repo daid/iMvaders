@@ -234,7 +234,7 @@ void PlayerBonusLaser::render(sf::RenderTarget& window)
     window.draw(laser);
 }
 
-void PlayerBonusLaser::collision(Collisionable* other)
+void PlayerBonusLaser::collide(Collisionable* other)
 {
     GameEntity* e = dynamic_cast<GameEntity*>(other);
     if (e)

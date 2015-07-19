@@ -18,7 +18,7 @@ public:
     
     virtual void render(sf::RenderTarget& window);
     
-    virtual void collision(Collisionable* other);
+    virtual void collide(Collisionable* other);
 };
 
 #endif//BULLET_H

@@ -8,9 +8,9 @@ private:
     float shotDelay;
     float charge;
     int shots;
-    static const int shotAngle = 10;
-    static const int shotsPerBurst = 60;
-    static const float chargeUpTime = 1.0f;
+    static constexpr int shotAngle = 10;
+    static constexpr int shotsPerBurst = 60;
+    static constexpr float chargeUpTime = 1.0f;
 public:
     BurstShotEnemy()
     {

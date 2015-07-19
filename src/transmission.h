@@ -12,8 +12,8 @@ class Transmission : public GameEntity
     float transmissionTime;
     float positionY;
 
-    const static float charsPerSecond = 10.0f;
-    const static float extraDelayBeforeDone = 2.0f;
+    constexpr static float charsPerSecond = 10.0f;
+    constexpr static float extraDelayBeforeDone = 2.0f;
 public:
     ScriptCallback transmissionDone;
 

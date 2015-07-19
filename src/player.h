@@ -31,8 +31,8 @@ public:
     int type;
     float fireCooldown, nukeCooldown;
     float chargeShot;
-    static const float minChargeShot = 0.3;
-    static const float maxChargeShot = 2.0;
+    static constexpr float minChargeShot = 0.3;
+    static constexpr float maxChargeShot = 2.0;
     float invulnerability;
     int health;
     sf::Color color;
@@ -63,7 +63,7 @@ public:
     virtual void update(float delta);
     virtual void render(sf::RenderTarget& window);
 
-    virtual void collision(Collisionable* other);
+    virtual void collide(Collisionable* other);
 };
 
 #endif//PLAYER_H

@@ -6,8 +6,8 @@
 
 class MainMenu : public GameEntity
 {
-    const static float introTextDelay = 30.0f;
-    const static float intoTextSpeed = 10.0f;
+    constexpr static float introTextDelay = 30.0f;
+    constexpr static float intoTextSpeed = 10.0f;
     float blink;
     float introTextPosition;
 public:

@@ -8,7 +8,7 @@
 Bullet::Bullet(sf::Vector2f position, int type, float angle, float speed)
 : GameEntity(), Collisionable(1.0), speed(speed), type(type)
 {
-    soundManager.playSound("laser", random(0.75, 1.25));
+    soundManager->playSound("laser", random(0.75, 1.25));
     textureManager.setTexture(sprite, "bullet");
     setPosition(position);
     setRotation(angle);
@@ -34,7 +34,7 @@ void Bullet::update(float delta)
     if (getPosition().y > 250) destroy();
 }
 
-void Bullet::collision(Collisionable* other)
+void Bullet::collide(Collisionable* other)
 {
     GameEntity* e = dynamic_cast<GameEntity*>(other);
     if (e && e->takeDamage(getPosition(), type, 1))

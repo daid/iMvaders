@@ -66,12 +66,13 @@
 			</Target>
 		</Build>
 		<Compiler>
+			<Add option="-std=c++11" />
 			<Add option="-Wall" />
-			<Add directory="../SFML-2.1/include" />
+			<Add directory="../SFML-2.3.1/include" />
 			<Add directory="../SeriousProton/src" />
 		</Compiler>
 		<Linker>
-			<Add directory="../SFML-2.1/lib" />
+			<Add directory="../SFML-2.3.1/lib" />
 		</Linker>
 		<Unit filename="../SeriousProton/src/Box2D/Box2D.h" />
 		<Unit filename="../SeriousProton/src/Box2D/Collision/Shapes/b2ChainShape.cpp" />
@@ -185,12 +186,16 @@
 		<Unit filename="../SeriousProton/src/engine.h" />
 		<Unit filename="../SeriousProton/src/event.cpp" />
 		<Unit filename="../SeriousProton/src/event.h" />
+		<Unit filename="../SeriousProton/src/fixedSocket.cpp" />
+		<Unit filename="../SeriousProton/src/fixedSocket.h" />
 		<Unit filename="../SeriousProton/src/gameEntity.cpp" />
 		<Unit filename="../SeriousProton/src/gameEntity.h" />
 		<Unit filename="../SeriousProton/src/httpServer.cpp" />
 		<Unit filename="../SeriousProton/src/httpServer.h" />
 		<Unit filename="../SeriousProton/src/input.cpp" />
 		<Unit filename="../SeriousProton/src/input.h" />
+		<Unit filename="../SeriousProton/src/logging.cpp" />
+		<Unit filename="../SeriousProton/src/logging.h" />
 		<Unit filename="../SeriousProton/src/lua/lapi.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -238,12 +243,6 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="../SeriousProton/src/lua/lgc.h" />
-		<Unit filename="../SeriousProton/src/lua/linit.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../SeriousProton/src/lua/liolib.c">
-			<Option compilerVar="CC" />
-		</Unit>
 		<Unit filename="../SeriousProton/src/lua/llex.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -267,9 +266,6 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="../SeriousProton/src/lua/lopcodes.h" />
-		<Unit filename="../SeriousProton/src/lua/loslib.c">
-			<Option compilerVar="CC" />
-		</Unit>
 		<Unit filename="../SeriousProton/src/lua/lparser.c">
 			<Option compilerVar="CC" />
 		</Unit>

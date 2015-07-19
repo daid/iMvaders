@@ -43,7 +43,7 @@ public:
     void score()
     {
         scoreCount++;
-        soundManager.playSound("bonus_score", random(0.95, 1.05));
+        soundManager->playSound("bonus_score", random(0.95, 1.05));
     }
     
     void setColorCount(int count)

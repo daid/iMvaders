@@ -19,7 +19,7 @@ public:
     
     virtual void render(sf::RenderTarget& window);
     
-    virtual void collision(Collisionable* other);
+    virtual void collide(Collisionable* other);
     
     void explode();
 };

@@ -2,21 +2,21 @@
 function init()
 	playtrough = 1
 	groupList = nil
-	Transmission():setFace("Daid1"):setText("Welcome heroes|of earth"):top():transmissionDone("intro2")
+	Transmission():setFace("Daid1"):setText("Welcome heroes|of earth"):top():transmissionDone(intro2)
 end
 function intro2()
-	Transmission():setFace("Daid1"):setText("You misssion is to|destroy the|M corperation"):top():transmissionDone("intro3")
+	Transmission():setFace("Daid1"):setText("You misssion is to|destroy the|M corperation"):top():transmissionDone(intro3)
 end
 function intro3()
-	Transmission():setFace("Daid1"):setText("It will be hazardous|so take care"):top():transmissionDone("intro4")
+	Transmission():setFace("Daid1"):setText("It will be hazardous|so take care"):top():transmissionDone(intro4)
 end
 function intro4()
-	Transmission():setFace("Jaime1"):setText("INCOMMING ENEMIES"):top():transmissionDone("launchRound1")
+	Transmission():setFace("Jaime1"):setText("INCOMMING ENEMIES"):top():transmissionDone(launchRound1)
 end
 --[[ ROUND 1 --]]
 function launchRound1()
 	setupNewRound()
-	local w = ListWatcher():delay(0.5):allDestroyed("round1Finished")
+	local w = ListWatcher():delay(0.5):allDestroyed(round1Finished)
 	local g = EnemyGroup()
 	w:add(g)
 	g:add(BasicEnemy():setTargetPosition(150, 70));
@@ -27,16 +27,16 @@ end
 --[[ ROUND 1 finished --]]
 
 function round1Finished()
-	Transmission():setFace("Daid1"):setText("Awesome job|you managed|to take out the enemy"):top():transmissionDone("round1Finished2")
+	Transmission():setFace("Daid1"):setText("Awesome job|you managed|to take out the enemy"):top():transmissionDone(round1Finished2)
 end
 function round1Finished2()
-	Transmission():setFace("Jaime1"):setText("Oh No|More enemies inbound!"):top():transmissionDone("launchRound2")
+	Transmission():setFace("Jaime1"):setText("Oh No|More enemies inbound!"):top():transmissionDone(launchRound2)
 end
 
 --[[ ROUND 2 --]]
 
 function launchRound2()
-	local w = ListWatcher():delay(0.5):allDestroyed("round2Finished")
+	local w = ListWatcher():delay(0.5):allDestroyed(round2Finished)
 	setupNewRound()
 	local g = EnemyGroup()
 	w:add(g)
@@ -70,16 +70,16 @@ end
 --[[ ROUND 2 finished --]]
 
 function round2Finished()
-	Transmission():setFace("Daid1"):setText("These M fighters|are better equiped|then us"):top():transmissionDone("round2Finished2")
+	Transmission():setFace("Daid1"):setText("These M fighters|are better equiped|then us"):top():transmissionDone(round2Finished2)
 end
 function round2Finished2()
-	Transmission():setFace("Daid1"):setText("Good thing they|are stupid."):top():transmissionDone("round2Finished3")
+	Transmission():setFace("Daid1"):setText("Good thing they|are stupid."):top():transmissionDone(round2Finished3)
 end
 function round2Finished3()
-	Transmission():setFace("Daid1"):setText("Better destroy some|smaller 3D printers|and grab the upgrades"):top():transmissionDone("round2Finished4")
+	Transmission():setFace("Daid1"):setText("Better destroy some|smaller 3D printers|and grab the upgrades"):top():transmissionDone(round2Finished4)
 end
 function round2Finished4()
-	local w = ListWatcher():delay(2.0):allDestroyed("round2Finished5")
+	local w = ListWatcher():delay(2.0):allDestroyed(round2Finished5)
 	if playtrough > 1 then
 		--On the 2nd playtrough only give 1 powerup instead of 2.
 		if random(0, 100) < 50 then
@@ -93,20 +93,20 @@ function round2Finished4()
 	end
 end
 function round2Finished5()
-	Transmission():setFace("Daid1"):setText("Large object inbound"):top():transmissionDone("round2Finished6")
+	Transmission():setFace("Daid1"):setText("Large object inbound"):top():transmissionDone(round2Finished6)
 end
 function round2Finished6()
-	Transmission():setFace("Jaime1"):setText("Watch out!|It is the|Replicator Z18"):top():transmissionDone("round2Finished7")
+	Transmission():setFace("Jaime1"):setText("Watch out!|It is the|Replicator Z18"):top():transmissionDone(round2Finished7)
 end
 function round2Finished7()
-	Transmission():setFace("Daid1"):setText("It does not|seem to do|anything"):top():transmissionDone("round2Finished8")
+	Transmission():setFace("Daid1"):setText("It does not|seem to do|anything"):top():transmissionDone(round2Finished8)
 	launchRound3()	--Launch the round early, the ReplicatorZ18 is slow anyhow.
 end
 function round2Finished8()
-	Transmission():setFace("Daid1"):setText("Maybe the firmware|is not installed"):top():transmissionDone("round2Finished9")
+	Transmission():setFace("Daid1"):setText("Maybe the firmware|is not installed"):top():transmissionDone(round2Finished9)
 end
 function round2Finished9()
-	Transmission():setFace("Jaime1"):setText("It is on a crash|course towards us"):top():transmissionDone("round2Finished10")
+	Transmission():setFace("Jaime1"):setText("It is on a crash|course towards us"):top():transmissionDone(round2Finished10)
 end
 function round2Finished10()
 	Transmission():setFace("Jaime1"):setText("Blast your way|trough it!"):top()
@@ -115,7 +115,7 @@ end
 --[[ ROUND 3 --]]
 
 function launchRound3()
-	local w = ListWatcher():allDestroyed("round3Finished")
+	local w = ListWatcher():allDestroyed(round3Finished)
 	local r = ReplicatorZ18()
 	w:add(r)
 	if playtrough > 1 then r:setSpeed(20) end
@@ -125,11 +125,15 @@ end
 --[[ ROUND 3 finished --]]
 
 function round3Finished()
-	Transmission():setFace("Daid1"):setText("More enemies inbound."):top():transmissionDone("Delay():time(0.5):call('launchRound4')")
+	Transmission():setFace("Daid1"):setText("More enemies inbound."):top():transmissionDone(preLaunchRound4)
+end
+
+function preLaunchRound4()
+	Delay():time(0.5):call(launchRound4)
 end
 
 function launchRound4()
-	local w = ListWatcher():delay(0.5):allDestroyed("round4Finished")
+	local w = ListWatcher():delay(0.5):allDestroyed(round4Finished)
 	
 	setupNewRound()
 	local g = EnemyGroup()
@@ -187,7 +191,7 @@ end
 
 --[[ ROUND 4 finished --]]
 function round4Finished()
-	local w = ListWatcher():delay(2.0):allDestroyed("round4Finished2")
+	local w = ListWatcher():delay(2.0):allDestroyed(round4Finished2)
 	if random(0, 100) < 50 then
 		w:add(PowerupCarrier():setDirection( 1))
 	else
@@ -195,44 +199,44 @@ function round4Finished()
 	end
 end
 function round4Finished2()
-	Transmission():setFace("Jaime1"):setText("Watch out"):top():transmissionDone("round4Finished3")
+	Transmission():setFace("Jaime1"):setText("Watch out"):top():transmissionDone(round4Finished3)
 end
 function round4Finished3()
-	Transmission():setFace("Jaime1"):setText("You are flying into|a field of abandoned|printers"):top():transmissionDone("launchRound5")
+	Transmission():setFace("Jaime1"):setText("You are flying into|a field of abandoned|printers"):top():transmissionDone(launchRound5)
 end
 --[[ ROUND 5 --]]
 function spawnOldPrinter()
 	OldPrinter()
 	if spawnPrinters then
 		if playtrough > 1 then
-			Delay():time(0.6):call("spawnOldPrinter")
+			Delay():time(0.6):call(spawnOldPrinter)
 		else
-			Delay():time(0.8):call("spawnOldPrinter")
+			Delay():time(0.8):call(spawnOldPrinter)
 		end
 	end
 end
 function spawnDiveBomber()
 	DiveBomber()
 	if spawnPrinters then
-		Delay():time(8):call("spawnDiveBomber")
+		Delay():time(8):call(spawnDiveBomber)
 	end
 end
 function launchRound5()
-	Delay():time(5.0):call("delayedLaunchRound5")
+	Delay():time(5.0):call(delayedLaunchRound5)
 	spawnPrinters = true
 	spawnOldPrinter()
 	if playtrough > 2 then
-		Delay():time(5):call("spawnDiveBomber")
+		Delay():time(5):call(spawnDiveBomber)
 	end
 end
 function delayedLaunchRound5()
-	local w = ListWatcher():delay(1.5):allDestroyed("delayedLaunchRound5_2")
+	local w = ListWatcher():delay(1.5):allDestroyed(delayedLaunchRound5_2)
 	w:add(Digitizer():setPosition(40, -50))
 	w:add(Digitizer():setPosition(320 - 40, -50))
 end
 function delayedLaunchRound5_2()
 	setupNewRound()
-	local w = ListWatcher():delay(1.5):allDestroyed("delayedLaunchRound5_3")
+	local w = ListWatcher():delay(1.5):allDestroyed(delayedLaunchRound5_3)
 	w:add(Digitizer():setPosition(40, -50))
 	w:add(Digitizer():setPosition(160, -50))
 	w:add(Digitizer():setPosition(320 - 40, -50))
@@ -246,7 +250,7 @@ function delayedLaunchRound5_2()
 end
 function delayedLaunchRound5_3()
 	setupNewRound()
-	local w = ListWatcher():allDestroyed("spawnPrinters = false; Delay():time(10.0):call('round5Finished')")
+	local w = ListWatcher():allDestroyed(function() spawnPrinters = false; Delay():time(10.0):call('round5Finished') end)
 	w:add(Digitizer():setPosition(40, -50))
 	w:add(Digitizer():setPosition(120, -50))
 	w:add(Digitizer():setPosition(200, -50))
@@ -268,13 +272,13 @@ function delayedLaunchRound5_3()
 end
 --[[ ROUND 5 finished --]]
 function round5Finished()
-	Transmission():setFace("Jaime1"):setText("I am detecting a|huge ego on|the radar"):top():transmissionDone("round5Finished2")
+	Transmission():setFace("Jaime1"):setText("I am detecting a|huge ego on|the radar"):top():transmissionDone(round5Finished2)
 end
 function round5Finished2()
-	Transmission():setFace("Daid1"):setText("Oh no!|It is him!"):top():transmissionDone("round5Finished3")
+	Transmission():setFace("Daid1"):setText("Oh no!|It is him!"):top():transmissionDone(round5Finished3)
 end
 function round5Finished3()
-	Transmission():setFace("Jaime1"):setText("Kill IT!!!"):top():transmissionDone("launchRound6")
+	Transmission():setFace("Jaime1"):setText("Kill IT!!!"):top():transmissionDone(launchRound6)
 end
 --[[ ROUND 5 finished --]]
 function launchRound6()
@@ -282,19 +286,19 @@ function launchRound6()
 end
 --[[ ROUND 6 finished --]]
 function round6Finished()
-	Transmission():setFace("Daid1"):setText("You did it|You saved the universe."):top():transmissionDone("round6Finished2")
+	Transmission():setFace("Daid1"):setText("You did it|You saved the universe."):top():transmissionDone(round6Finished2)
 end
 function round6Finished2()
-	Transmission():setFace("Henk1"):setText("Thank you|            |But our princess|is in another castle!"):top():transmissionDone("round6Finished3")
+	Transmission():setFace("Henk1"):setText("Thank you|            |But our princess|is in another castle!"):top():transmissionDone(round6Finished3)
 	SurfHenk()
 end
 function round6Finished3()
 	playtrough = playtrough + 1
-	Delay():time(3.0):call('launchBonus')
+	Delay():time(3.0):call(launchBonus)
 end
 
 function launchBonus()
-	BonusRound():setColorCount(playtrough + 2):finished("Delay():time(1.0):call('round1Finished2')")
+	BonusRound():setColorCount(playtrough + 2):finished(function() Delay():time(1.0):call('round1Finished2') end)
 end
 
 --[[ Utility functions --]]

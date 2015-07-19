@@ -110,7 +110,7 @@ void ReplicatorZ18Part::render(sf::RenderTarget& window)
     window.draw(sprite);
 }
 
-void ReplicatorZ18Part::collision(Collisionable* other)
+void ReplicatorZ18Part::collide(Collisionable* other)
 {
     if (health <= 0)
         return;

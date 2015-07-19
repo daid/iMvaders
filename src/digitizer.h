@@ -16,7 +16,7 @@ public:
     Digitizer();
     virtual ~Digitizer();
     virtual void update(float delta);
-    virtual void collision(Collisionable* target);
+    virtual void collide(Collisionable* target);
     
     virtual void destroy()
     {
@@ -34,8 +34,8 @@ class DigitizerLaser: public GameEntity, public Collisionable
     P<Digitizer> owner;
     float activateDelay;
     float deactivateDelay;
-    static const float activateDelayMax = 2.0;
-    static const float deactivateDelayMax = 1.0;
+    static constexpr float activateDelayMax = 2.0;
+    static constexpr float deactivateDelayMax = 1.0;
 public:
     DigitizerLaser(P<Digitizer> owner);
     virtual ~DigitizerLaser() {}
@@ -48,7 +48,7 @@ public:
         GameEntity::destroy();
     }
 
-    virtual void collision(Collisionable* other);
+    virtual void collide(Collisionable* other);
 };
 
 #endif

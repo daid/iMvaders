@@ -44,7 +44,7 @@ void OldPrinter::render(sf::RenderTarget& window)
     window.draw(sprite);
 }
 
-void OldPrinter::collision(Collisionable* other)
+void OldPrinter::collide(Collisionable* other)
 {
     GameEntity* e = dynamic_cast<GameEntity*>(other);
     if (e)

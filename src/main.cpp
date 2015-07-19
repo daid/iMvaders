@@ -37,8 +37,8 @@ public:
 class AutoShutdown : public Updatable, public Renderable
 {
     float idleTime;
-    const static float idleTimeout = 60 * 60;
-    const static float idleTimeoutWarning = 10 * 60;
+    constexpr static float idleTimeout = 60 * 60;
+    constexpr static float idleTimeoutWarning = 10 * 60;
 public:
     AutoShutdown()
     : Renderable(hudLayer)
