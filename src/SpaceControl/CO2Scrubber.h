@@ -13,9 +13,9 @@
 class CO2Scrubber: public Updatable, public EnergyConsumer, public TemperaturePart
 {
 public:
-    const static float carbonDioxideCrubbingPerSecond = 0.00001;
-    const static float energyRequirementWhileScrubbing = 100;
-    const static float temperatureIncreaseWhileScrubbing = 1;
+    constexpr static float carbonDioxideCrubbingPerSecond = 0.00001;
+    constexpr static float energyRequirementWhileScrubbing = 100;
+    constexpr static float temperatureIncreaseWhileScrubbing = 1;
 
     ChemicalContainer* container;
     bool active;

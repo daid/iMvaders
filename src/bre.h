@@ -85,7 +85,7 @@ public:
     virtual void update(float delta);
     virtual void render(sf::RenderTarget& window);
 
-    virtual void collide(Collisionable* other);
+    virtual void collide(Collisionable* other, float force) override;
 };
 
 class MoneyShield: public GameEntity, public Collisionable

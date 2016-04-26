@@ -14,11 +14,11 @@ public:
     Bullet(sf::Vector2f position, int type, float angle, float speed = 180.0f);
     virtual ~Bullet() {}
     
-    virtual void update(float delta);
+    virtual void update(float delta) override;
     
-    virtual void render(sf::RenderTarget& window);
+    virtual void render(sf::RenderTarget& window) override;
     
-    virtual void collide(Collisionable* other);
+    virtual void collide(Collisionable* other, float force) override;
 };
 
 #endif//BULLET_H

@@ -30,13 +30,13 @@ public:
     ReplicatorZ18Part(P<ReplicatorZ18> owner, int index);
     virtual ~ReplicatorZ18Part() {}
     
-    virtual void destroy();
+    virtual void destroy() override;
 
-    virtual void update(float delta);
-    virtual void render(sf::RenderTarget& window);
+    virtual void update(float delta) override;
+    virtual void render(sf::RenderTarget& window) override;
 
-    virtual void collide(Collisionable* other);
-    virtual bool takeDamage(sf::Vector2f position, int damageType, int damageAmount);
+    virtual void collide(Collisionable* other, float force) override;
+    virtual bool takeDamage(sf::Vector2f position, int damageType, int damageAmount) override;
     
     void setSpeed(float speed);
 };

@@ -8,12 +8,12 @@
 class Generator : public EnergyProducer, public Updatable, public TemperaturePart, public ChemicalContainer
 {
 public:
-    const static float heatPerSecond = 50;
-    const static float criticalTemperature = 600;
-    const static float damageTemperature = 450;
-    const static float powerProduction = 200;
-    const static float maxPowerLevel = 2.0;
-    const static float uraniumPerEnergy = 1.0 / 1000000.0;
+    constexpr static float heatPerSecond = 50;
+    constexpr static float criticalTemperature = 600;
+    constexpr static float damageTemperature = 450;
+    constexpr static float powerProduction = 200;
+    constexpr static float maxPowerLevel = 2.0;
+    constexpr static float uraniumPerEnergy = 1.0 / 1000000.0;
 
     float powerLevel;
     

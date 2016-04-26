@@ -60,10 +60,10 @@ public:
     PlayerBonusLaser(P<PlayerCraft> owner);
     virtual ~PlayerBonusLaser() {}
 
-    virtual void update(float delta);
-    virtual void render(sf::RenderTarget& window);
+    virtual void update(float delta) override;
+    virtual void render(sf::RenderTarget& window) override;
 
-    virtual void collide(Collisionable* other);
+    virtual void collide(Collisionable* other, float force) override;
 };
 
 #endif//PLAYER_H

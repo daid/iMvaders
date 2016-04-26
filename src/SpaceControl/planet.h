@@ -10,7 +10,7 @@ extern PVector<Sun> sunList;
 
 class Planet: public SpaceObject
 {
-    const static float G = 0.0000000000667;
+    constexpr static float G = 0.0000000000667;
     float mass;
     float density;
     float radius;

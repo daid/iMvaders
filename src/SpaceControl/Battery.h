@@ -6,9 +6,9 @@
 class Battery : public EnergyConsumer, public EnergyProducer, public Updatable
 {
 public:
-    const static float maxEnergyStorage = 1000;
-    const static float batteryEfficency = 0.9;  //Battery efficency is usually 90% at best.
-    const static float batteryLeakagePerSecond = 0.1; //Percentage of power that leaks away every second.
+    constexpr static float maxEnergyStorage = 1000;
+    constexpr static float batteryEfficency = 0.9;  //Battery efficency is usually 90% at best.
+    constexpr static float batteryLeakagePerSecond = 0.1; //Percentage of power that leaks away every second.
     float energyStorage;
     
     Battery(P<EnergyGrid> grid)

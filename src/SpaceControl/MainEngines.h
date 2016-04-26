@@ -7,9 +7,9 @@
 
 class MainEngines: public EnergyConsumer, public Updatable, public TemperaturePart
 {
-    const static float energyRequirement = 200.0;
-    const static float impulse = 300.0;
-    const static float temperaturePerTrust = 10.0;
+    constexpr static float energyRequirement = 200.0;
+    constexpr static float impulse = 300.0;
+    constexpr static float temperaturePerTrust = 10.0;
     P<SpaceObject> owner;
 public:
     float trustRequest;

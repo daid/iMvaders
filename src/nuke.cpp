@@ -29,7 +29,7 @@ void Nuke::update(float delta)
         explode();
 }
 
-void Nuke::collide(Collisionable* other)
+void Nuke::collide(Collisionable* other, float force)
 {
     GameEntity* e = dynamic_cast<GameEntity*>(other);
     if (e && e->takeDamage(getPosition(), -1, 4))

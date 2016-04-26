@@ -60,9 +60,8 @@ void GuiButton::render(sf::RenderTarget& window)
     button.setOutlineThickness(0.5);
     window.draw(button);
 
-    P<InputHandler> input = engine->getObject("inputHandler");
-    sf::Vector2f p = input->getMousePos();
-    value = (rect.contains(p) && input->mouseIsDown(0));
+    sf::Vector2f p = InputHandler::getMousePos();
+    value = (rect.contains(p) && InputHandler::mouseIsDown(sf::Mouse::Left));
 
     drawText(window, rect.left, rect.top - 4, 0.3, caption, align_left);
 }
@@ -82,9 +81,8 @@ void GuiToggle::render(sf::RenderTarget& window)
         button.setFillColor(sf::Color(255,128,128));
     window.draw(button);
 
-    P<InputHandler> input = engine->getObject("inputHandler");
-    sf::Vector2f p = input->getMousePos();
-    if (rect.contains(p) && input->mouseIsPressed(0))
+    sf::Vector2f p = InputHandler::getMousePos();
+    if (rect.contains(p) && InputHandler::mouseIsPressed(sf::Mouse::Left))
         value = !value;
 
     drawText(window, rect.left, rect.top - 4, 0.3, caption, align_left);
@@ -144,9 +142,8 @@ void GuiSlider::render(sf::RenderTarget& window)
     slider.setFillColor(color);
     window.draw(slider);
 
-    P<InputHandler> input = engine->getObject("inputHandler");
-    sf::Vector2f p = input->getMousePos();
-    if (rect.contains(p) && input->mouseIsDown(0))
+    sf::Vector2f p = InputHandler::getMousePos();
+    if (rect.contains(p) && InputHandler::mouseIsDown(sf::Mouse::Left))
     {
         f = std::min(1.0f, std::max(0.0f, (p.x - rect.left - rect.height / 2) / (rect.width - rect.height)));
         value = minValue + (maxValue - minValue) * f;
@@ -161,9 +158,8 @@ bool drawButton(sf::RenderTarget& window, float x, float y, float w, float h, sf
     button.setPosition(x, y);
     button.setFillColor(color);
     window.draw(button);
-    P<InputHandler> input = engine->getObject("inputHandler");
-    sf::Vector2f p = input->getMousePos();
-    if (p.x >= x && p.y >= y && p.x <= x + w && p.y <= y + h && input->mouseIsPressed(0))
+    sf::Vector2f p = InputHandler::getMousePos();
+    if (p.x >= x && p.y >= y && p.x <= x + w && p.y <= y + h && InputHandler::mouseIsPressed(sf::Mouse::Left))
     {
         return true;
     }

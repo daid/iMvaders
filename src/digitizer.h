@@ -15,18 +15,18 @@ protected:
 public:
     Digitizer();
     virtual ~Digitizer();
-    virtual void update(float delta);
-    virtual void collide(Collisionable* target);
+    virtual void update(float delta) override;
+    virtual void collide(Collisionable* target, float force) override;
     
-    virtual void destroy()
+    virtual void destroy() override
     {
         laser[0] = NULL;
         laser[1] = NULL;
         GameEntity::destroy();
     }
     
-    virtual void render(sf::RenderTarget& window);
-    virtual bool takeDamage(sf::Vector2f position, int damageType, int damageAmount);
+    virtual void render(sf::RenderTarget& window) override;
+    virtual bool takeDamage(sf::Vector2f position, int damageType, int damageAmount) override;
 };
 
 class DigitizerLaser: public GameEntity, public Collisionable
@@ -40,15 +40,15 @@ public:
     DigitizerLaser(P<Digitizer> owner);
     virtual ~DigitizerLaser() {}
 
-    virtual void update(float delta);
-    virtual void render(sf::RenderTarget& window);
-    virtual void destroy()
+    virtual void update(float delta) override;
+    virtual void render(sf::RenderTarget& window) override;
+    virtual void destroy() override
     {
         owner = NULL;
         GameEntity::destroy();
     }
 
-    virtual void collide(Collisionable* other);
+    virtual void collide(Collisionable* other, float force) override;
 };
 
 #endif

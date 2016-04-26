@@ -25,6 +25,17 @@ bool renderCompare(RenderSortInfo i0, RenderSortInfo i1)
     return i0.objectDepth > i1.objectDepth;
 }
 
+static void _glPerspective(double fovY, double aspect, double zNear, double zFar )
+{
+    const double pi = 3.1415926535897932384626433832795;
+    double fW, fH;
+
+    fH = tan(fovY / 360 * pi) * zNear;
+    fW = fH * aspect;
+
+    glFrustum(-fW, fW, -fH, fH, zNear, zFar);
+}
+
 void renderSpace(sf::RenderTarget& window, sf::Vector3f cameraPosition, float yaw, float pitch, float roll)
 {
     window.pushGLStates();
@@ -36,7 +47,7 @@ void renderSpace(sf::RenderTarget& window, sf::Vector3f cameraPosition, float ya
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(60.f, 320.0/240.0, 1.f, 16000.f);
+    _glPerspective(60.f, 320.0/240.0, 1.f, 16000.f);
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();

@@ -3,7 +3,7 @@
 
 class Heater : public Updatable, public EnergyConsumer
 {
-    static const float energyRequirement = 100;
+    constexpr static float energyRequirement = 100;
     P<TemperaturePart> target;
     float targetTemperature;
 public:

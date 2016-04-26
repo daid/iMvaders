@@ -50,8 +50,8 @@ public:
         hasShield = false;
     }
     virtual ~BasicEnemyBase();
-    virtual void update(float delta);
-    virtual void collide(Collisionable* target);
+    virtual void update(float delta) override;
+    virtual void collide(Collisionable* target, float force) override;
     
     void setTargetPosition(sf::Vector2f targetPosition) { this->targetPosition = targetPosition; }
 

@@ -3,7 +3,7 @@
 
 class PressureValve : public Updatable, public EnergyConsumer
 {
-    const static float switchEnergy = 50;
+    constexpr static float switchEnergy = 50;
 public:
     StorageTankLinks sourceTanks;
     ChemicalContainer* target;

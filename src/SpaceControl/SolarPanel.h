@@ -9,10 +9,10 @@
 
 class SolarPanel : public EnergyProducer, public Updatable, public TemperaturePart
 {
-    const static float powerFactor = 2000.0;
-    const static float maxPower = 100.0;
-    const static float temperaturePerPower = 0.0001;
-    const static float externalTemperature = -20;
+    constexpr static float powerFactor = 2000.0;
+    constexpr static float maxPower = 100.0;
+    constexpr static float temperaturePerPower = 0.0001;
+    constexpr static float externalTemperature = -20;
 public:
     bool expand;
     P<SpaceObject> owner;

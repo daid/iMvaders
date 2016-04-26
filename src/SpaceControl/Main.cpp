@@ -65,7 +65,7 @@ class AsteroidField : public SpaceObject
 {
     PVector<Asteroid> asteroids;
     
-    const static float visualDistance = 2000;
+    constexpr static float visualDistance = 2000;
     float radius;
 public:
     AsteroidField()
@@ -159,9 +159,9 @@ public:
 
 int main()
 {
+    Logging::setLogLevel(LOGLEVEL_DEBUG);
     new Engine();
     new DirectoryResourceProvider("resources/");
-    engine->registerObject("inputHandler", new InputHandler());
     
     defaultRenderLayer = new RenderLayer();
 
@@ -198,7 +198,7 @@ int main()
         ai->target2 = obj2;
     }
     */
-    ScriptObject* so = new ScriptObject("Resources/Systems/513-920.lua");
+    ScriptObject* so = new ScriptObject("Systems/513-920.lua");
 
     player->setPosition(sf::Vector2f(0, 0));
     player->velocity = sf::vector2FromAngle(sf::vector2ToAngle(player->getPosition() - sunList[0]->getPosition()) + 90) * sunList[0]->calcOrbitVelocity(sf::length(player->getPosition() - sunList[0]->getPosition()));

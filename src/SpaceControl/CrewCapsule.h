@@ -16,24 +16,24 @@
 
 class CrewCapsule : public ChemicalContainer, public Updatable, public TemperaturePart
 {
-    const static float oxygenUsePerPersonPerDay = 16.0; //0.8 is normal for humans under a bit of stress. m^3
-    const static float waterProductionPerPersonPerDay = 0.1152; //m^3
+    constexpr static float oxygenUsePerPersonPerDay = 16.0; //0.8 is normal for humans under a bit of stress. m^3
+    constexpr static float waterProductionPerPersonPerDay = 0.1152; //m^3
 public:
-    static const float minO2concentration = 17.5;
-    static const float warningO2concentration = 18.5;
-    static const float warningCO2concentration = 5;
-    static const float maxCO2concentration = 7;
+    static constexpr float minO2concentration = 17.5;
+    static constexpr float warningO2concentration = 18.5;
+    static constexpr float warningCO2concentration = 5;
+    static constexpr float maxCO2concentration = 7;
     
-    static const float minPressure = 0.356;
-    static const float warningPressure = 0.5;
+    static constexpr float minPressure = 0.356;
+    static constexpr float warningPressure = 0.5;
 
-    static const float maxTemperature = 60;
-    static const float warningMaxTemperature = 35;
+    static constexpr float maxTemperature = 60;
+    static constexpr float warningMaxTemperature = 35;
 
-    static const float minTemperature = 0;
-    static const float warningMinTemperature = 10;
+    static constexpr float minTemperature = 0;
+    static constexpr float warningMinTemperature = 10;
     
-    static const float ventPercentagePerSecond = 10.0;
+    static constexpr float ventPercentagePerSecond = 10.0;
     
     int occupants;
     

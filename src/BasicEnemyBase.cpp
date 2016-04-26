@@ -168,7 +168,7 @@ void BasicEnemyBase::render(sf::RenderTarget& window)
     diveCurve.draw(window);
 #endif
 }
-void BasicEnemyBase::collide(Collisionable* target)
+void BasicEnemyBase::collide(Collisionable* target, float force)
 {
     GameEntity* e = dynamic_cast<GameEntity*>(target);
     if (e)

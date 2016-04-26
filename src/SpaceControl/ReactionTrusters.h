@@ -3,11 +3,11 @@
 
 class ReactionTrusters: public EnergyConsumer, public Updatable, public TemperaturePart
 {
-    const static float energyRequirementLinear = 80.0;
-    const static float energyRequirementAngular = 80.0;
-    const static float impulseLinear = 50.0;
-    const static float impulseAngular = 300.0;
-    const static float temperaturePerEnergy = 0.02;
+    constexpr static float energyRequirementLinear = 80.0;
+    constexpr static float energyRequirementAngular = 80.0;
+    constexpr static float impulseLinear = 50.0;
+    constexpr static float impulseAngular = 300.0;
+    constexpr static float temperaturePerEnergy = 0.02;
     P<SpaceObject> owner;
 public:
     sf::Vector2f linearMovementRequest;

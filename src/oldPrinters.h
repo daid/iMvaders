@@ -12,12 +12,13 @@ public:
     OldPrinter();
     virtual ~OldPrinter() {}
 
-    virtual void update(float delta);
+    virtual void update(float delta) override;
     
-    virtual void render(sf::RenderTarget& window);
+    virtual void render(sf::RenderTarget& window) override;
 
-    virtual void collide(Collisionable* other);
+    virtual void collide(Collisionable* other, float force) override;
     
-    virtual bool takeDamage(sf::Vector2f position, int damageType, int damageAmount);};
+    virtual bool takeDamage(sf::Vector2f position, int damageType, int damageAmount) override;
+};
 
 #endif//OLDPRINTERS_H

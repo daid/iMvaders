@@ -15,11 +15,11 @@ public:
     Nuke(sf::Vector2f position, sf::Vector2f velocity, float size, int owner);
     virtual ~Nuke() {}
     
-    virtual void update(float delta);
+    virtual void update(float delta) override;
     
-    virtual void render(sf::RenderTarget& window);
+    virtual void render(sf::RenderTarget& window) override;
     
-    virtual void collide(Collisionable* other);
+    virtual void collide(Collisionable* other, float force) override;
     
     void explode();
 };

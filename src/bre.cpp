@@ -422,7 +422,7 @@ void BreLaser::render(sf::RenderTarget& window)
     window.draw(laser);
 }
 
-void BreLaser::collide(Collisionable* other)
+void BreLaser::collide(Collisionable* other, float force)
 {
     GameEntity* e = dynamic_cast<GameEntity*>(other);
     if (e)

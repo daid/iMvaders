@@ -13,7 +13,7 @@ class EnergyConsumer: public virtual PObject
 {
 public:
     const char* energyConsumerName;
-    static const float idleEnergyDisabledDrainFactor = 0.8;
+    static constexpr float idleEnergyDisabledDrainFactor = 0.8;
     
     float energyConsumptionRequest;  //Amount of energy we want to use per second, does not garantee that we'll get it.
     float energyConsumptionAmount;   //Amount of energy we are getting per second.

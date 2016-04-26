@@ -23,7 +23,7 @@ public:
     }
     virtual ~VersusOldPrinter() {}
     
-    virtual void collide(Collisionable* other)
+    virtual void collide(Collisionable* other, float force) override
     {
         GameEntity* e = dynamic_cast<GameEntity*>(other);
         if (e && !dynamic_cast<OldPrinter*>(other))
@@ -33,7 +33,7 @@ public:
         }
     }
 
-    virtual bool takeDamage(sf::Vector2f position, int damageType, int damageAmount)
+    virtual bool takeDamage(sf::Vector2f position, int damageType, int damageAmount) override
     {
         health -= damageAmount;
         if (damageType >= 0)

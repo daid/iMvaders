@@ -34,7 +34,7 @@ void Bullet::update(float delta)
     if (getPosition().y > 250) destroy();
 }
 
-void Bullet::collide(Collisionable* other)
+void Bullet::collide(Collisionable* other, float force)
 {
     GameEntity* e = dynamic_cast<GameEntity*>(other);
     if (e && e->takeDamage(getPosition(), type, 1))

@@ -10,11 +10,11 @@ private:
 public:
     Powerup();
     virtual ~Powerup();
-    virtual void update(float delta);
+    virtual void update(float delta) override;
 
-    virtual void render(sf::RenderTarget& window);
+    virtual void render(sf::RenderTarget& window) override;
     
-    virtual void collide(Collisionable* target);
+    virtual void collide(Collisionable* target, float force) override;
 };
 
 #endif//POWERUP_H

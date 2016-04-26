@@ -192,8 +192,7 @@ void EnergyGrid::render(sf::RenderTarget& window)
         n++;
     }
 
-    P<InputHandler> input = engine->getObject("inputHandler");
-    sf::Vector2f p = input->getMousePos();
+    sf::Vector2f p = InputHandler::getMousePos();
     
     sf::RectangleShape shape(sf::Vector2f(3, 3));
     shape.setPosition(p);
