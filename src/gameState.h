@@ -12,9 +12,8 @@ private:
     P<ScriptObject> script;
     PlayerInfo playerInfo[MAX_PLAYERS];
     int stageNr;
-    int playerCount;
     float startStageDelay;
-    float player2SpawnDelay;
+    float extra_player_spawn_delay;
     
     float reviveDelay;
     constexpr static float reviveTimeout = 3.0;

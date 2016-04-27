@@ -89,9 +89,7 @@ void VersusGameState::update(float delta)
             if (playerInfo[n].lives)
             {
                 playerInfo[n].lives --;
-                P<PlayerController> pc = engine->getObject("playerController1");
-                if (n)
-                    pc = engine->getObject("playerController2");
+                P<PlayerController> pc = engine->getObject("playerController" + string(n + 1));
                 player[n] = new PlayerCraft(*pc, &playerInfo[n], (n == 0) ? 0 : -1);
                 gameOver = false;
             }else{

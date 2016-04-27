@@ -36,8 +36,8 @@ public:
     virtual void update(float delta)
     {
         P<PlayerController> pc[MAX_PLAYERS];
-        pc[0] = engine->getObject("playerController1");
-        pc[1] = engine->getObject("playerController2");
+        for(int n=0; n<MAX_PLAYERS; n++)
+            pc[n] = engine->getObject("playerController" + string(n + 1));
         bool ready = true;
         for(int p=0; p<playerCount; p++)
         {
@@ -138,7 +138,7 @@ public:
         {
             if (done[p])
                 continue;
-            if (p == 0)
+            if ((p % 2) == 0)
                 textureManager.setTexture(player, "player1");
             else
                 textureManager.setTexture(player, "player2");
@@ -171,10 +171,15 @@ public:
 
     virtual void update(float delta)
     {
-        P<PlayerController> pc1 = engine->getObject("playerController1");
-        P<PlayerController> pc2 = engine->getObject("playerController2");
+        bool fire_pressed = false;
+        for(int n=0; n<MAX_PLAYERS; n++)
+        {
+            P<PlayerController> pc = engine->getObject("playerController" + string(n + 1));
+            if (pc->button(fireButton))
+                fire_pressed = true;
+        }
     
-        if (gameOverDelay < gameOverWait - 1.0 && (pc1->button(fireButton) || pc2->button(fireButton)))
+        if (gameOverDelay < gameOverWait - 1.0 && fire_pressed)
             gameOverDelay = 0;
         if (gameOverDelay > 0)
             gameOverDelay -= delta;
@@ -203,18 +208,20 @@ public:
 };
 
 GameState::GameState(int playerCount)
-: GameEntity(hudLayer), playerCount(playerCount)
+: GameEntity(hudLayer)
 {
     stageNr = 0;
+    LOG(INFO) << "Player count at start: " << playerCount;
     for(int n=0; n<MAX_PLAYERS; n++)
     {
+        playerInfo[n].active = n < playerCount;
         playerInfo[n].lives = 4;
         playerInfo[n].nukes = 1;
     }
-    if (playerCount < 2)
-        player2SpawnDelay = 10.0;
+    if (playerCount < MAX_PLAYERS)
+        extra_player_spawn_delay = 10.0;
     else
-        player2SpawnDelay = 0;
+        extra_player_spawn_delay = 0;
     startStageDelay = 2.0;
     reviveDelay = reviveTimeout;
     //Destroy all objects except ourselves.
@@ -228,43 +235,50 @@ GameState::~GameState() {}
 
 void GameState::update(float delta)
 {
-    if (player2SpawnDelay > 0.0)
+    if (extra_player_spawn_delay > 0.0)
     {
-        player2SpawnDelay -= delta;
-        P<PlayerController> pc = engine->getObject("playerController2");
-        if (pc->button(fireButton))
+        extra_player_spawn_delay -= delta;
+        for(int p=0; p<MAX_PLAYERS; p++)
         {
-            playerCount = 2;
-            player2SpawnDelay = 0.0;
+            if (playerInfo[p].active)
+                continue;
+            P<PlayerController> pc = engine->getObject("playerController" + string(p + 1));
+            if (pc->button(fireButton))
+            {
+                playerInfo[p].active = true;
+            }
         }
     }
-    if (playerCount > 1)
+
     {
         int deadPlayer = -1;
         int livePlayer = -1;
-        for(int p=0; p<playerCount; p++)
+        for(int p=0; p<MAX_PLAYERS; p++)
         {
+            if (!playerInfo[p].active)
+                continue;
             if (playerInfo[p].lives < 1 && !player[p])
                 deadPlayer = p;
             if (playerInfo[p].lives > 0 && player[p])
                 livePlayer = p;
         }
         
-        P<PlayerController> pc = engine->getObject("playerController1");
-        if (livePlayer == 1)
-            pc = engine->getObject("playerController2");
-        
-        if (deadPlayer > -1 && livePlayer > -1 && !pc->up() && !pc->down() && !pc->left() && !pc->right() && !pc->button(fireButton))
+        if (deadPlayer > -1 && livePlayer > -1)
         {
-            reviveDelay -= delta;
-            if (reviveDelay < 0.0)
+            P<PlayerController> pc = engine->getObject("playerController" + string(livePlayer + 1));
+        
+            if (!pc->up() && !pc->down() && !pc->left() && !pc->right() && !pc->button(fireButton))
             {
-                playerInfo[livePlayer].lives --;
-                playerInfo[deadPlayer].lives ++;
+                reviveDelay -= delta;
+                if (reviveDelay < 0.0)
+                {
+                    playerInfo[livePlayer].lives --;
+                    playerInfo[deadPlayer].lives ++;
+                    reviveDelay = reviveTimeout;
+                }
+            }else{
                 reviveDelay = reviveTimeout;
             }
-        }else{
-            reviveDelay = reviveTimeout;
         }
     }
 #ifdef DEBUG
@@ -276,8 +290,10 @@ void GameState::update(float delta)
 #endif
 
     bool gameOver = true;
-    for(int n=0; n<playerCount; n++)
+    for(int n=0; n<MAX_PLAYERS; n++)
     {
+        if (!playerInfo[n].active)
+            continue;
         if (player[n])
         {
             gameOver = false;
@@ -286,11 +302,10 @@ void GameState::update(float delta)
         {
             if (playerInfo[n].lives)
             {
+                LOG(INFO) << "Spawned player: " << n;
                 playerInfo[n].lives --;
-                P<PlayerController> pc = engine->getObject("playerController1");
-                if (n)
-                    pc = engine->getObject("playerController2");
-                player[n] = new PlayerCraft(*pc, &playerInfo[n], n);
+                P<PlayerController> pc = engine->getObject("playerController" + string(n + 1));
+                player[n] = new PlayerCraft(*pc, &playerInfo[n], n % 2);
                 gameOver = false;
             }
         }
@@ -307,7 +322,11 @@ void GameState::update(float delta)
             script->destroy();
         }
         destroy();
-        new GameOverState(playerCount);
+        int player_count = 0;
+        for(int n=0; n<MAX_PLAYERS; n++)
+            if (playerInfo[n].active)
+                player_count += 1;
+        new GameOverState(player_count);
     }
 }
 
@@ -319,9 +338,11 @@ void GameState::render(sf::RenderTarget& window)
     nukeIcon.setScale(0.12, 0.12);
     
     sf::Sprite life;
-    for(int p=0; p<playerCount; p++)
+    for(int p=0; p<MAX_PLAYERS; p++)
     {
-        if (p == 0)
+        if (!playerInfo[p].active)
+            continue;
+        if ((p % 2) == 0)
             textureManager.setTexture(life, "player1");
         else
             textureManager.setTexture(life, "player2");
@@ -333,7 +354,7 @@ void GameState::render(sf::RenderTarget& window)
             window.draw(life);
         }
 
-        if (p == 0)
+        if ((p % 2) == 0)
             nukeIcon.setColor(sf::Color(24, 161, 212));
         else
             nukeIcon.setColor(sf::Color(231, 24, 118));
@@ -359,9 +380,9 @@ void GameState::render(sf::RenderTarget& window)
         window.draw(reviveBar);
     }
 
-    if (P<ScoreManager>(engine->getObject("score"))->get() < 1)
+    if (P<ScoreManager>(engine->getObject("score"))->get() < 1 && !playerInfo[1].active)
     {
-        if (player2SpawnDelay > 0.0 && fmodf(player2SpawnDelay, 1.0) < 0.5)
+        if (extra_player_spawn_delay > 0.0 && fmodf(extra_player_spawn_delay, 1.0) < 0.5)
             drawText(window, 300, 220, "Press fire to join", align_right, 0.7);
     }else{
         drawText(window, 300, 220, string(P<ScoreManager>(engine->getObject("score"))->get()), align_right);

@@ -64,9 +64,6 @@ void Transmission::render(sf::RenderTarget& window)
 
 void Transmission::update(float delta)
 {
-    P<PlayerController> pc1 = engine->getObject("playerController1");
-    P<PlayerController> pc2 = engine->getObject("playerController2");
-    
     transmissionTime += delta;
     
     if (faceName.size() > 0)
@@ -77,9 +74,20 @@ void Transmission::update(float delta)
             textureManager.setTexture(face, faceName.c_str(), 0);
     }
 
-    if (transmissionTime > float(text.length()) / charsPerSecond + extraDelayBeforeDone || pc1->button(skipButton) || pc2->button(skipButton))
+    if (transmissionTime > float(text.length()) / charsPerSecond + extraDelayBeforeDone)
     {
         transmissionDone();
         destroy();
+        return;
+    }
+    for(int n=0; n<MAX_PLAYERS; n++)
+    {
+        P<PlayerController> pc = engine->getObject("playerController" + string(n + 1));
+        if (pc->button(skipButton))
+        {
+            transmissionDone();
+            destroy();
+            return;
+        }
     }
 }

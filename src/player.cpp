@@ -37,7 +37,7 @@ PlayerCraft::PlayerCraft(PlayerController* controller, PlayerInfo* info, int typ
     }
     
     if (type >= 0)
-        setPosition(sf::Vector2f(160, 220));
+        setPosition(sf::Vector2f(160 + random(-100, 100), 220));
     else
         setPosition(sf::Vector2f(160, 20));
 }

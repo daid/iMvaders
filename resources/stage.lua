@@ -250,7 +250,7 @@ function delayedLaunchRound5_2()
 end
 function delayedLaunchRound5_3()
 	setupNewRound()
-	local w = ListWatcher():allDestroyed(function() spawnPrinters = false; Delay():time(10.0):call('round5Finished') end)
+	local w = ListWatcher():allDestroyed(function() spawnPrinters = false; Delay():time(10.0):call(round5Finished) end)
 	w:add(Digitizer():setPosition(40, -50))
 	w:add(Digitizer():setPosition(120, -50))
 	w:add(Digitizer():setPosition(200, -50))
@@ -282,7 +282,7 @@ function round5Finished3()
 end
 --[[ ROUND 5 finished --]]
 function launchRound6()
-	BreEnemy():setDifficulty(playtrough):destroyed("Delay():time(3.0):call('round6Finished')")
+	BreEnemy():setDifficulty(playtrough):destroyed(function() Delay():time(3.0):call(round6Finished) end)
 end
 --[[ ROUND 6 finished --]]
 function round6Finished()
@@ -298,7 +298,7 @@ function round6Finished3()
 end
 
 function launchBonus()
-	BonusRound():setColorCount(playtrough + 2):finished(function() Delay():time(1.0):call('round1Finished2') end)
+	BonusRound():setColorCount(playtrough + 2):finished(function() Delay():time(1.0):call(round1Finished2) end)
 end
 
 --[[ Utility functions --]]

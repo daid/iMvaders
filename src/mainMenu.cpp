@@ -49,7 +49,6 @@ public:
     void update(float delta)
     {
         P<PlayerController> pc1 = engine->getObject("playerController1");
-        P<PlayerController> pc2 = engine->getObject("playerController2");
         timeout -= delta;
         
         if (pc1->button(fireButton) || timeout < 0)
@@ -161,15 +160,15 @@ void MainMenu::update(float delta)
         introTextPosition += delta * 5;
     if (blink > 1.0)
     {
-        if (pc1->button(fireButton))
+        for(int n=0; n<MAX_PLAYERS; n++)
         {
-            new GameState(1);
-            sf::Listener::setGlobalVolume(100);
-        }
-        else if (pc2->button(fireButton))
-        {
-            new GameState(2);
-            sf::Listener::setGlobalVolume(100);
+            P<PlayerController> pc = engine->getObject("playerController" + string(n + 1));
+            if (pc->button(fireButton))
+            {
+                new GameState(n + 1);
+                sf::Listener::setGlobalVolume(100);
+                break;
+            }
         }
     }
 

@@ -52,8 +52,8 @@ public:
         idleTime += delta;
         
         P<PlayerController> pc[MAX_PLAYERS];
-        pc[0] = engine->getObject("playerController1");
-        pc[1] = engine->getObject("playerController2");
+        for(int n=0; n<MAX_PLAYERS; n++)
+            pc[n] = engine->getObject("playerController" + string(n + 1));
         for(int n=0; n<MAX_PLAYERS; n++)
         {
             if (pc[n]->up() || pc[n]->down() || pc[n]->left() || pc[n]->right())
@@ -116,12 +116,15 @@ int main(int argc, char** argv)
 {
     new Engine();
     
+    Logging::setLogLevel(LOGLEVEL_INFO);
+    
     new DirectoryResourceProvider("resources/");
     
-    P<PlayerController> pc1 = new PlayerController(0);
-    P<PlayerController> pc2 = new PlayerController(1);
-    engine->registerObject("playerController1", pc1);
-    engine->registerObject("playerController2", pc2);
+    for(int n=0; n<MAX_PLAYERS; n++)
+    {
+        P<PlayerController> pc = new PlayerController(n);
+        engine->registerObject("playerController" + string(n + 1), pc);
+    }
     engine->registerObject("score", new ScoreManager());
     
     bool fullscreen = true;

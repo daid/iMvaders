@@ -17,6 +17,7 @@ extern bool playerBonusWeaponsActive;
 class PlayerInfo
 {
 public:
+    bool active;
     int lives;
     int nukes;
 };
