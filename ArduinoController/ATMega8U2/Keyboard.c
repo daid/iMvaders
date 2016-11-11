@@ -112,8 +112,16 @@ uint16_t cmd_counter = 0;
 void handleCmd()
 {
     if (cmd_counter < CMD_COUNTER_MAX)
+    {
         cmd_counter ++;
-	//LEDs_ToggleLEDs(LEDS_LED2);
+		playerState[0].joystick = 0;
+		playerState[0].buttons = 0;
+		playerState[1].joystick = 0;
+		playerState[1].buttons = 0;
+		LEDs_ToggleLEDs(LEDS_LED1);
+    }else{
+		LEDs_ToggleLEDs(LEDS_LED2);
+    }
 	switch(cmd)
 	{
 	case 0:
@@ -177,6 +185,15 @@ ISR(USART1_RX_vect, ISR_BLOCK)
 	RingBuffer_Insert(&USART_Buffer, ReceivedByte);
 }
 
+void UartSend(uint8_t data)
+{
+  while (!((UCSR1A) & (1 << UDRE1)))
+  {
+  }
+
+  UDR1 = data;
+}
+
 /** Configures the board hardware and chip peripherals for the demo's functionality. */
 void SetupHardware()
 {
@@ -211,8 +228,8 @@ void SetupHardware()
 	UCSR1A = 0;
 	UCSR1C = 0;
 
+    //Set the UART with RX TX and RX interrupt.
 	UBRR1  = SERIAL_2X_UBBRVAL(115200);
-
 	UCSR1C = ((1 << UCSZ11) | (1 << UCSZ10));
 	UCSR1A = (1 << U2X1);
 	UCSR1B = ((1 << RXCIE1) | (1 << TXEN1) | (1 << RXEN1));
@@ -363,16 +380,29 @@ void CALLBACK_HID_Device_ProcessHIDReport(USB_ClassInfo_HID_Device_t* const HIDI
     if (HIDInterfaceInfo == &Generic_HID_Interface)
 	{
         LEDs_ToggleLEDs(LEDS_LED2);
-        uint8_t configID = ((uint8_t*)ReportData)[0];
-        uint8_t playerID = ((uint8_t*)ReportData)[1];
-        uint8_t keyID = ((uint8_t*)ReportData)[2];
-        uint8_t keyValue = ((uint8_t*)ReportData)[3];
-        if (configID == 0x00 && playerID < 2 && keyID < 4 + 8)
+        uint8_t command = ((uint8_t*)ReportData)[0];
+        switch(command)
         {
-            keyboardConfig[playerID][keyID] = keyValue;
+        case 0x01://Set keyboard key
+            {
+                uint8_t playerID = ((uint8_t*)ReportData)[1];
+                uint8_t keyID = ((uint8_t*)ReportData)[2];
+                uint8_t keyValue = ((uint8_t*)ReportData)[3];
+                if (playerID < 2 && keyID < 4 + 8)
+                    keyboardConfig[playerID][keyID] = keyValue;
+            }
+            break;
+        case 0x02://Link mouse
+            {
+                uint8_t playerID = ((uint8_t*)ReportData)[1];
+                mousePlayer = playerID;
+            }
+            break;
+        case 0x03://Set LED output
+            UartSend(0x5F);
+            UartSend(0x01);
+            UartSend(((uint8_t*)ReportData)[1]);
+            break;
         }
-        if (configID == 0x01)
-            mousePlayer = playerID;
     }
 }
-

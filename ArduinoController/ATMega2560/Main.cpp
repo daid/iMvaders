@@ -1,57 +1,36 @@
-/* -*- c++ -*- */
-
-/*
-    Reprap firmware based on Sprinter and grbl.
- Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
-
- This program is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
-
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
-/*
- This firmware is a mashup between Sprinter and grbl.
-  (https://github.com/kliment/Sprinter)
-  (https://github.com/simen/grbl/tree)
-
- It has preliminary support for Matthew Roberts advance algorithm
-    http://reprap.org/pipermail/reprap-dev/2011-May/003323.html
- */
 #include "fastio.h"
 #include "Serial.h"
+#include "pn532.h"
 
-//===========================================================================
-//=============================imported variables============================
-//===========================================================================
-
-
-//===========================================================================
-//=============================public variables=============================
-//===========================================================================
-
-//===========================================================================
-//=============================private variables=============================
-//===========================================================================
-
-//===========================================================================
-//=============================ROUTINES=============================
-//===========================================================================
+#define ID 0
 
 #define SETUP_BUTTON_PIN(nr) do { SET_INPUT(nr); WRITE(nr, 1); } while(0)
 #define SETUP_LED_PIN(nr) do { SET_OUTPUT(nr); WRITE(nr, 1); } while(0)
+
+#define LED_PIN_1 7
+#define LED_PIN_2 5
+#define LED_PIN_3 2
+#define LED_PIN_4 14
+#define LED_PIN_5 16
+#define LED_PIN_6 18
+#define LED_PIN_7 19
+
+#define BUTTON_1_PIN 62
+#define BUTTON_2_PIN 65
+#define BUTTON_3_PIN 68
+#define BUTTON_4_PIN 49
+#define BUTTON_5_PIN 43
+#define BUTTON_6_PIN 37
+
+#define START_BUTTON_PIN 31
+
 int main()
 {
     uint16_t counter = 0;
+    uint8_t uid[7];
+    uint8_t uid_len;
     
+    pn532Init();
     Serial.begin(115200);
     SET_OUTPUT(13);
 
@@ -59,23 +38,24 @@ int main()
     SETUP_BUTTON_PIN(56);
     SETUP_BUTTON_PIN(58);
     SETUP_BUTTON_PIN(60);
-    SETUP_BUTTON_PIN(62);
-    SETUP_BUTTON_PIN(65);
-    SETUP_BUTTON_PIN(68);
     
-    SETUP_BUTTON_PIN(49);
-    SETUP_BUTTON_PIN(43);
-    SETUP_BUTTON_PIN(37);
-    SETUP_BUTTON_PIN(31);
+    SETUP_BUTTON_PIN(BUTTON_1_PIN);
+    SETUP_BUTTON_PIN(BUTTON_2_PIN);
+    SETUP_BUTTON_PIN(BUTTON_3_PIN);
+    SETUP_BUTTON_PIN(BUTTON_4_PIN);
+    SETUP_BUTTON_PIN(BUTTON_5_PIN);
+    SETUP_BUTTON_PIN(BUTTON_6_PIN);
+    
+    SETUP_BUTTON_PIN(START_BUTTON_PIN);
     SETUP_BUTTON_PIN(25);
     
-    SETUP_LED_PIN(7);
-    SETUP_LED_PIN(5);
-    SETUP_LED_PIN(2);
-    SETUP_LED_PIN(14);
-    SETUP_LED_PIN(16);
-    SETUP_LED_PIN(18);
-    SETUP_LED_PIN(20);
+    SETUP_LED_PIN(LED_PIN_1);
+    SETUP_LED_PIN(LED_PIN_2);
+    SETUP_LED_PIN(LED_PIN_3);
+    SETUP_LED_PIN(LED_PIN_4);
+    SETUP_LED_PIN(LED_PIN_5);
+    SETUP_LED_PIN(LED_PIN_6);
+    SETUP_LED_PIN(LED_PIN_7);
 
     while(1)
     {
@@ -88,18 +68,18 @@ int main()
         if (!READ(60)) buttons |= 0x08;
         
         Serial.write(uint8_t(0x5F));
-        Serial.write(uint8_t(0x00));
+        Serial.write(uint8_t(0x00 + ID * 2));
         Serial.write(uint8_t(buttons));
 
         WRITE(13, 0);
         buttons = 0;
-        if (!READ(62)) buttons |= 0x01;
-        if (!READ(65)) buttons |= 0x02;
-        if (!READ(68)) buttons |= 0x04;
-        if (!READ(49)) buttons |= 0x08;
-        if (!READ(43)) buttons |= 0x10;
-        if (!READ(37)) buttons |= 0x20;
-        if (!READ(31)) buttons |= 0x40;
+        if (!READ(BUTTON_1_PIN)) buttons |= 0x01;
+        if (!READ(BUTTON_2_PIN)) buttons |= 0x02;
+        if (!READ(BUTTON_3_PIN)) buttons |= 0x04;
+        if (!READ(BUTTON_4_PIN)) buttons |= 0x08;
+        if (!READ(BUTTON_5_PIN)) buttons |= 0x10;
+        if (!READ(BUTTON_6_PIN)) buttons |= 0x20;
+        if (!READ(START_BUTTON_PIN)) buttons |= 0x40;
         if (buttons & 0x40)
         {
             counter++;
@@ -113,7 +93,52 @@ int main()
         }
 
         Serial.write(uint8_t(0x5F));
-        Serial.write(uint8_t(0x01));
+        Serial.write(uint8_t(0x01 + ID * 2));
         Serial.write(uint8_t(buttons));
+        
+        if (pn532readUid(uid, &uid_len))
+        {
+            for(uint8_t n=0; n<uid_len; n++)
+            {
+                Serial.write(uint8_t(0x5F));
+                Serial.write(uint8_t(0x10));
+                Serial.write(uid[n]);
+            }
+            Serial.write(uint8_t(0x5F));
+            Serial.write(uint8_t(0x11));
+            Serial.write(uint8_t(ID));
+        }
+        
+        while(Serial.available())
+        {
+            uint8_t data = Serial.read();
+            static uint8_t read_state = 0;
+            static uint8_t read_command;
+            switch(read_state)
+            {
+            case 0:
+                if (data == 0x5F)
+                    read_state = 1;
+                break;
+            case 1:
+                read_command = data;
+                read_state = 2;
+                break;
+            case 2:
+                switch(read_command)
+                {
+                case 0x01:
+                    if (data & 0x01) WRITE(LED_PIN_1, 1); else WRITE(LED_PIN_1, 0); 
+                    if (data & 0x02) WRITE(LED_PIN_2, 1); else WRITE(LED_PIN_2, 0); 
+                    if (data & 0x04) WRITE(LED_PIN_3, 1); else WRITE(LED_PIN_3, 0); 
+                    if (data & 0x08) WRITE(LED_PIN_4, 1); else WRITE(LED_PIN_4, 0); 
+                    if (data & 0x10) WRITE(LED_PIN_5, 1); else WRITE(LED_PIN_5, 0); 
+                    if (data & 0x20) WRITE(LED_PIN_6, 1); else WRITE(LED_PIN_6, 0); 
+                    if (data & 0x40) WRITE(LED_PIN_7, 1); else WRITE(LED_PIN_7, 0); 
+                    break;
+                }
+                break;
+            }
+        }
     }
 }
