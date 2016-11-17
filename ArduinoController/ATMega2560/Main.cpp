@@ -24,6 +24,14 @@
 
 #define START_BUTTON_PIN 31
 
+void writePacket(uint8_t id, uint8_t data)
+{
+    Serial.write(uint8_t(0x5F));
+    Serial.write(id);
+    Serial.write(data);
+    Serial.write(id ^ data);
+}
+
 int main()
 {
     uint16_t counter = 0;
@@ -32,6 +40,7 @@ int main()
     
     pn532Init();
     Serial.begin(115200);
+    sei();
     SET_OUTPUT(13);
 
     SETUP_BUTTON_PIN(54);
@@ -59,19 +68,15 @@ int main()
 
     while(1)
     {
-        WRITE(13, 1);
-        
         uint8_t buttons = 0;
         if (!READ(54)) buttons |= 0x01;
         if (!READ(56)) buttons |= 0x02;
         if (!READ(58)) buttons |= 0x04;
         if (!READ(60)) buttons |= 0x08;
         
-        Serial.write(uint8_t(0x5F));
-        Serial.write(uint8_t(0x00 + ID * 2));
-        Serial.write(uint8_t(buttons));
+        writePacket(0x00, (ID == 0) ? buttons : 0);
+        writePacket(0x02, (ID == 1) ? buttons : 0);
 
-        WRITE(13, 0);
         buttons = 0;
         if (!READ(BUTTON_1_PIN)) buttons |= 0x01;
         if (!READ(BUTTON_2_PIN)) buttons |= 0x02;
@@ -92,21 +97,16 @@ int main()
             counter = 0;
         }
 
-        Serial.write(uint8_t(0x5F));
-        Serial.write(uint8_t(0x01 + ID * 2));
-        Serial.write(uint8_t(buttons));
+        writePacket(0x01, (ID == 0) ? buttons : 0);
+        writePacket(0x03, (ID == 1) ? buttons : 0);
         
         if (pn532readUid(uid, &uid_len))
         {
             for(uint8_t n=0; n<uid_len; n++)
             {
-                Serial.write(uint8_t(0x5F));
-                Serial.write(uint8_t(0x10));
-                Serial.write(uid[n]);
+                writePacket(0x10, uid[n]);
             }
-            Serial.write(uint8_t(0x5F));
-            Serial.write(uint8_t(0x11));
-            Serial.write(uint8_t(ID));
+            writePacket(0x11, ID);
         }
         
         while(Serial.available())
@@ -114,30 +114,42 @@ int main()
             uint8_t data = Serial.read();
             static uint8_t read_state = 0;
             static uint8_t read_command;
+            static uint8_t read_data;
             switch(read_state)
             {
             case 0:
                 if (data == 0x5F)
+                {
+                    WRITE(13, 1);
                     read_state = 1;
+                }
                 break;
             case 1:
                 read_command = data;
                 read_state = 2;
                 break;
             case 2:
-                switch(read_command)
+                read_data = data;
+                read_state = 3;
+                break;
+            case 3:
+                read_state = 0;
+                if ((read_command ^ read_data) == data)
                 {
-                case 0x01:
-                    if (data & 0x01) WRITE(LED_PIN_1, 1); else WRITE(LED_PIN_1, 0); 
-                    if (data & 0x02) WRITE(LED_PIN_2, 1); else WRITE(LED_PIN_2, 0); 
-                    if (data & 0x04) WRITE(LED_PIN_3, 1); else WRITE(LED_PIN_3, 0); 
-                    if (data & 0x08) WRITE(LED_PIN_4, 1); else WRITE(LED_PIN_4, 0); 
-                    if (data & 0x10) WRITE(LED_PIN_5, 1); else WRITE(LED_PIN_5, 0); 
-                    if (data & 0x20) WRITE(LED_PIN_6, 1); else WRITE(LED_PIN_6, 0); 
-                    if (data & 0x40) WRITE(LED_PIN_7, 1); else WRITE(LED_PIN_7, 0); 
+                    switch(read_command)
+                    {
+                    case 0x01:
+                        if (read_data & 0x01) WRITE(LED_PIN_1, 1); else WRITE(LED_PIN_1, 0); 
+                        if (read_data & 0x02) WRITE(LED_PIN_2, 1); else WRITE(LED_PIN_2, 0); 
+                        if (read_data & 0x04) WRITE(LED_PIN_3, 1); else WRITE(LED_PIN_3, 0); 
+                        if (read_data & 0x08) WRITE(LED_PIN_4, 1); else WRITE(LED_PIN_4, 0); 
+                        if (read_data & 0x10) WRITE(LED_PIN_5, 1); else WRITE(LED_PIN_5, 0); 
+                        if (read_data & 0x20) WRITE(LED_PIN_6, 1); else WRITE(LED_PIN_6, 0); 
+                        if (read_data & 0x40) WRITE(LED_PIN_7, 1); else WRITE(LED_PIN_7, 0); 
+                        break;
+                    }
                     break;
                 }
-                break;
             }
         }
     }

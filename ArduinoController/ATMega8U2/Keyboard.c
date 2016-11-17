@@ -169,8 +169,12 @@ int main(void)
 				break;
 			case 2:
 				cmd_data = c;
+				recvState = 3;
+				break;
+            case 3:
 				recvState = 0;
-				handleCmd();
+                if ((cmd ^ cmd_data) == c)
+                    handleCmd();
 				break;
 			}
 		}
@@ -402,6 +406,7 @@ void CALLBACK_HID_Device_ProcessHIDReport(USB_ClassInfo_HID_Device_t* const HIDI
             UartSend(0x5F);
             UartSend(0x01);
             UartSend(((uint8_t*)ReportData)[1]);
+            UartSend(0x01 ^ ((uint8_t*)ReportData)[1]);
             break;
         }
     }
