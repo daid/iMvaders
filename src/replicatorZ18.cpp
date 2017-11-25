@@ -68,6 +68,8 @@ ReplicatorZ18Part::ReplicatorZ18Part(P<ReplicatorZ18> owner, int index)
     health = maxHealth;
     tinyExplosionDelay = 0.0;
     indestructible = false;
+    
+    setCollisionFilter(0x0002, 0xFFFD);
 }
 
 void ReplicatorZ18Part::destroy()
