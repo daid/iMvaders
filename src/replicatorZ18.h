@@ -6,6 +6,9 @@
 class ReplicatorZ18Part;
 class ReplicatorZ18 : public GameEntity
 {
+    float speed;
+    float y;
+    int row_done;
 public:
     PVector<ReplicatorZ18Part> parts;
     

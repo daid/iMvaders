@@ -13,49 +13,40 @@ REGISTER_SCRIPT_CLASS(ReplicatorZ18)
 
 ReplicatorZ18::ReplicatorZ18()
 {
-    for(unsigned int y=0; y<34; y++)
-    {
-        for(unsigned int x=0; x<20; x++)
-        {
-            P<ReplicatorZ18Part> part = new ReplicatorZ18Part(this, x + y * 20);
-            part->setPosition(sf::Vector2f(x * 16, float(y) * 15 - 34.0 * 16.0));
-            parts.push_back(part);
-        }
-    }
-
-    for(unsigned int y=0; y<34; y++)
-    {
-        for(unsigned int x=0; x<20; x++)
-        {
-            int idx = x + y * 20;
-            if (x > 0) parts[idx]->neighbours[0] = parts[idx - 1];
-            if (x < 19) parts[idx]->neighbours[1] = parts[idx + 1];
-            //if (y > 0) parts[idx]->neighbours[2] = parts[idx - 20];
-            //if (y < 33) parts[idx]->neighbours[3] = parts[idx + 20];
-        }
-    }
-    
-    for(unsigned int n=0; n<15; n++)
-    {
-        int x = irandom(0, 19);
-        int y = irandom(0, 33);
-        int idx = x + y * 20;
-        
-        //parts[idx]->indestructible = true;
-    }
+    y = 0;
+    row_done = 34;
+    speed = 16;
 }
 
 void ReplicatorZ18::update(float delta)
 {
-    int cnt = 0;
-    foreach(ReplicatorZ18Part, p, parts)
-        cnt++;
-    if (cnt == 0)
+    y += speed * delta;
+    int want_row = std::max(0, 34 - int(y / 16.0));
+    for(int row = want_row; row < row_done; row++)
+    {
+        for(unsigned int x=0; x<20; x++)
+        {
+            P<ReplicatorZ18Part> part = new ReplicatorZ18Part(this, x + row * 20);
+            part->setPosition(sf::Vector2f(x * 16, float(row) * 15 - 34.0 * 16.0 + y));
+            part->setSpeed(speed);
+            parts.push_back(part);
+        }
+        for(unsigned int x=0; x<20; x++)
+        {
+            int idx = parts.size() - 20 + x;
+            if (x > 0) parts[idx]->neighbours[0] = parts[idx - 1];
+            if (x < 19) parts[idx]->neighbours[1] = parts[idx + 1];
+        }
+    }
+    row_done = want_row;
+
+    if (y > 34 * 16.0 + 260)
         destroy();
 }
 
 void ReplicatorZ18::setSpeed(float speed)
 {
+    this->speed = speed;
     foreach(ReplicatorZ18Part, p, parts)
         p->setSpeed(speed);
 }
