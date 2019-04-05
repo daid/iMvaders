@@ -154,8 +154,8 @@ int main(int argc, char** argv)
         
     new StarBackground();
     new MainMenu();
-    new WallClock();
-    new AutoShutdown();
+    //new WallClock();
+    //new AutoShutdown();
     
     engine->runMainLoop();
     

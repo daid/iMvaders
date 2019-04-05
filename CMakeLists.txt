@@ -12,8 +12,9 @@ if(NOT DEFINED CPACK_PACKAGE_VERSION_MAJOR)
  string(TIMESTAMP CPACK_PACKAGE_VERSION_PATCH "%d")
 endif(NOT DEFINED CPACK_PACKAGE_VERSION_MAJOR)
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
+set(OPT_FLAGS "-mcpu=native -mfpu=neon-vfpv4 -O3 -mfloat-abi=hard -funsafe-math-optimizations")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall ${OPT_FLAGS}")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall ${OPT_FLAGS}")
 
 ## ensure c++11 is used
 if(NOT ${CMAKE_VERSION} VERSION_LESS 3.1)
