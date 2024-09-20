@@ -15,9 +15,9 @@ public:
     VersusGameState();
     virtual ~VersusGameState() {}
 
-    virtual void update(float delta);
+    virtual void update(float delta) override;
 
-    virtual void render(sf::RenderTarget& window);
+    virtual void render(sp::RenderTarget& window) override;
 };
 
 #endif//VERSUS_GAME_MODE_H

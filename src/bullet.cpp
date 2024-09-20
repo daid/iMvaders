@@ -5,29 +5,29 @@
 #include "random.h"
 #include "explosion.h"
 
-Bullet::Bullet(sf::Vector2f position, int type, float angle, float speed)
+Bullet::Bullet(glm::vec2 position, int type, float angle, float speed)
 : GameEntity(), Collisionable(1.0), speed(speed), type(type)
 {
-    soundManager->playSound("laser", random(0.75, 1.25));
-    textureManager.setTexture(sprite, "bullet");
+    soundManager->playSound("laser.wav", random(0.75, 1.25));
+    spriteManager.setTexture(sprite, "bullet");
     setPosition(position);
     setRotation(angle);
     if (type != -1)
-        setVelocity(sf::rotateVector(sf::Vector2f(0, -1), getRotation()) * speed);
+        setVelocity(rotateVec2(glm::vec2(0, -1), getRotation()) * speed);
     if (type == 0)
-        sprite.setColor(sf::Color::Red);
+        sprite.setColor({255,0,0,255});
     else if (type == 1)
-        sprite.setColor(sf::Color::Green);
+        sprite.setColor({0,255,0,255});
     else if (type == -1)
-        sprite.setColor(sf::Color(24, 161, 212));
+        sprite.setColor({24, 161, 212, 255});
     else if (type == -2)
-        sprite.setColor(sf::Color(231, 24, 118));
+        sprite.setColor({231, 24, 118, 255});
 }
 
 void Bullet::update(float delta)
 {
     if (type == -1)
-        setPosition(getPosition() + sf::rotateVector(sf::Vector2f(0, -1), getRotation()) * speed * delta);
+        setPosition(getPosition() + rotateVec2(glm::vec2(0, -1), getRotation()) * speed * delta);
     if (getPosition().x < -10) destroy();
     if (getPosition().y < -10) destroy();
     if (getPosition().x > 330) destroy();
@@ -40,13 +40,13 @@ void Bullet::collide(Collisionable* other, float force)
     if (e && e->takeDamage(getPosition(), type, 1))
     {
         destroy();
-        new Explosion(getPosition(), 3, sf::rotateVector(sf::Vector2f(0, -1), getRotation()) * speed / 5.0f);
+        new Explosion(getPosition(), 3, rotateVec2(glm::vec2(0, -1), getRotation()) * speed / 5.0f);
     }
 }
 
-void Bullet::render(sf::RenderTarget& window)
+void Bullet::render(sp::RenderTarget& window)
 {
     sprite.setPosition(getPosition());
     sprite.setRotation(getRotation());
-    window.draw(sprite);
+    sprite.draw(window);
 }

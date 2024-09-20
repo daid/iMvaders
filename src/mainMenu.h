@@ -10,16 +10,16 @@ class MainMenu : public GameEntity
     constexpr static float intoTextSpeed = 10.0f;
     float blink;
     float introTextPosition;
+    Sprite logoSprite;
 public:
-    sf::Sprite logoSprite;
     P<EnemyGroup> enemyGroup;
 
     MainMenu();
     virtual ~MainMenu();
 
-    virtual void update(float delta);
+    virtual void update(float delta) override;
 
-    virtual void render(sf::RenderTarget& window);
+    virtual void render(sp::RenderTarget& window) override;
 };
 
 #endif//MAIN_MENU_H

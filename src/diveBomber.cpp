@@ -4,7 +4,7 @@ class DiveBomber : public BasicEnemyBase
 {
     float fireDelay;
 public:
-    virtual void update(float delta)
+    virtual void update(float delta) override
     {
         BasicEnemyBase::update(delta);
 
@@ -24,8 +24,8 @@ public:
         case ES_Diving:
         case ES_Outside:
             {
-                sf::Vector2f start(random(0, 320), -20);
-                sf::Vector2f end(start.x + random(-100, 100), 300);
+                glm::vec2 start(random(0, 320), -20);
+                glm::vec2 end(start.x + random(-100, 100), 300);
                 setTargetPosition(end);
                 wait(start);
                 flyIn();

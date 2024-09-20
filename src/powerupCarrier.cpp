@@ -13,12 +13,12 @@ REGISTER_SCRIPT_CLASS(PowerupCarrier)
 }
 
 PowerupCarrier::PowerupCarrier()
-: GameEntity(), Collisionable(sf::Vector2f(28, 20))
+: GameEntity(), Collisionable(glm::vec2(28, 20))
 {
     direction = 1.0;
     speed = 40;
-    textureManager.setTexture(sprite, "replicator2", 0);
-    setPosition(sf::Vector2f(-20, 0));
+    spriteManager.setTexture(sprite, "replicator2", 0);
+    setPosition(glm::vec2(-20, 0));
 }
 
 PowerupCarrier::~PowerupCarrier()
@@ -29,10 +29,10 @@ void PowerupCarrier::setDirection(int dir)
 {
     if (dir > 0)
     {
-        setPosition(sf::Vector2f(-20, 0));
+        setPosition(glm::vec2(-20, 0));
         direction = 1.0;
     }else{
-        setPosition(sf::Vector2f(340, 0));
+        setPosition(glm::vec2(340, 0));
         direction = -1.0;
     }
 }
@@ -40,9 +40,9 @@ void PowerupCarrier::setDirection(int dir)
 void PowerupCarrier::update(float delta)
 {
     if (direction > 0)
-        setPosition(sf::Vector2f(getPosition().x + delta * speed, sin(getPosition().x / 30) * 30 + 50));
+        setPosition(glm::vec2(getPosition().x + delta * speed, sin(getPosition().x / 30) * 30 + 50));
     else
-        setPosition(sf::Vector2f(getPosition().x - delta * speed, sin(getPosition().x / 30 + M_PI) * 30 + 50));
+        setPosition(glm::vec2(getPosition().x - delta * speed, sin(getPosition().x / 30 + float(M_PI)) * 30 + 50));
     if ((direction > 0 && getPosition().x > 320 + 20) || (direction < 0 && getPosition().x < -20))
     {
         destroyed();
@@ -50,7 +50,7 @@ void PowerupCarrier::update(float delta)
     }
 }
 
-bool PowerupCarrier::takeDamage(sf::Vector2f position, int damageType, int damageAmount)
+bool PowerupCarrier::takeDamage(glm::vec2 position, int damageType, int damageAmount)
 {
     if (damageType >= 0)
         return false;
@@ -62,14 +62,14 @@ bool PowerupCarrier::takeDamage(sf::Vector2f position, int damageType, int damag
     return true;
 }
 
-void PowerupCarrier::render(sf::RenderTarget& window)
+void PowerupCarrier::render(sp::RenderTarget& window)
 {
-    sf::Sprite powerupSprite;
-    textureManager.setTexture(powerupSprite, "robot", 0);
+    Sprite powerupSprite;
+    spriteManager.setTexture(powerupSprite, "robot", 0);
     powerupSprite.setPosition(getPosition());
     powerupSprite.setScale(0.1, 0.1);
-    window.draw(powerupSprite);
+    powerupSprite.draw(window);
 
     sprite.setPosition(getPosition());
-    window.draw(sprite);
+    sprite.draw(window);
 }

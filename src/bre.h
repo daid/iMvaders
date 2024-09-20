@@ -18,8 +18,8 @@ class BreLaser;
 class BreEnemy: public GameEntity, public Collisionable
 {
 public:
-    sf::Sprite mouth;
-    sf::Sprite shield;
+    Sprite mouth;
+    Sprite shield;
     BreState state;
     int moveDir;
     int health;
@@ -47,9 +47,9 @@ public:
 
     void setDifficulty(int difficulty);
     
-    virtual void update(float delta);
-    virtual void render(sf::RenderTarget& window);
-    virtual bool takeDamage(sf::Vector2f position, int damageType, int damageAmount);
+    virtual void update(float delta) override;
+    virtual void render(sp::RenderTarget& window) override;
+    virtual bool takeDamage(glm::vec2 position, int damageType, int damageAmount) override;
 };
 
 class BreEnemyHud: public GameEntity
@@ -59,20 +59,20 @@ public:
     
     BreEnemyHud(P<BreEnemy> owner);
     
-    virtual void update(float delta);
-    virtual void render(sf::RenderTarget& window);
+    virtual void update(float delta) override;
+    virtual void render(sp::RenderTarget& window) override;
 };
 
 class BreDeath: public GameEntity
 {
     float lifeTime;
-    sf::Vector2f velocity;
+    glm::vec2 velocity{};
     float angularVelocity;
 public:
-    BreDeath(sf::Vector2f position, int index);
+    BreDeath(glm::vec2 position, int index);
     
-    virtual void update(float delta);
-    virtual void render(sf::RenderTarget& window);
+    virtual void update(float delta) override;
+    virtual void render(sp::RenderTarget& window) override;
 };
 
 class BreLaser: public GameEntity, public Collisionable
@@ -82,8 +82,8 @@ public:
     BreLaser(P<BreEnemy> owner);
     virtual ~BreLaser() {}
 
-    virtual void update(float delta);
-    virtual void render(sf::RenderTarget& window);
+    virtual void update(float delta) override;
+    virtual void render(sp::RenderTarget& window) override;
 
     virtual void collide(Collisionable* other, float force) override;
 };
@@ -99,10 +99,10 @@ public:
     MoneyShield(P<BreEnemy> owner, float startAngle, float endDistance, bool counterClockwise);
     virtual ~MoneyShield() {}
     
-    virtual void update(float delta);
-    virtual void render(sf::RenderTarget& window);
+    virtual void update(float delta) override;
+    virtual void render(sp::RenderTarget& window) override;
     
-    virtual bool takeDamage(sf::Vector2f position, int damageType, int damageAmount);
+    virtual bool takeDamage(glm::vec2 position, int damageType, int damageAmount) override;
 };
 
 #endif // BRE_H

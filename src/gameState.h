@@ -21,9 +21,9 @@ public:
     GameState(int playerCount);
     virtual ~GameState();
 
-    virtual void update(float delta);
+    virtual void update(float delta) override;
 
-    virtual void render(sf::RenderTarget& window);
+    virtual void render(sp::RenderTarget& window) override;
 };
 
 #endif//GAME_STATE_H

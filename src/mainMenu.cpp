@@ -1,13 +1,14 @@
-#include <SFML/Network.hpp>
-
 #include "mainMenu.h"
 #include "player.h"
 #include "gameState.h"
 #include "textDraw.h"
 #include "scoreManager.h"
 #include "engine.h"
+#include "event.h"
+#include "soundManager.h"
 #include "versusGameMode.h"
 #include "main.h"
+#include "io/network/address.h"
 
 class SecretMenuOption
 {
@@ -46,7 +47,7 @@ public:
         }
     }
 
-    void update(float delta)
+    void update(float delta) override
     {
         P<PlayerController> pc1 = engine->getObject("playerController1");
         timeout -= delta;
@@ -63,7 +64,7 @@ public:
                 break;
             case 1:
                 destroy();
-                sf::Listener::setGlobalVolume(100);
+                soundManager->setMasterSoundVolume(100);
                 new VersusGameState();
                 break;
             default:
@@ -96,16 +97,16 @@ public:
         selectionIndex = std::max(0, selectionIndex);
         selectionIndex = std::min(int(options.size()) + 1, selectionIndex);
     }
-    
-    void render(sf::RenderTarget& window)
+
+    void render(sp::RenderTarget& window) override
     {
         drawText(window, 160, 20, "Choose your destiny");
 
-        sf::RectangleShape selection(sf::Vector2f(320, 12));
-        selection.setFillColor(sf::Color(24, 161, 212));
-        selection.setPosition(sf::Vector2f(0, 50 + 20 * selectionIndex));
-        window.draw(selection);
-        
+        RectangleShape selection({320, 12});
+        selection.setFillColor({24, 161, 212, 255});
+        selection.setPosition({0, 50 + 20 * selectionIndex});
+        selection.draw(window);
+
         int n=0;
         drawText(window, 160, 50 + 20 * n, "Play iMvaders");n++;
         drawText(window, 160, 50 + 20 * n, "Play VS iMvaders");n++;
@@ -113,9 +114,9 @@ public:
         {
             drawText(window, 160, 50 + 20 * n, options[i].name);n++;
         }
-        
-        sf::IpAddress localIp = sf::IpAddress::getLocalAddress();
-        drawText(window, 30, 220, localIp.toString(), align_left, 0.5);
+
+        auto localIp = sp::io::network::Address::getLocalAddress();
+        drawText(window, 30, 220, localIp.getHumanReadable()[0], align_left, 0.5);
     }
 };
 
@@ -123,18 +124,18 @@ MainMenu::MainMenu()
 : GameEntity(hudLayer)
 {
     blink = 0;
-    textureManager.setTexture(logoSprite, "iMvader");
+    spriteManager.setTexture(logoSprite, "iMvader");
     logoSprite.setPosition(160, 30);
 
     enemyGroup = new EnemyGroup();
     for(unsigned int n=0; n<10; n++)
     {
         BasicEnemyBase* e = new BasicEnemy();
-        e->setTargetPosition(sf::Vector2f(160+4*20 - n * 20, 70));
+        e->setTargetPosition({160+4*20 - n * 20, 70});
         enemyGroup->add(e);
     }
 
-    sf::Listener::setGlobalVolume(0);
+    soundManager->setMasterSoundVolume(0);
     introTextPosition = 0.0;
 }
 
@@ -147,18 +148,18 @@ void MainMenu::update(float delta)
     blink += delta;
     introTextPosition += delta;
     if (enemyGroup->isAll(ES_CenterField))
-        enemyGroup->dive(sf::Vector2f(random(20, 300), 260));
+        enemyGroup->dive({random(20, 300), 260});
     if (introTextPosition < introTextDelay)
     {
         if (enemyGroup->isAll(ES_Outside))
-            enemyGroup->flyIn(sf::Vector2f(random(0, 320), -20));
+            enemyGroup->flyIn({random(0, 320), -20});
     }
 
     P<PlayerController> pc1 = engine->getObject("playerController1");
     P<PlayerController> pc2 = engine->getObject("playerController2");
     if (pc1->down() || pc2->down())
         introTextPosition += delta * 5;
-    if (blink > 1.0)
+    if (blink > 1.0f)
     {
         for(int n=0; n<MAX_PLAYERS; n++)
         {
@@ -166,13 +167,13 @@ void MainMenu::update(float delta)
             if (pc->button(fireButton))
             {
                 new GameState(n + 1);
-                sf::Listener::setGlobalVolume(100);
+                soundManager->setMasterSoundVolume(100);
                 break;
             }
         }
     }
 
-    if (InputHandler::keyboardIsPressed(sf::Keyboard::Escape))
+    if (escape_key.getDown())
     {
         engine->shutdown();
     }
@@ -184,7 +185,7 @@ void MainMenu::update(float delta)
     }
 
     //Magic 4 button menu combo
-    if ((pc1->button(slowButton) && pc1->button(chargeShotButton) && pc2->button(slowButton) && pc2->button(chargeShotButton)) || sf::Keyboard::isKeyPressed(sf::Keyboard::BackSpace))
+    if ((pc1->button(slowButton) && pc1->button(chargeShotButton) && pc2->button(slowButton) && pc2->button(chargeShotButton)))
     {
         foreach(GameEntity, e, entityList)
             e->destroy();
@@ -194,7 +195,7 @@ void MainMenu::update(float delta)
     }
 }
 
-void MainMenu::render(sf::RenderTarget& window)
+void MainMenu::render(sp::RenderTarget& window)
 {
     P<ScoreManager> score = engine->getObject("score");
     if (introTextPosition < introTextDelay)
@@ -261,5 +262,5 @@ void MainMenu::render(sf::RenderTarget& window)
         if (f > 250)
             introTextPosition = 0;
     }
-    window.draw(logoSprite);
+    logoSprite.draw(window);
 }

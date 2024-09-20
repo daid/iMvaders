@@ -13,18 +13,18 @@ REGISTER_SCRIPT_CLASS(OldPrinter)
 }
 
 OldPrinter::OldPrinter()
-: Collisionable(sf::Vector2f(16, 20))
+: Collisionable(glm::vec2(16, 20))
 {
     setCollisionPhysics(true, false);
 
     health = maxHealth;
     if (random(0, 100) < 50)
-        textureManager.setTexture(sprite, "thingomatic");
+        spriteManager.setTexture(sprite, "thingomatic");
     else
-        textureManager.setTexture(sprite, "cupcake");
+        spriteManager.setTexture(sprite, "cupcake");
     setRotation(random(0, 360));
-    setVelocity(sf::Vector2f(random(-1, 1), random(-1, 1)) * 3.0f + sf::Vector2f(0.0f, 25.0f));
-    setPosition(sf::Vector2f(random(-20, 340), -20));
+    setVelocity(glm::vec2(random(-1, 1), random(-1, 1)) * 3.0f + glm::vec2(0.0f, 25.0f));
+    setPosition(glm::vec2(random(-20, 340), -20));
 }
 
 void OldPrinter::update(float delta)
@@ -37,11 +37,11 @@ void OldPrinter::update(float delta)
         destroy();
 }
 
-void OldPrinter::render(sf::RenderTarget& window)
+void OldPrinter::render(sp::RenderTarget& window)
 {
     sprite.setPosition(getPosition());
     sprite.setRotation(getRotation());
-    window.draw(sprite);
+    sprite.draw(window);
 }
 
 void OldPrinter::collide(Collisionable* other, float force)
@@ -51,7 +51,7 @@ void OldPrinter::collide(Collisionable* other, float force)
         e->takeDamage(getPosition(), 0, 1);
 }
 
-bool OldPrinter::takeDamage(sf::Vector2f position, int damageType, int damageAmount)
+bool OldPrinter::takeDamage(glm::vec2 position, int damageType, int damageAmount)
 {
     if (damageType >= 0)
         return false;

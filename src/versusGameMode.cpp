@@ -14,11 +14,11 @@ public:
     {
         if (random(0, 100) < 90)
         {
-            setPosition(sf::Vector2f(-20, random(40, 200)));
-            setVelocity(sf::Vector2f(random(-1, 1), random(-2, 2)) * 3.0f + sf::Vector2f( 25.0f, 0.0f));
+            setPosition(glm::vec2(-20, random(40, 200)));
+            setVelocity(glm::vec2(random(-1, 1), random(-2, 2)) * 3.0f + glm::vec2( 25.0f, 0.0f));
         }else{
-            setPosition(sf::Vector2f(340, random(40, 200)));
-            setVelocity(sf::Vector2f(random(-1, 1), random(-2, 2)) * 3.0f + sf::Vector2f(-155.0f, 0.0f));
+            setPosition(glm::vec2(340, random(40, 200)));
+            setVelocity(glm::vec2(random(-1, 1), random(-2, 2)) * 3.0f + glm::vec2(-155.0f, 0.0f));
         }
     }
     virtual ~VersusOldPrinter() {}
@@ -33,13 +33,13 @@ public:
         }
     }
 
-    virtual bool takeDamage(sf::Vector2f position, int damageType, int damageAmount) override
+    virtual bool takeDamage(glm::vec2 position, int damageType, int damageAmount) override
     {
         health -= damageAmount;
         if (damageType >= 0)
-            applyImpulse(position, sf::Vector2f(0, 13));
+            applyImpulse(position, glm::vec2(0, 13));
         else
-            applyImpulse(position, sf::Vector2f(0,-13));
+            applyImpulse(position, glm::vec2(0,-13));
         if (health <= 0)
         {
             new Explosion(getPosition(), 8);
@@ -73,7 +73,7 @@ VersusGameState::VersusGameState()
 
 void VersusGameState::update(float delta)
 {
-    if (printerSpawnDelay > 0.0)
+    if (printerSpawnDelay > 0.0f)
         printerSpawnDelay -= delta;
     else
     {
@@ -100,7 +100,7 @@ void VersusGameState::update(float delta)
 
     if (gameOver)
     {
-        if (victoryDelay > 0.0)
+        if (victoryDelay > 0.0f)
         {
             victoryDelay -= delta;
         }else{
@@ -111,27 +111,27 @@ void VersusGameState::update(float delta)
     }
 }
 
-void VersusGameState::render(sf::RenderTarget& window)
+void VersusGameState::render(sp::RenderTarget& window)
 {
-    sf::Sprite life;
+    Sprite life;
     for(int p=0; p<MAX_PLAYERS; p++)
     {
         if (p == 0)
         {
-            textureManager.setTexture(life, "player1");
+            spriteManager.setTexture(life, "player1");
             life.setScale(0.5, 0.5);
-            life.setColor(sf::Color(255,255,255,192));
+            life.setColor({255,255,255,192});
         }
         else
         {
-            textureManager.setTexture(life, "BasicEnemy", 0);
+            spriteManager.setTexture(life, "BasicEnemy", 0);
             life.setScale(0.6, 0.6);
-            life.setColor(sf::Color(212,0,0,192));
+            life.setColor({212,0,0,192});
         }
         for(int n=0; n<playerInfo[p].lives; n++)
         {
             life.setPosition(20 + 13 * n, 230 - p * 10);
-            window.draw(life);
+            life.draw(window);
         }
     }
 }

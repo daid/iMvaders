@@ -2,6 +2,8 @@
 #include <time.h>
 
 #include "engine.h"
+#include "event.h"
+#include "windowManager.h"
 #include "main.h"
 #include "StarBackground.h"
 #include "mainMenu.h"
@@ -24,7 +26,7 @@ public:
     WallClock() : Renderable(hudLayer) {}
     virtual ~WallClock() {}
     
-    virtual void render(sf::RenderTarget& window)
+    virtual void render(sp::RenderTarget& window) override
     {
         time_t t = time(NULL);
         struct tm* tt = localtime(&t);
@@ -47,7 +49,7 @@ public:
     }
     virtual ~AutoShutdown() {}
     
-    virtual void update(float delta)
+    virtual void update(float delta) override
     {
         idleTime += delta;
         
@@ -72,7 +74,7 @@ public:
             system("sudo poweroff");
     }
 
-    virtual void render(sf::RenderTarget& window)
+    virtual void render(sp::RenderTarget& window) override
     {
         if (idleTime > idleTimeout - idleTimeoutWarning)
         {
@@ -95,15 +97,15 @@ public:
     GlitchHandler() : EventHandler("glitch") { magtitude = 0; }
     virtual ~GlitchHandler() {}
     
-    virtual void event(string eventName, void* param)
+    virtual void event(string eventName, void* param) override
     {
         magtitude = 10.0;
     }
     
-    virtual void update(float delta)
+    virtual void update(float delta) override
     {
         if (magtitude > 0)
-            magtitude -= delta * 10.0;
+            magtitude -= delta * 10.0f;
         else
             magtitude = 0;
         glitchPostProcessor->enabled = magtitude > 0;
@@ -146,11 +148,11 @@ int main(int argc, char** argv)
     defaultRenderLayer = objectLayer;
 
 #ifdef DEBUG
-    new CollisionDebugDraw(hudLayer);
+    //new CollisionDebugDraw(hudLayer);
 #endif
 
     engine->registerObject("glitchHandler", new GlitchHandler());
-    engine->registerObject("windowManager", new WindowManager(320, 240, fullscreen, crtPostProcessor));
+    engine->registerObject("windowManager", new Window({320, 240}, fullscreen ? Window::Mode::Fullscreen : Window::Mode::Window, crtPostProcessor));
         
     new StarBackground();
     new MainMenu();

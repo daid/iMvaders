@@ -1,6 +1,7 @@
 #include <math.h>
 
 #include "engine.h"
+#include "scriptInterface.h"
 #include "random.h"
 #include "textureManager.h"
 #include "scoreManager.h"
@@ -9,25 +10,25 @@
 
 class SurfHenk : public GameEntity
 {
-    static constexpr float speed = 80;
+    static constexpr float speed = 80.0f;
 public:
     SurfHenk()
     {
-        textureManager.setTexture(sprite, "henk-surf");
-        sprite.setPosition(sf::Vector2f(-100, 0));
+        spriteManager.setTexture(sprite, "henk-surf");
+        sprite.setPosition({-100, 0});
     }
     virtual ~SurfHenk() {}
 
-    virtual void update(float delta)
+    virtual void update(float delta) override
     {
-        sprite.setPosition(sf::Vector2f(sprite.getPosition().x + delta * speed, sin(sprite.getPosition().x / 25) * 20 + 150));
+        sprite.setPosition({sprite.getPosition().x + delta * speed, sin(sprite.getPosition().x / 25) * 20 + 150});
         if (sprite.getPosition().x > 400)
             destroy();
     }
-    
-    virtual void render(sf::RenderTarget& window)
+
+    virtual void render(sp::RenderTarget& window) override
     {
-        window.draw(sprite);
+        sprite.draw(window);
     }
 };
 

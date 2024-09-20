@@ -6,7 +6,7 @@
 
 class Transmission : public GameEntity
 {
-    sf::Sprite face;
+    Sprite face;
     string faceName;
     string text;
     float transmissionTime;
@@ -25,9 +25,9 @@ public:
     void top();
     void bottom();
     
-    virtual void render(sf::RenderTarget& window);
+    virtual void render(sp::RenderTarget& window) override;
     
-    virtual void update(float delta);
+    virtual void update(float delta) override;
 };
 
 #endif//TRANSMISSION_H

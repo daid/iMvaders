@@ -18,11 +18,11 @@ REGISTER_SCRIPT_CLASS(BreEnemy)
 BreEnemy::BreEnemy()
 : GameEntity(), Collisionable(50.0)
 {
-    textureManager.setTexture(sprite, "bre1");
-    sprite.setPosition(sf::Vector2f(160, -80));
-    textureManager.setTexture(mouth, "bre2");
-    mouth.setPosition(sf::Vector2f(160, -80));
-    textureManager.setTexture(shield, "bre_shield");
+    spriteManager.setTexture(sprite, "bre1");
+    sprite.setPosition(glm::vec2(160, -80));
+    spriteManager.setTexture(mouth, "bre2");
+    mouth.setPosition(glm::vec2(160, -80));
+    spriteManager.setTexture(shield, "bre_shield");
     state = BS_FlyIn;
     mouthPos = 0;
     shotDelay = 0;
@@ -42,7 +42,7 @@ void BreEnemy::setDifficulty(int difficulty)
 {
     this->difficulty = difficulty;
     if (difficulty > 1)
-        textureManager.setTexture(sprite, "bre1_v2");
+        spriteManager.setTexture(sprite, "bre1_v2");
     if (difficulty > 2)
     {
         shieldStrength = maxShieldStrength;
@@ -57,9 +57,9 @@ void BreEnemy::update(float delta)
     switch(state)
     {
     case BS_FlyIn:
-        if (sprite.getPosition().y < 80.0)
+        if (sprite.getPosition().y < 80.0f)
         {
-            sprite.setPosition(sprite.getPosition() + sf::Vector2f(0, moveSpeed * delta));
+            sprite.setPosition(sprite.getPosition() + glm::vec2(0, moveSpeed * delta));
         }else
         {
             new BreEnemyHud(this);
@@ -68,17 +68,17 @@ void BreEnemy::update(float delta)
         }
         break;
     case BS_MoveLeftRight:
-        sprite.setPosition(sprite.getPosition() + sf::Vector2f(moveDir * moveSpeed * delta, 0));
-        if (sprite.getPosition().x < 40.0)
+        sprite.setPosition(sprite.getPosition() + glm::vec2(moveDir * moveSpeed * delta, 0));
+        if (sprite.getPosition().x < 40.0f)
             moveDir = 1;
-        if (sprite.getPosition().x > 280.0)
+        if (sprite.getPosition().x > 280.0f)
             moveDir = -1;
 
         if (shotDelay > 0)
         {
             shotDelay -= delta;
             if (difficulty > 1)
-                shotDelay -= delta * 0.1;
+                shotDelay -= delta * 0.1f;
         }else{
             if (random(0, 100) < 30)
             {
@@ -92,7 +92,7 @@ void BreEnemy::update(float delta)
                 }
             }else{
                 for(int n=-2; n<=2; n++)
-                    new Bullet(sprite.getPosition() + sf::Vector2f(-n*15, -50), 0, 180 + n * 7, 90.0);
+                    new Bullet(sprite.getPosition() + glm::vec2(-n*15, -50), 0, 180 + n * 7, 90.0);
                 shotDelay = normalShotDelay;
             }
         }
@@ -102,7 +102,7 @@ void BreEnemy::update(float delta)
         {
             shotDelay -= delta;
             if (difficulty > 1)
-                shotDelay -= delta * 0.3;
+                shotDelay -= delta * 0.3f;
         }else{
             state = BS_LaserFire;
             laser[0] = new BreLaser(this);
@@ -111,7 +111,7 @@ void BreEnemy::update(float delta)
         }
         break;
     case BS_LaserFire:
-        if (shotDelay > -0.5) //Why -0.5?
+        if (shotDelay > -0.5f) //Why -0.5?
         {
             shotDelay -= delta;
         }
@@ -126,22 +126,22 @@ void BreEnemy::update(float delta)
     case BS_MouthOpen:
         if (mouthPos < 30)
         {
-            mouthPos += delta * 40;
+            mouthPos += delta * 40.0f;
             if (difficulty > 1)
-                mouthPos += delta * 5;
+                mouthPos += delta * 5.0f;
             shotDelay = 0.2;
         }else if (shotDelay > 0)
         {
             shotDelay -= delta;
             if (difficulty > 1)
-                shotDelay -= delta * 0.3;
+                shotDelay -= delta * 0.3f;
         }else{
-            shotDelay += 0.2;
+            shotDelay += 0.2f;
             if (enemySpawnCount > 0)
             {
                 BasicEnemyBase* e = new BasicEnemy();
-                e->setTargetPosition(sf::Vector2f(random(20, 300), random(20, 200)));
-                e->wait(sprite.getPosition() + sf::Vector2f(0, 50), sprite.getPosition() + sf::Vector2f(0, 100));
+                e->setTargetPosition(glm::vec2(random(20, 300), random(20, 200)));
+                e->wait(sprite.getPosition() + glm::vec2(0, 50), sprite.getPosition() + glm::vec2(0, 100));
                 e->flyIn();
                 if (enemySpawnCount % 5 == 0)
                     e->giveShield();
@@ -167,12 +167,12 @@ void BreEnemy::update(float delta)
     }
     if (laser[0])
     {
-        laser[0]->setPosition(getPosition() + sf::Vector2f(18, 7));
+        laser[0]->setPosition(getPosition() + glm::vec2(18, 7));
         laser[0]->setRotation(-shotDelay*30.0f);
     }
     if (laser[1])
     {
-        laser[1]->setPosition(getPosition() + sf::Vector2f(-18, 7));
+        laser[1]->setPosition(getPosition() + glm::vec2(-18, 7));
         laser[1]->setRotation(shotDelay*30.0f);
     }
     if (difficulty > 2 && shieldStrength < maxShieldStrength)
@@ -187,49 +187,49 @@ void BreEnemy::update(float delta)
         }
     }
     
-    mouth.setPosition(sprite.getPosition() + sf::Vector2f(0, mouthPos));
+    mouth.setPosition(sprite.getPosition() + glm::vec2(0, mouthPos));
     shield.setPosition(sprite.getPosition());
     setPosition(sprite.getPosition()); // Set position for collision
     foreach(BasicEnemyBase, e, enemyList)
     {
         if (e->state == ES_CenterField)
-            e->dive(sf::Vector2f(random(20, 300), 340));
+            e->dive(glm::vec2(random(20, 300), 340));
         if (e->state == ES_Outside)
         {
-            e->wait(sf::Vector2f(random(20, 300), -40), sprite.getPosition() + sf::Vector2f(0, 100));
+            e->wait(glm::vec2(random(20, 300), -40), sprite.getPosition() + glm::vec2(0, 100));
             e->flyIn();
         }
     }
 }
 
-void BreEnemy::render(sf::RenderTarget& window)
+void BreEnemy::render(sp::RenderTarget& window)
 {
-    if (fmodf(invulnerability, 4.0/60) > 2.0/60.0)
+    if (fmodf(invulnerability, 4.0f/60) > 2.0f/60.0f)
     {
         if (shieldStrength > 0)
         {
-            shield.setColor(sf::Color(255,255,255,128));
+            shield.setColor({255,255,255,128});
         }else{
-            sprite.setColor(sf::Color(212, 0, 0));
-            mouth.setColor(sf::Color(212, 0, 0));
+            sprite.setColor({212, 0, 0, 255});
+            mouth.setColor({212, 0, 0, 255});
         }
     }
     else if (state == BS_LaserCharge)
     {
         float f = (shotDelay / laserChargeTime);
-        sprite.setColor(sf::Color(212, 128 * f, 128 * f));
-        mouth.setColor(sf::Color(212, 128 * f, 128 * f));
+        sprite.setColor({212, 128 * f, 128 * f, 255});
+        mouth.setColor({212, 128 * f, 128 * f, 255});
     }
     else
     {
-        sprite.setColor(sf::Color::White);
-        mouth.setColor(sf::Color::White);
-        shield.setColor(sf::Color::White);
+        sprite.setColor({255,255,255,255});
+        mouth.setColor({255,255,255,255});
+        shield.setColor({255,255,255,255});
     }
-    window.draw(sprite);
-    window.draw(mouth);
+    sprite.draw(window);
+    mouth.draw(window);
     if (shieldStrength > 0)
-        window.draw(shield);
+        shield.draw(window);
 }
 
 BreEnemyHud::BreEnemyHud(P<BreEnemy> owner)
@@ -243,48 +243,48 @@ void BreEnemyHud::update(float delta)
         destroy();
 }
 
-void BreEnemyHud::render(sf::RenderTarget& window)
+void BreEnemyHud::render(sp::RenderTarget& window)
 {
     if (!owner)
         return;
 
-    sf::RectangleShape healthBarBG(sf::Vector2f(280, 10));
-    healthBarBG.setFillColor(sf::Color::Transparent);
-    healthBarBG.setOutlineColor(sf::Color(128, 128, 128, 128));
+    RectangleShape healthBarBG(glm::vec2(280, 10));
+    healthBarBG.setFillColor({0,0,0,0});
+    healthBarBG.setOutlineColor({128, 128, 128, 128});
     healthBarBG.setOutlineThickness(1);
     healthBarBG.setPosition(20, 10);
-    window.draw(healthBarBG);
+    healthBarBG.draw(window);
 
-    sf::RectangleShape healthBar(sf::Vector2f(280 * owner->health / BreEnemy::maxHealth, 10));
-    healthBar.setFillColor(sf::Color(212, 0, 0, 128));
+    RectangleShape healthBar(glm::vec2(280 * owner->health / BreEnemy::maxHealth, 10));
+    healthBar.setFillColor({212, 0, 0, 128});
     healthBar.setPosition(20, 10);
-    window.draw(healthBar);
+    healthBar.draw(window);
     
     if (owner->difficulty > 2)
     {
-        sf::RectangleShape shieldBarBG(sf::Vector2f(280, 8));
-        shieldBarBG.setFillColor(sf::Color::Transparent);
-        shieldBarBG.setOutlineColor(sf::Color(128, 128, 128, 128));
+        RectangleShape shieldBarBG(glm::vec2(280, 8));
+        shieldBarBG.setFillColor({0,0,0,0});
+        shieldBarBG.setOutlineColor({128, 128, 128, 128});
         shieldBarBG.setOutlineThickness(1);
         shieldBarBG.setPosition(20, 25);
-        window.draw(shieldBarBG);
+        shieldBarBG.draw(window);
 
-        sf::RectangleShape shieldBar(sf::Vector2f(280 * owner->shieldStrength / BreEnemy::maxShieldStrength, 8));
-        shieldBar.setFillColor(sf::Color(100, 100, 212, 192));
+        RectangleShape shieldBar(glm::vec2(280 * owner->shieldStrength / BreEnemy::maxShieldStrength, 8));
+        shieldBar.setFillColor({100, 100, 212, 192});
         shieldBar.setPosition(20, 25);
-        window.draw(shieldBar);
+        shieldBar.draw(window);
         
         if (owner->shieldStrength < BreEnemy::maxShieldStrength)
         {
-            sf::RectangleShape shieldCharge(sf::Vector2f(280 * owner->shieldCharge / BreEnemy::shieldChargeTime, 3));
-            shieldCharge.setFillColor(sf::Color(100, 100, 212, 192));
+            RectangleShape shieldCharge(glm::vec2(280 * owner->shieldCharge / BreEnemy::shieldChargeTime, 3));
+            shieldCharge.setFillColor({100, 100, 212, 192});
             shieldCharge.setPosition(20, 30);
-            window.draw(shieldCharge);
+            shieldCharge.draw(window);
         }
     }
 }
 
-bool BreEnemy::takeDamage(sf::Vector2f position, int damageType, int damageAmount)
+bool BreEnemy::takeDamage(glm::vec2 position, int damageType, int damageAmount)
 {
     if (damageType >= 0)
         return false;
@@ -346,31 +346,31 @@ bool BreEnemy::takeDamage(sf::Vector2f position, int damageType, int damageAmoun
         if (difficulty > 1)
             P<ScoreManager>(engine->getObject("score"))->add(200);
         for(unsigned int n=0; n<30; n++)
-            new Explosion(sprite.getPosition() + sf::Vector2f(random(-60, 60), random(-80, 80)), 15);
+            new Explosion(sprite.getPosition() + glm::vec2(random(-60, 60), random(-80, 80)), 15);
     }
     invulnerability = 0.10;
     return true;
 }
 
-BreDeath::BreDeath(sf::Vector2f position, int index)
+BreDeath::BreDeath(glm::vec2 position, int index)
 {
     switch(index)
     {
     case 0:
-        textureManager.setTexture(sprite, "bre_death1");
-        velocity = sf::Vector2f(random(-10, 10), random(40, 50));
+        spriteManager.setTexture(sprite, "bre_death1");
+        velocity = glm::vec2(random(-10, 10), random(40, 50));
         break;
     case 1:
-        textureManager.setTexture(sprite, "bre_death2");
-        velocity = sf::Vector2f(random(40, 50), random(-10, 10));
+        spriteManager.setTexture(sprite, "bre_death2");
+        velocity = glm::vec2(random(40, 50), random(-10, 10));
         break;
     case 2:
-        textureManager.setTexture(sprite, "bre_death3");
-        velocity = sf::Vector2f(random(-10, 10), random(-50, -40));
+        spriteManager.setTexture(sprite, "bre_death3");
+        velocity = glm::vec2(random(-10, 10), random(-50, -40));
         break;
     case 3:
-        textureManager.setTexture(sprite, "bre_death4");
-        velocity = sf::Vector2f(random(-50, -40), random(-10, 10));
+        spriteManager.setTexture(sprite, "bre_death4");
+        velocity = glm::vec2(random(-50, -40), random(-10, 10));
         break;
     }
     angularVelocity = random(-30, 30);
@@ -389,19 +389,19 @@ void BreDeath::update(float delta)
     }
     sprite.setPosition(sprite.getPosition() + velocity * delta);
     sprite.setRotation(sprite.getRotation() + angularVelocity * delta);
-    if (lifeTime < 1.0)
-        sprite.setColor(sf::Color(255,255,255, 255 * lifeTime));
+    if (lifeTime < 1.0f)
+        sprite.setColor({255,255,255, 255 * lifeTime});
     velocity *= powf(0.5, delta);
     angularVelocity *= powf(0.5, delta);
 }
 
-void BreDeath::render(sf::RenderTarget& window)
+void BreDeath::render(sp::RenderTarget& window)
 {
-    window.draw(sprite);
+    sprite.draw(window);
 }
 
 BreLaser::BreLaser(P<BreEnemy> owner)
-: Collisionable(sf::Vector2f(3, 240), sf::Vector2f(1.5, 120))
+: Collisionable(glm::vec2(3, 240), glm::vec2(1.5, 120))
 {
     this->owner = owner;
 }
@@ -412,14 +412,14 @@ void BreLaser::update(float delta)
         destroy();
 }
 
-void BreLaser::render(sf::RenderTarget& window)
+void BreLaser::render(sp::RenderTarget& window)
 {
-    sf::RectangleShape laser(sf::Vector2f(6, 240));
+    RectangleShape laser(glm::vec2(6, 240));
     laser.setOrigin(3, 0);
-    laser.setFillColor(sf::Color(255,0,0,192));
+    laser.setFillColor({255,0,0,192});
     laser.setRotation(getRotation());
     laser.setPosition(getPosition());
-    window.draw(laser);
+    laser.draw(window);
 }
 
 void BreLaser::collide(Collisionable* other, float force)
@@ -430,12 +430,12 @@ void BreLaser::collide(Collisionable* other, float force)
 }
 
 MoneyShield::MoneyShield(P<BreEnemy> owner, float startAngle, float endDistance, bool counterClockwise)
-: Collisionable(sf::Vector2f(31, 15)), endDistance(endDistance), counterClockwise(counterClockwise)
+: Collisionable(glm::vec2(31, 15)), endDistance(endDistance), counterClockwise(counterClockwise)
 {
     this->owner = owner;
     setRotation(startAngle);
     distance = 0;
-    textureManager.setTexture(sprite, "Money");
+    spriteManager.setTexture(sprite, "Money");
 }
 
 void MoneyShield::update(float delta)
@@ -454,18 +454,18 @@ void MoneyShield::update(float delta)
     if (distance > endDistance)
         distance = endDistance;
 
-    setPosition(owner->getPosition() + sf::rotateVector(sf::Vector2f(0, -1), getRotation()) * distance);
+    setPosition(owner->getPosition() + rotateVec2(glm::vec2(0, -1), getRotation()) * distance);
 }
 
-void MoneyShield::render(sf::RenderTarget& window)
+void MoneyShield::render(sp::RenderTarget& window)
 {
     sprite.setPosition(getPosition());
     sprite.setRotation(getRotation());
     
-    window.draw(sprite);
+    sprite.draw(window);
 }
 
-bool MoneyShield::takeDamage(sf::Vector2f position, int damageType, int damageAmount)
+bool MoneyShield::takeDamage(glm::vec2 position, int damageType, int damageAmount)
 {
     if (damageType >= 0)
         return false;

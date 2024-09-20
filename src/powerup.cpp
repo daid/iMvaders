@@ -8,7 +8,7 @@ Powerup::Powerup()
 : GameEntity(), Collisionable(8.0)
 {
     speed = 40;
-    textureManager.setTexture(sprite, "robot", 0);
+    spriteManager.setTexture(sprite, "robot", 0);
     sprite.setScale(0.2, 0.2);
 }
 
@@ -18,7 +18,7 @@ Powerup::~Powerup()
 
 void Powerup::update(float delta)
 {
-    setPosition(getPosition() + sf::Vector2f(0, speed) * delta);
+    setPosition(getPosition() + glm::vec2(0, speed) * delta);
     if (getPosition().y > 240 + 20)
         destroy();
 }
@@ -32,8 +32,8 @@ void Powerup::collide(Collisionable* other, float force)
     destroy();
 }
 
-void Powerup::render(sf::RenderTarget& window)
+void Powerup::render(sp::RenderTarget& window)
 {
     sprite.setPosition(getPosition());
-    window.draw(sprite);
+    sprite.draw(window);
 }

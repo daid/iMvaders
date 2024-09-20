@@ -16,18 +16,18 @@ public:
 
     void add(BasicEnemyBase* e);
 
-    virtual void update(float delta);
+    virtual void update(float delta) override;
     
     void setOffset(float offset);
 
     //return true when all the enemies in this group in this state.
     bool isAll(EnemyState state);
 
-    void dive(sf::Vector2f target);
+    void dive(glm::vec2 target);
 
-    void flyIn(sf::Vector2f start);
+    void flyIn(glm::vec2 start);
 
-    void flyInBy(sf::Vector2f start, sf::Vector2f flyByPoint);
+    void flyInBy(glm::vec2 start, glm::vec2 flyByPoint);
 };
 
 #endif // ENEMYGROUP_H

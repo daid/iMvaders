@@ -14,7 +14,7 @@
 class HighscoreEntry : public GameEntity
 {
 public:
-    sf::Vector2i pos[MAX_PLAYERS];
+    glm::ivec2 pos[MAX_PLAYERS];
     float keyDelay[MAX_PLAYERS];
     char name[MAX_PLAYERS][4];
     bool done[MAX_PLAYERS];
@@ -33,7 +33,7 @@ public:
         timeout = 120.0;
     }
 
-    virtual void update(float delta)
+    virtual void update(float delta) override
     {
         P<PlayerController> pc[MAX_PLAYERS];
         for(int n=0; n<MAX_PLAYERS; n++)
@@ -121,7 +121,7 @@ public:
         }
     }
 
-    virtual void render(sf::RenderTarget& window)
+    virtual void render(sp::RenderTarget& window) override
     {
         drawText(window, 160, 25, "NEW HIGHSCORE", align_center);
         drawText(window, 160, 40, "ENTER YOUR NAME", align_center);
@@ -133,17 +133,17 @@ public:
         }
         drawText(window, 160, 60, finalName, align_center);
 
-        sf::Sprite player;
+        Sprite player;
         for(int p=0; p<playerCount; p++)
         {
             if (done[p])
                 continue;
             if ((p % 2) == 0)
-                textureManager.setTexture(player, "player1");
+                spriteManager.setTexture(player, "player1");
             else
-                textureManager.setTexture(player, "player2");
+                spriteManager.setTexture(player, "player2");
             player.setPosition(110 + pos[p].x * 20, 85 + pos[p].y * 20);
-            window.draw(player);
+            player.draw(window);
         }
         
         for(int c='A'; c<='Z'; c++)
@@ -169,7 +169,7 @@ public:
         gameOverDelay = gameOverWait;
     }
 
-    virtual void update(float delta)
+    virtual void update(float delta) override
     {
         bool fire_pressed = false;
         for(int n=0; n<MAX_PLAYERS; n++)
@@ -179,7 +179,7 @@ public:
                 fire_pressed = true;
         }
     
-        if (gameOverDelay < gameOverWait - 1.0 && fire_pressed)
+        if (gameOverDelay < gameOverWait - 1.0f && fire_pressed)
             gameOverDelay = 0;
         if (gameOverDelay > 0)
             gameOverDelay -= delta;
@@ -199,7 +199,7 @@ public:
         }
     }
 
-    virtual void render(sf::RenderTarget& window)
+    virtual void render(sp::RenderTarget& window) override
     {
         P<ScoreManager> score = engine->getObject("score");
         drawText(window, 160, 120, "GAME OVER", align_center);
@@ -235,7 +235,7 @@ GameState::~GameState() {}
 
 void GameState::update(float delta)
 {
-    if (extra_player_spawn_delay > 0.0)
+    if (extra_player_spawn_delay > 0.0f)
     {
         extra_player_spawn_delay -= delta;
         for(int p=0; p<MAX_PLAYERS; p++)
@@ -270,7 +270,7 @@ void GameState::update(float delta)
             if (!pc->up() && !pc->down() && !pc->left() && !pc->right() && !pc->button(fireButton))
             {
                 reviveDelay -= delta;
-                if (reviveDelay < 0.0)
+                if (reviveDelay < 0.0f)
                 {
                     playerInfo[livePlayer].lives --;
                     playerInfo[deadPlayer].lives ++;
@@ -281,13 +281,6 @@ void GameState::update(float delta)
             }
         }
     }
-#ifdef DEBUG
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::BackSlash))
-    {
-        playerInfo[0].lives = 5;
-        playerInfo[0].nukes = 25;
-    }
-#endif
 
     bool gameOver = true;
     for(int n=0; n<MAX_PLAYERS; n++)
@@ -310,7 +303,7 @@ void GameState::update(float delta)
             }
         }
     }
-    if (InputHandler::keyboardIsPressed(sf::Keyboard::Escape))
+    if (escape_key.getDown())
     {
         gameOver = true;
     }
@@ -330,59 +323,59 @@ void GameState::update(float delta)
     }
 }
 
-void GameState::render(sf::RenderTarget& window)
+void GameState::render(sp::RenderTarget& window)
 {
-    sf::Sprite nukeIcon;
+    Sprite nukeIcon;
     
-    textureManager.setTexture(nukeIcon, "robot");
+    spriteManager.setTexture(nukeIcon, "robot");
     nukeIcon.setScale(0.12, 0.12);
     
-    sf::Sprite life;
+    Sprite life;
     for(int p=0; p<MAX_PLAYERS; p++)
     {
         if (!playerInfo[p].active)
             continue;
         if ((p % 2) == 0)
-            textureManager.setTexture(life, "player1");
+            spriteManager.setTexture(life, "player1");
         else
-            textureManager.setTexture(life, "player2");
+            spriteManager.setTexture(life, "player2");
         life.setScale(0.5, 0.5);
-        life.setColor(sf::Color(255,255,255,192));
+        life.setColor({255,255,255,192});
         for(int n=0; n<playerInfo[p].lives; n++)
         {
             life.setPosition(20 + 13 * n, 230 - p * 10);
-            window.draw(life);
+            life.draw(window);
         }
 
         if ((p % 2) == 0)
-            nukeIcon.setColor(sf::Color(24, 161, 212));
+            nukeIcon.setColor({24, 161, 212, 255});
         else
-            nukeIcon.setColor(sf::Color(231, 24, 118));
+            nukeIcon.setColor({231, 24, 118, 255});
         for(int n=0; n<playerInfo[p].nukes; n++)
         {
             nukeIcon.setPosition(60 + 10 * n, 230 - p * 10);
-            window.draw(nukeIcon);
+            nukeIcon.draw(window);
         }
     }
     
-    if (reviveDelay < reviveTimeout - 0.5)
+    if (reviveDelay < reviveTimeout - 0.5f)
     {
-        sf::RectangleShape reviveBarBG(sf::Vector2f(40, 8));
-        reviveBarBG.setFillColor(sf::Color::Transparent);
-        reviveBarBG.setOutlineColor(sf::Color(128, 128, 128, 128));
+        RectangleShape reviveBarBG({40, 8});
+        reviveBarBG.setFillColor({0,0,0,0});
+        reviveBarBG.setOutlineColor({128, 128, 128, 128});
         reviveBarBG.setOutlineThickness(1);
         reviveBarBG.setPosition(15, 200);
-        window.draw(reviveBarBG);
+        reviveBarBG.draw(window);
 
-        sf::RectangleShape reviveBar(sf::Vector2f(40 * ((reviveTimeout - 0.5) - reviveDelay) / (reviveTimeout - 0.5), 8));
-        reviveBar.setFillColor(sf::Color(24, 161, 212, 128));
+        RectangleShape reviveBar({40 * ((reviveTimeout - 0.5f) - reviveDelay) / (reviveTimeout - 0.5f), 8});
+        reviveBar.setFillColor({24, 161, 212, 128});
         reviveBar.setPosition(15, 200);
-        window.draw(reviveBar);
+        reviveBar.draw(window);
     }
 
     if (P<ScoreManager>(engine->getObject("score"))->get() < 1 && !playerInfo[1].active)
     {
-        if (extra_player_spawn_delay > 0.0 && fmodf(extra_player_spawn_delay, 1.0) < 0.5)
+        if (extra_player_spawn_delay > 0.0f && fmodf(extra_player_spawn_delay, 1.0) < 0.5f)
             drawText(window, 300, 220, "Press fire to join", align_right, 0.7);
     }else{
         drawText(window, 300, 220, string(P<ScoreManager>(engine->getObject("score"))->get()), align_right);

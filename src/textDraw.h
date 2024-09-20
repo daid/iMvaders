@@ -2,7 +2,7 @@
 #define TEXT_DRAW_H
 
 #include <stdio.h>
-#include <SFML/Graphics.hpp>
+#include "graphics/renderTarget.h"
 #include "stringImproved.h"
 
 enum textAlign
@@ -12,6 +12,6 @@ enum textAlign
     align_right = 2
 };
 
-void drawText(sf::RenderTarget& window, float x, float y, string str, textAlign align = align_center, float scale = 1.0);
+void drawText(sp::RenderTarget& window, float x, float y, string str, textAlign align = align_center, float scale = 1.0);
 
 #endif//TEXT_DRAW_H

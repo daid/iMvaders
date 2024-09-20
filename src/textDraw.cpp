@@ -1,5 +1,6 @@
 #include "textDraw.h"
 #include "textureManager.h"
+#include "gameEntity.h"
 
 static int textWidth(string str)
 {
@@ -9,11 +10,11 @@ static int textWidth(string str)
     {
         int c = str[i];
         if (c >= 'A' && c <= 'Z')
-            ret += textureManager.getSpriteRect("abc", c-'A').width + 1;
+            ret += spriteManager.getSpriteSize("abc", c-'A').x + 1;
         else if (c >= 'a' && c <= 'z')
-            ret += textureManager.getSpriteRect("abc", c-'a').width + 1;
+            ret += spriteManager.getSpriteSize("abc", c-'a').x + 1;
         else if (c >= '0' && c <= '9')
-            ret += textureManager.getSpriteRect("nums", c-'0').width + 1;
+            ret += spriteManager.getSpriteSize("nums", c-'0').x + 1;
         else if (c == ':')
             ret += 5;
         else if (c == '|')
@@ -27,9 +28,9 @@ static int textWidth(string str)
     return std::max(ret, width);
 }
 
-void drawText(sf::RenderTarget& window, float x, float y, string str, textAlign align, float scale)
+void drawText(sp::RenderTarget& window, float x, float y, string str, textAlign align, float scale)
 {
-    sf::Sprite letter;
+    Sprite letter;
     if (align == align_center)
         x -= textWidth(str)/2.0f * scale;
     if (align == align_right)
@@ -41,31 +42,31 @@ void drawText(sf::RenderTarget& window, float x, float y, string str, textAlign 
         if (c >= 'A' && c <= 'Z')
         {
             c -= 'A';
-            textureManager.setTexture(letter, "abc", c);
+            spriteManager.setTexture(letter, "abc", c);
             letter.setOrigin(0, 0);
             letter.setPosition(x, y);
             letter.setScale(scale, scale);
-            x += (float(letter.getTextureRect().width) + 1.0f) * scale;
-            window.draw(letter);
+            x += (letter.size.x + 1.0f) * scale;
+            letter.draw(window);
         }
         else if (c >= 'a' && c <= 'z')
         {
             c -= 'a';
-            textureManager.setTexture(letter, "abc", c);
+            spriteManager.setTexture(letter, "abc", c);
             letter.setOrigin(0, 0);
             letter.setPosition(x, y);
             letter.setScale(scale, scale);
-            x += (float(letter.getTextureRect().width) + 1.0f) * scale;
-            window.draw(letter);
+            x += (letter.size.x + 1.0f) * scale;
+            letter.draw(window);
         }
         else if (c >= '0' && c <= '9')
         {
-            textureManager.setTexture(letter, "nums", c-'0');
+            spriteManager.setTexture(letter, "nums", c-'0');
             letter.setOrigin(0, 0);
             letter.setPosition(x, y);
             letter.setScale(scale, scale);
-            x += (float(letter.getTextureRect().width) + 1.0f) * scale;
-            window.draw(letter);
+            x += (letter.size.x + 1.0f) * scale;
+            letter.draw(window);
         }
         else if (c == '|')
         {

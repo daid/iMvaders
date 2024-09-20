@@ -2,6 +2,8 @@
 #define MAIN_H
 
 #include "engine.h"
+#include "Renderable.h"
+#include "postProcessManager.h"
 
 extern RenderLayer* backgroundLayer;
 extern RenderLayer* objectLayer;

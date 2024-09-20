@@ -15,7 +15,7 @@ public:
 
     virtual ~BasicEnemy();
 
-    virtual void update(float delta);
+    virtual void update(float delta) override;
 };
 
 #endif // BASICENEMY_H

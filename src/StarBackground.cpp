@@ -1,6 +1,8 @@
 #include "StarBackground.h"
 #include "main.h"
 #include "random.h"
+#include "gameEntity.h"
+
 
 StarBackground::StarBackground()
 : Renderable(backgroundLayer)
@@ -19,19 +21,19 @@ void StarBackground::update(float delta)
 {
     for(int n=0; n<starCount; n++)
     {
-        stars[n].y += (stars[n].depth + 0.4) * delta * 0.2;
-        if (stars[n].y > 1.0)
-            stars[n].y -= 1.0;
+        stars[n].y += (stars[n].depth + 0.4f) * delta * 0.2f;
+        if (stars[n].y > 1.0f)
+            stars[n].y -= 1.0f;
     }
 }
 
-void StarBackground::render(sf::RenderTarget& window)
+void StarBackground::render(sp::RenderTarget& window)
 {
     for(int n=0; n<starCount; n++)
     {
-        sf::RectangleShape rect(sf::Vector2f(1, 1));
+        RectangleShape rect({1, 1});
         rect.setPosition(stars[n].x * 320, stars[n].y * 240);
-        rect.setFillColor(sf::Color(32+64*stars[n].depth,32+64*stars[n].depth,32+64*(1-stars[n].depth)));
-        window.draw(rect);
+        rect.setFillColor({32+64*stars[n].depth,32+64*stars[n].depth,32+64*(1-stars[n].depth),255});
+        rect.draw(window);
     }
 }

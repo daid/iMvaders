@@ -2,6 +2,9 @@
 #define POWERUP_H
 
 #include "engine.h"
+#include "gameEntity.h"
+#include "collisionable.h"
+
 
 class Powerup: public GameEntity, public Collisionable
 {
@@ -12,7 +15,7 @@ public:
     virtual ~Powerup();
     virtual void update(float delta) override;
 
-    virtual void render(sf::RenderTarget& window) override;
+    virtual void render(sp::RenderTarget& window) override;
     
     virtual void collide(Collisionable* target, float force) override;
 };

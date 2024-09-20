@@ -2,6 +2,10 @@
 #define POWERUP_CARRIER_H
 
 #include "engine.h"
+#include "gameEntity.h"
+#include "collisionable.h"
+#include "scriptInterface.h"
+
 
 class PowerupCarrier: public GameEntity, public Collisionable
 {
@@ -13,10 +17,10 @@ public:
     
     PowerupCarrier();
     virtual ~PowerupCarrier();
-    virtual void update(float delta);
+    virtual void update(float delta) override;
 
-    virtual bool takeDamage(sf::Vector2f position, int damageType, int damageAmount);
-    virtual void render(sf::RenderTarget& window);
+    virtual bool takeDamage(glm::vec2 position, int damageType, int damageAmount) override;
+    virtual void render(sp::RenderTarget& window) override;
     
     void setDirection(int dir);
 };

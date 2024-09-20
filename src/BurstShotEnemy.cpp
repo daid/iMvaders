@@ -11,14 +11,14 @@ void BurstShotEnemy::update(float delta)
 {
     if (shots)
     {
-        if (shotDelay > 0)
+        if (shotDelay > 0.0f)
             shotDelay -= delta;
         if (shotDelay <= 0)
         {
-            shotDelay += 1.0/60.0;
+            shotDelay += 1.0f/60.0f;
             float a = sprite.getRotation();
             if (a > 180 - shotAngle/2 && a < 180 + shotAngle/2)
-                new Bullet(getPosition() + sf::Vector2f(8.0f * sinf((shotsPerBurst - shots) / float(shotsPerBurst) * M_PI * 4), 4.0), 0, a, 360.0f);
+                new Bullet(getPosition() + glm::vec2(8.0f * sinf((shotsPerBurst - shots) / float(shotsPerBurst) * float(M_PI) * 4.0f), 4.0f), 0, a, 360.0f);
             shots--;
             if (shots == 0)
                 shotDelay = random(1.0, 8.0);
@@ -27,8 +27,8 @@ void BurstShotEnemy::update(float delta)
     else if (charge > 0)
     {
         charge -= delta;
-        if (fmodf(charge, 4.0/60.0) > 2.0/60.0)
-            sprite.setColor(sf::Color(255, 255, 255));
+        if (fmodf(charge, 4.0f/60.0f) > 2.0f/60.0f)
+            sprite.setColor({255,255,255,255});
         else
             sprite.setColor(color);
         if (charge <= 0)

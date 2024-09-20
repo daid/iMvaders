@@ -1,6 +1,7 @@
 #include "replicatorZ18.h"
 #include "scoreManager.h"
 #include "engine.h"
+#include "random.h"
 #include "explosion.h"
 #include "vectorUtils.h"
 #include "textureManager.h"
@@ -21,13 +22,13 @@ ReplicatorZ18::ReplicatorZ18()
 void ReplicatorZ18::update(float delta)
 {
     y += speed * delta;
-    int want_row = std::max(0, 34 - int(y / 16.0));
+    int want_row = std::max(0, 34 - int(y / 16.0f));
     for(int row = want_row; row < row_done; row++)
     {
         for(unsigned int x=0; x<20; x++)
         {
             P<ReplicatorZ18Part> part = new ReplicatorZ18Part(this, x + row * 20);
-            part->setPosition(sf::Vector2f(x * 16, float(row) * 15 - 34.0 * 16.0 + y));
+            part->setPosition(glm::vec2(x * 16, float(row) * 15 - 34.0f * 16.0f + y));
             part->setSpeed(speed);
             parts.push_back(part);
         }
@@ -40,7 +41,7 @@ void ReplicatorZ18::update(float delta)
     }
     row_done = want_row;
 
-    if (y > 34 * 16.0 + 260)
+    if (y > 34 * 16.0f + 260)
         destroy();
 }
 
@@ -52,10 +53,10 @@ void ReplicatorZ18::setSpeed(float speed)
 }
 
 ReplicatorZ18Part::ReplicatorZ18Part(P<ReplicatorZ18> owner, int index)
-: Collisionable(sf::Vector2f(16, 16))
+: Collisionable(glm::vec2(16, 16))
 {
     speed = 16;
-    textureManager.setTexture(sprite, "Replicator_Z18", index);
+    spriteManager.setTexture(sprite, "Replicator_Z18", index);
     health = maxHealth;
     tinyExplosionDelay = 0.0;
     indestructible = false;
@@ -72,7 +73,7 @@ void ReplicatorZ18Part::destroy()
 
 void ReplicatorZ18Part::update(float delta)
 {
-    setPosition(getPosition() + sf::Vector2f(0, speed) * delta);
+    setPosition(getPosition() + glm::vec2(0, speed) * delta);
     if (health <= 0)
     {
         setRotation(getRotation() + 1000 * delta);
@@ -82,8 +83,8 @@ void ReplicatorZ18Part::update(float delta)
         {
             tinyExplosionDelay -= delta;
         }else{
-            tinyExplosionDelay += 0.1;
-            new Explosion(getPosition() + sf::Vector2f(random(-6, 6), random(-6, 6)), 2, sf::Vector2f(0, speed));
+            tinyExplosionDelay += 0.1f;
+            new Explosion(getPosition() + glm::vec2(random(-6, 6), random(-6, 6)), 2, glm::vec2(0, speed));
         }
     }
     if (getPosition().y > 260)
@@ -92,15 +93,15 @@ void ReplicatorZ18Part::update(float delta)
     }
 }
 
-void ReplicatorZ18Part::render(sf::RenderTarget& window)
+void ReplicatorZ18Part::render(sp::RenderTarget& window)
 {
     sprite.setPosition(getPosition());
     sprite.setRotation(getRotation());
     if (health <= 0)
-        sprite.setColor(sf::Color(255,255,255,128));
+        sprite.setColor({255,255,255,128});
     if (indestructible)
-        sprite.setColor(sf::Color(192,192,192,255));
-    window.draw(sprite);
+        sprite.setColor({192,192,192,255});
+    sprite.draw(window);
 }
 
 void ReplicatorZ18Part::collide(Collisionable* other, float force)
@@ -115,7 +116,7 @@ void ReplicatorZ18Part::collide(Collisionable* other, float force)
     }
 }
 
-bool ReplicatorZ18Part::takeDamage(sf::Vector2f position, int damageType, int damageAmount)
+bool ReplicatorZ18Part::takeDamage(glm::vec2 position, int damageType, int damageAmount)
 {
     if (damageType >= 0 || health <= 0)
         return false;

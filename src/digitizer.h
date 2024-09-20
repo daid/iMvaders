@@ -2,6 +2,7 @@
 #define DIGITIZER_H
 
 #include "engine.h"
+#include "collisionable.h"
 #include "explosion.h"
 
 class DigitizerLaser;
@@ -25,8 +26,8 @@ public:
         GameEntity::destroy();
     }
     
-    virtual void render(sf::RenderTarget& window) override;
-    virtual bool takeDamage(sf::Vector2f position, int damageType, int damageAmount) override;
+    virtual void render(sp::RenderTarget& window) override;
+    virtual bool takeDamage(glm::vec2 position, int damageType, int damageAmount) override;
 };
 
 class DigitizerLaser: public GameEntity, public Collisionable
@@ -41,7 +42,7 @@ public:
     virtual ~DigitizerLaser() {}
 
     virtual void update(float delta) override;
-    virtual void render(sf::RenderTarget& window) override;
+    virtual void render(sp::RenderTarget& window) override;
     virtual void destroy() override
     {
         owner = NULL;

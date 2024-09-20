@@ -39,13 +39,13 @@ void EnemyGroup::update(float delta)
     {
         if (e->state == ES_Wait)
         {
-            if (!prev || e->sprite.getPosition() - prev->sprite.getPosition() > 20.0f)
+            if (!prev || glm::length(e->sprite.getPosition() - prev->sprite.getPosition()) > 20.0f)
                 e->flyIn();
             break;
         }
         if (e->state == ES_CenterField && prev && prev->state == ES_Diving)
         {
-            if (e->sprite.getPosition() - prev->sprite.getPosition() > 30.0f)
+            if (glm::length(e->sprite.getPosition() - prev->sprite.getPosition()) > 30.0f)
                 e->dive(prev->diveCurve.p1);
             break;
         }
@@ -61,7 +61,7 @@ bool EnemyGroup::isAll(EnemyState state)
     return true;
 }
 
-void EnemyGroup::dive(sf::Vector2f target)
+void EnemyGroup::dive(glm::vec2 target)
 {
     foreach(BasicEnemyBase, e, enemyList)
     {
@@ -70,7 +70,7 @@ void EnemyGroup::dive(sf::Vector2f target)
     }
 }
 
-void EnemyGroup::flyIn(sf::Vector2f start)
+void EnemyGroup::flyIn(glm::vec2 start)
 {
     foreach(BasicEnemyBase, e, enemyList)
         e->wait(start);
@@ -78,7 +78,7 @@ void EnemyGroup::flyIn(sf::Vector2f start)
         enemyList[0]->flyIn();
 }
 
-void EnemyGroup::flyInBy(sf::Vector2f start, sf::Vector2f flyByPoint)
+void EnemyGroup::flyInBy(glm::vec2 start, glm::vec2 flyByPoint)
 {
     foreach(BasicEnemyBase, e, enemyList)
         e->wait(start, flyByPoint);

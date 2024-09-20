@@ -20,6 +20,6 @@ public:
     }
 
     virtual ~BurstShotEnemy();
-    virtual void update(float delta);
+    virtual void update(float delta) override;
 };
 #endif // BURSTSHOTENEMY_H

@@ -1,7 +1,6 @@
 #ifndef SCORE_MANAGER_H
 #define SCORE_MANAGER_H
 
-#include <SFML/System.hpp>
 #include "Updatable.h"
 #include "player.h"
 #include "stringImproved.h"
@@ -37,7 +36,7 @@ public:
     int getHighScore(int playerCount, int idx);
     string getHighscoreName(int playerCount, int idx);
     
-    virtual void update(float delta);
+    virtual void update(float delta) override;
 
 private:
     void loadHighscore(string filename);

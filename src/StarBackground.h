@@ -1,7 +1,6 @@
 #ifndef STAR_BACKGROUND_H
 #define STAR_BACKGROUND_H
 
-#include <SFML/Graphics.hpp>
 #include "Updatable.h"
 #include "Renderable.h"
 
@@ -19,8 +18,8 @@ public:
     Star stars[starCount];
     StarBackground();
     virtual ~StarBackground();
-    virtual void update(float delta);
-    virtual void render(sf::RenderTarget& window);
+    virtual void update(float delta) override;
+    virtual void render(sp::RenderTarget& window) override;
 };
 
 #endif//STAR_BACKGROUND_H

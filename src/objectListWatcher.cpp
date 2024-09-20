@@ -23,7 +23,7 @@ public:
         timeout = f;
     }
     
-    virtual void update(float delta)
+    virtual void update(float delta) override
     {
         int cnt = 0;
         foreach(PObject, obj, objects)
@@ -57,7 +57,7 @@ public:
         timeout = f;
     }
     
-    virtual void update(float delta)
+    virtual void update(float delta) override
     {
         if (timeout > 0)
         {

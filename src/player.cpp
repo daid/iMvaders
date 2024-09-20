@@ -7,6 +7,7 @@
 #include "bullet.h"
 #include "explosion.h"
 #include "nuke.h"
+#include "random.h"
 
 bool playerBonusWeaponsActive = false;
 
@@ -20,26 +21,26 @@ PlayerCraft::PlayerCraft(PlayerController* controller, PlayerInfo* info, int typ
     health = 2;
     if (type == 0)
     {
-        textureManager.setTexture(sprite, "player1");
-        color = sf::Color(24, 161, 212, 255);
+        spriteManager.setTexture(sprite, "player1");
+        color = {24, 161, 212, 255};
     }
     else if (type < 0)
     {
-        textureManager.setTexture(sprite, "BasicEnemy", 0);
-        color = sf::Color(212, 0, 0, 255);
+        spriteManager.setTexture(sprite, "BasicEnemy", 0);
+        color = {212, 0, 0, 255};
         sprite.setScale(1.2, 1.2);
         sprite.setColor(color);
     }
     else
     {
-        textureManager.setTexture(sprite, "player2");
-        color = sf::Color(231, 24, 118, 255);
+        spriteManager.setTexture(sprite, "player2");
+        color = {231, 24, 118, 255};
     }
     
     if (type >= 0)
-        setPosition(sf::Vector2f(160 + random(-100, 100), 220));
+        setPosition({160 + random(-100, 100), 220});
     else
-        setPosition(sf::Vector2f(160, 20));
+        setPosition({160, 20});
 }
 
 PlayerCraft::~PlayerCraft()
@@ -60,28 +61,28 @@ void PlayerCraft::update(float delta)
     if (controller->button(slowButton))
         speed = 40;
     if (controller->left())
-        velocity = sf::Vector2f(-speed, velocity.y);
+        velocity = glm::vec2(-speed, velocity.y);
     if (controller->right())
-        velocity = sf::Vector2f( speed, velocity.y);
+        velocity = glm::vec2( speed, velocity.y);
     if (controller->up())
-        velocity = sf::Vector2f(velocity.x, -speed);
+        velocity = glm::vec2(velocity.x, -speed);
     if (controller->down())
-        velocity = sf::Vector2f(velocity.x,  speed);
+        velocity = glm::vec2(velocity.x,  speed);
 
     setPosition(getPosition() + velocity * delta);
 
     if (getPosition().x < 20)
-        setPosition(sf::Vector2f(20, getPosition().y));
+        setPosition(glm::vec2(20, getPosition().y));
     if (getPosition().x > 300)
-        setPosition(sf::Vector2f(300, getPosition().y));
+        setPosition(glm::vec2(300, getPosition().y));
     if (getPosition().y < 10)
-        setPosition(sf::Vector2f(getPosition().x, 10));
+        setPosition(glm::vec2(getPosition().x, 10));
     if (getPosition().y > 230)
-        setPosition(sf::Vector2f(getPosition().x, 230));
+        setPosition(glm::vec2(getPosition().x, 230));
     if (getPosition().y < 20 && type >= 0)
-        setPosition(sf::Vector2f(getPosition().x, 20));
+        setPosition(glm::vec2(getPosition().x, 20));
     if (getPosition().y > 220 && type < 0)
-        setPosition(sf::Vector2f(getPosition().x, 220));
+        setPosition(glm::vec2(getPosition().x, 220));
 
     if (playerBonusWeaponsActive)
     {
@@ -113,7 +114,7 @@ void PlayerCraft::update(float delta)
             {
                 for(int n=0; n<=shots; n++)
                 {
-                    new Bullet(getPosition(), -1 - type, (float(n) - float(shots) / 2.0) / float(shots) * 15.0 + ((type >= 0) ? 0 : 180));
+                    new Bullet(getPosition(), -1 - type, (float(n) - float(shots) / 2.0f) / float(shots) * 15.0f + ((type >= 0) ? 0 : 180));
                 }
             }
         }
@@ -132,53 +133,53 @@ void PlayerCraft::update(float delta)
             }
             if (type == 1)
             {
-                new Bullet(getPosition() + sf::Vector2f(7, 0), -2, 0);
-                new Bullet(getPosition() + sf::Vector2f(-4, 0), -2, 0);
+                new Bullet(getPosition() + glm::vec2(7, 0), -2, 0);
+                new Bullet(getPosition() + glm::vec2(-4, 0), -2, 0);
                 fireCooldown = 0.8;
             }
         }
         if (!controller->button(fireButton))
         {
-            if (type <= 0 && fireCooldown > 0.1)
+            if (type <= 0 && fireCooldown > 0.1f)
                 fireCooldown = 0.1;
-            if (type == 1 && fireCooldown > 0.25)
+            if (type == 1 && fireCooldown > 0.25f)
                 fireCooldown = 0.25;
         }
         if (nukeCooldown <= 0 && controller->button(nukeButton) && info->nukes > 0 && !controller->button(chargeShotButton))
         {
             nukeCooldown = 2.0;
             info->nukes -= 1;
-            new Nuke(getPosition(), sf::Vector2f(0.0, -150.0), 10.0, type);
+            new Nuke(getPosition(), glm::vec2(0.0, -150.0), 10.0, type);
         }
     }
 }
 
-void PlayerCraft::render(sf::RenderTarget& window)
+void PlayerCraft::render(sp::RenderTarget& window)
 {
     if (fmod(invulnerability, 4.0/60.0) > 2.0/60.0)
         return;
     sprite.setPosition(getPosition());
     if (type < 0)
-        sprite.setRotation(velocity.x / 10.0 + 180);
+        sprite.setRotation(velocity.x / 10.0f + 180);
     else
-        sprite.setRotation(velocity.x / 10.0);
-    window.draw(sprite);
+        sprite.setRotation(velocity.x / 10.0f);
+    sprite.draw(window);
     
     if (chargeShot > minChargeShot)
     {
-        float r = 0.5 + 3 * (chargeShot - minChargeShot) / (maxChargeShot - minChargeShot);
-        sf::CircleShape circle(r, random(3, 5));
+        float r = 0.5f + 3 * (chargeShot - minChargeShot) / (maxChargeShot - minChargeShot);
+        CircleShape circle(r, random(3, 5));
         circle.setOrigin(r, r);
-        sf::Color col = color;
+        auto col = color;
         col.a = 200;
         circle.setFillColor(col);
         circle.setRotation(random(0, 360));
-        circle.setPosition(getPosition() + sf::rotateVector(sf::Vector2f(0, -1), sprite.getRotation()) * 10.0f);
-        window.draw(circle);
+        circle.setPosition(getPosition() + rotateVec2(glm::vec2(0, -1), sprite.getRotation()) * 10.0f);
+        circle.draw(window);
     }
 }
 
-bool PlayerCraft::takeDamage(sf::Vector2f position, int damageType, int damageAmount)
+bool PlayerCraft::takeDamage(glm::vec2 position, int damageType, int damageAmount)
 {
     if (type < 0)
     {
@@ -195,7 +196,7 @@ bool PlayerCraft::takeDamage(sf::Vector2f position, int damageType, int damageAm
         destroy();
         for(unsigned int n=0; n<4; n++)
         {
-            new Explosion(sprite.getPosition() + sf::Vector2f(random(-10, 10), random(-10, 10)), 10);
+            new Explosion(sprite.getPosition() + glm::vec2(random(-10, 10), random(-10, 10)), 10);
         }
         //new Explosion(getPosition(), 12);
     }
@@ -203,7 +204,7 @@ bool PlayerCraft::takeDamage(sf::Vector2f position, int damageType, int damageAm
 }
 
 PlayerBonusLaser::PlayerBonusLaser(P<PlayerCraft> owner)
-: Collisionable(sf::Vector2f(6, 240), sf::Vector2f(0, -120)), owner(owner)
+: Collisionable(glm::vec2(6, 240), glm::vec2(0, -120)), owner(owner)
 {
     length = 240.0;
 }
@@ -221,17 +222,17 @@ void PlayerBonusLaser::update(float delta)
         destroy();
 }
 
-void PlayerBonusLaser::render(sf::RenderTarget& window)
+void PlayerBonusLaser::render(sp::RenderTarget& window)
 {
-    sf::RectangleShape laser(sf::Vector2f(6, length));
+    RectangleShape laser(glm::vec2(6, length));
     laser.setOrigin(3, length);
     if (type == 1)
-        laser.setFillColor(sf::Color(24, 161, 212,128));
+        laser.setFillColor({24, 161, 212,128});
     else
-        laser.setFillColor(sf::Color(231, 24, 118,128));
+        laser.setFillColor({231, 24, 118,128});
     laser.setPosition(getPosition());
     laser.setRotation(getRotation());
-    window.draw(laser);
+    laser.draw(window);
 }
 
 void PlayerBonusLaser::collide(Collisionable* other, float force)
@@ -241,7 +242,7 @@ void PlayerBonusLaser::collide(Collisionable* other, float force)
     {
         if (e->takeDamage(getPosition(), -type, 0))
         {
-            float dist = sf::length(other->getPosition() - getPosition());
+            float dist = glm::length(other->getPosition() - getPosition());
             if (dist < length)
             {
                 length = dist;

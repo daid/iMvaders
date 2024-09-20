@@ -44,18 +44,18 @@ void Transmission::bottom()
     positionY = 160;
 }
 
-void Transmission::render(sf::RenderTarget& window)
+void Transmission::render(sp::RenderTarget& window)
 {
-    sf::RectangleShape transmissionShape(sf::Vector2f(280, 62));
+    RectangleShape transmissionShape({280, 62});
     transmissionShape.setPosition(20, positionY);
-    transmissionShape.setFillColor(sf::Color(0, 0, 0, 128));
-    transmissionShape.setOutlineColor(sf::Color::White);
+    transmissionShape.setFillColor({0, 0, 0, 128});
+    transmissionShape.setOutlineColor({255,255,255,255});
     transmissionShape.setOutlineThickness(1);
-    window.draw(transmissionShape);
+    transmissionShape.draw(window);
     if (faceName.size() > 0)
     {
         face.setPosition(21+30, positionY+1+30);
-        window.draw(face);
+        face.draw(window);
         drawText(window, 23 + 60, positionY+1, text.substr(0, int(transmissionTime * charsPerSecond)), align_left);
     }else{
         drawText(window, 23, positionY+1, text.substr(0, int(transmissionTime * charsPerSecond)), align_left);
@@ -69,9 +69,9 @@ void Transmission::update(float delta)
     if (faceName.size() > 0)
     {
         if (transmissionTime * charsPerSecond < text.length())
-            textureManager.setTexture(face, faceName.c_str(), fmodf(transmissionTime * charsPerSecond, 2.0f) < 1.0f ? 1 : 0);
+            spriteManager.setTexture(face, faceName.c_str(), fmodf(transmissionTime * charsPerSecond, 2.0f) < 1.0f ? 1 : 0);
         else
-            textureManager.setTexture(face, faceName.c_str(), 0);
+            spriteManager.setTexture(face, faceName.c_str(), 0);
     }
 
     if (transmissionTime > float(text.length()) / charsPerSecond + extraDelayBeforeDone)

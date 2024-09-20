@@ -4,6 +4,8 @@
 #define MAX_PLAYERS 2
 
 #include "engine.h"
+#include "gameEntity.h"
+#include "collisionable.h"
 #include "PlayerController.h"
 
 const int fireButton = 0;
@@ -28,7 +30,7 @@ class PlayerCraft: public GameEntity, public Collisionable
 public:
     PlayerController* controller;
     PlayerInfo* info;
-    sf::Vector2f velocity;
+    glm::vec2 velocity{};
     int type;
     float fireCooldown, nukeCooldown;
     float chargeShot;
@@ -36,18 +38,18 @@ public:
     static constexpr float maxChargeShot = 2.0;
     float invulnerability;
     int health;
-    sf::Color color;
+    glm::u8vec4 color;
     P<PlayerBonusLaser> bonusLaser;
 public:
     PlayerCraft(PlayerController* controller, PlayerInfo* info, int type);
 
     virtual ~PlayerCraft();
 
-    virtual void update(float delta);
+    virtual void update(float delta) override;
 
-    virtual void render(sf::RenderTarget& window);
+    virtual void render(sp::RenderTarget& window) override;
 
-    virtual bool takeDamage(sf::Vector2f position, int damageType, int damageAmount);
+    virtual bool takeDamage(glm::vec2 position, int damageType, int damageAmount) override;
 };
 
 class PlayerBonusLaser: public GameEntity, public Collisionable
@@ -62,7 +64,7 @@ public:
     virtual ~PlayerBonusLaser() {}
 
     virtual void update(float delta) override;
-    virtual void render(sf::RenderTarget& window) override;
+    virtual void render(sp::RenderTarget& window) override;
 
     virtual void collide(Collisionable* other, float force) override;
 };

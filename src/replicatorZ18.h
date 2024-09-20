@@ -2,6 +2,9 @@
 #define REPLICATOR_Z18_H
 
 #include "engine.h"
+#include "gameEntity.h"
+#include "collisionable.h"
+
 
 class ReplicatorZ18Part;
 class ReplicatorZ18 : public GameEntity
@@ -15,7 +18,7 @@ public:
     ReplicatorZ18();
     virtual ~ReplicatorZ18() {}
 
-    virtual void update(float delta);
+    virtual void update(float delta) override;
     
     void setSpeed(float speed);
 };
@@ -36,10 +39,10 @@ public:
     virtual void destroy() override;
 
     virtual void update(float delta) override;
-    virtual void render(sf::RenderTarget& window) override;
+    virtual void render(sp::RenderTarget& window) override;
 
     virtual void collide(Collisionable* other, float force) override;
-    virtual bool takeDamage(sf::Vector2f position, int damageType, int damageAmount) override;
+    virtual bool takeDamage(glm::vec2 position, int damageType, int damageAmount) override;
     
     void setSpeed(float speed);
 };

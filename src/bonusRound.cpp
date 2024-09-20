@@ -32,18 +32,18 @@ public:
         playerBonusWeaponsActive = false;
     }
 
-    virtual void update(float delta);
+    virtual void update(float delta) override;
     
-    virtual void render(sf::RenderTarget& window)
+    virtual void render(sp::RenderTarget& window) override
     {
-        if (introTimeout > 0.0)
-            window.draw(sprite);
+        if (introTimeout > 0.0f)
+            sprite.draw(window);
     }
     
     void score()
     {
         scoreCount++;
-        soundManager->playSound("bonus_score", random(0.95, 1.05));
+        soundManager->playSound("bonus_score.wav", random(0.95, 1.05));
     }
     
     void setColorCount(int count)
@@ -64,17 +64,17 @@ public:
     int type;
 
     BonusRoundObject(P<BonusRound> owner, int idx, int colorCount, int disallowColor)
-    : Collisionable(sf::Vector2f(20, 20)), owner(owner), disallowColor(disallowColor)
+    : Collisionable(glm::vec2(20, 20)), owner(owner), disallowColor(disallowColor)
     {
-        setPosition(sf::Vector2f(70 + 20 * idx, -10));
-        setVelocity(sf::Vector2f(0, 10.0));
+        setPosition(glm::vec2(70 + 20 * idx, -10));
+        setVelocity(glm::vec2(0, 10.0));
         
         if (colorCount > maxColorCount)
             colorCount = maxColorCount;
         
         this->colorCount = colorCount;
         
-        textureManager.setTexture(sprite, "robot");
+        spriteManager.setTexture(sprite, "robot");
         sprite.setScale(0.25, 0.25);
         do {
             type = irandom(0, colorCount - 1);
@@ -84,7 +84,7 @@ public:
         scored = false;
     }
     
-    virtual void update(float delta)
+    virtual void update(float delta) override
     {
         if (switchDelay > 0)
             switchDelay -= delta;
@@ -98,30 +98,30 @@ public:
         if (scored)
         {
             sprite.setScale(sprite.getScale() * powf(0.1, delta));
-            if (sprite.getScale().x < 0.01)
+            if (sprite.getScale().x < 0.01f)
                 destroy();
         }
     }
     
-    virtual void render(sf::RenderTarget& window)
+    virtual void render(sp::RenderTarget& window) override
     {
         switch(type)
         {
-        case 0: sprite.setColor(sf::Color::Red); break;
-        case 1: sprite.setColor(sf::Color::Green); break;
-        case 2: sprite.setColor(sf::Color::Blue); break;
-        case 3: sprite.setColor(sf::Color::Yellow); break;
-        case 4: sprite.setColor(sf::Color::Cyan); break;
-        case 5: sprite.setColor(sf::Color::Magenta); break;
-        case 6: sprite.setColor(sf::Color::White); break;
+        case 0: sprite.setColor({255,  0,  0,255}); break;
+        case 1: sprite.setColor({  0,255,  0,255}); break;
+        case 2: sprite.setColor({  0,  0,255,255}); break;
+        case 3: sprite.setColor({255,255,  0,255}); break;
+        case 4: sprite.setColor({  0,255,255,255}); break;
+        case 5: sprite.setColor({255,  0,255,255}); break;
+        case 6: sprite.setColor({255,255,255,255}); break;
         }
         
         sprite.setPosition(getPosition());
         sprite.setRotation(getRotation());
-        window.draw(sprite);
+        sprite.draw(window);
     }
     
-    virtual bool takeDamage(sf::Vector2f position, int damageType, int damageAmount)
+    virtual bool takeDamage(glm::vec2 position, int damageType, int damageAmount) override
     {
         if (scored)
             return false;
@@ -162,7 +162,7 @@ public:
     }
     virtual ~BonusRoundRow() {}
     
-    virtual void update(float delta)
+    virtual void update(float delta) override
     {
         int type = -1;
         foreach(BonusRoundObject, obj, items)
@@ -191,7 +191,7 @@ REGISTER_SCRIPT_CLASS(BonusRound)
 BonusRound::BonusRound()
 : GameEntity(hudLayer)
 {
-    textureManager.setTexture(sprite, "bonus");
+    spriteManager.setTexture(sprite, "bonus");
     sprite.setPosition(160, 120);
     spawnCount = 10;
     spawnTimeout = 2.0;
@@ -204,17 +204,17 @@ BonusRound::BonusRound()
 
 void BonusRound::update(float delta)
 {
-    if (introTimeout > 0.0)
+    if (introTimeout > 0.0f)
     {
         introTimeout -= delta;
-        if (introTimeout > 2.0)
+        if (introTimeout > 2.0f)
             sprite.setRotation(introTimeout * 360 * 5);
         else
             sprite.setRotation(0);
     }
     if (spawnCount > 0)
     {
-        if (spawnTimeout > 0.0)
+        if (spawnTimeout > 0.0f)
         {
             spawnTimeout -= delta;
         }else{

@@ -1,6 +1,7 @@
 #include "digitizer.h"
 #include "scoreManager.h"
 #include "engine.h"
+#include "random.h"
 #include "vectorUtils.h"
 
 #include "scriptInterface.h"
@@ -11,12 +12,12 @@ REGISTER_SCRIPT_CLASS(Digitizer)
 }
 
 Digitizer::Digitizer()
-: GameEntity(), Collisionable(sf::Vector2f(28.0f, 35.0f))
+: GameEntity(), Collisionable(glm::vec2(28.0f, 35.0f))
 {
-    textureManager.setTexture(sprite, "Digitizer", 0);
+    spriteManager.setTexture(sprite, "Digitizer", 0);
     health = maxHealth;
     state = 0;
-    setPosition(sf::Vector2f(random(50, 320 - 50), -50));
+    setPosition(glm::vec2(random(50, 320 - 50), -50));
 }
 
 Digitizer::~Digitizer(){}
@@ -28,14 +29,14 @@ void Digitizer::update(float delta)
     case 0:
         if (getPosition().y < 50)
         {
-            setPosition(sf::Vector2f(getPosition().x, getPosition().y + delta * 100.0f));
+            setPosition(glm::vec2(getPosition().x, getPosition().y + delta * 100.0f));
         }else{
             state = 1;
             laser[0] = new DigitizerLaser(this);
-            laser[0]->setPosition(getPosition() + sf::Vector2f( 12.0, -13.0));
+            laser[0]->setPosition(getPosition() + glm::vec2( 12.0, -13.0));
             laser[0]->setRotation(25.0f);
             laser[1] = new DigitizerLaser(this);
-            laser[1]->setPosition(getPosition() + sf::Vector2f(-12.0, -13.0));
+            laser[1]->setPosition(getPosition() + glm::vec2(-12.0, -13.0));
             laser[1]->setRotation(-25.0f);
         }
         break;
@@ -46,19 +47,19 @@ void Digitizer::update(float delta)
     case 2:
         if (getPosition().y > -50)
         {
-            setPosition(sf::Vector2f(getPosition().x, getPosition().y - delta * 150.0f));
+            setPosition(glm::vec2(getPosition().x, getPosition().y - delta * 150.0f));
         }else{
-            setPosition(sf::Vector2f(random(50, 320 - 50), -50));
+            setPosition(glm::vec2(random(50, 320 - 50), -50));
             state = 0;
         }
         break;
     }
 }
 
-void Digitizer::render(sf::RenderTarget& window)
+void Digitizer::render(sp::RenderTarget& window)
 {
     sprite.setPosition(getPosition());
-    window.draw(sprite);
+    sprite.draw(window);
 }
 void Digitizer::collide(Collisionable* target, float force)
 {
@@ -67,7 +68,7 @@ void Digitizer::collide(Collisionable* target, float force)
         e->takeDamage(getPosition(), 0, 1);
 }
 
-bool Digitizer::takeDamage(sf::Vector2f position, int damageType, int damageAmount)
+bool Digitizer::takeDamage(glm::vec2 position, int damageType, int damageAmount)
 {
     if (damageType >= 0)
         return false;
@@ -82,7 +83,7 @@ bool Digitizer::takeDamage(sf::Vector2f position, int damageType, int damageAmou
 }
 
 DigitizerLaser::DigitizerLaser(P<Digitizer> owner)
-: Collisionable(sf::Vector2f(1, 240), sf::Vector2f(0, 120))
+: Collisionable(glm::vec2(1, 240), glm::vec2(0, 120))
 {
     this->owner = owner;
     activateDelay = activateDelayMax;
@@ -91,9 +92,9 @@ DigitizerLaser::DigitizerLaser(P<Digitizer> owner)
 
 void DigitizerLaser::update(float delta)
 {
-    if (activateDelay >= 0.0)
+    if (activateDelay >= 0.0f)
         activateDelay -= delta;
-    else if (deactivateDelay >= 0.0)
+    else if (deactivateDelay >= 0.0f)
         deactivateDelay -= delta;
     else
         destroy();
@@ -101,25 +102,25 @@ void DigitizerLaser::update(float delta)
         destroy();
 }
 
-void DigitizerLaser::render(sf::RenderTarget& window)
+void DigitizerLaser::render(sp::RenderTarget& window)
 {
     if (activateDelay < 0)
     {
-        sf::RectangleShape laser(sf::Vector2f(3, 240));
+        RectangleShape laser(glm::vec2(3, 240));
         laser.setOrigin(1.5, 0);
-        laser.setFillColor(sf::Color(255,0,0,192));
+        laser.setFillColor({255,0,0,192});
         laser.setRotation(getRotation());
         laser.setPosition(getPosition());
-        window.draw(laser);
+        laser.draw(window);
     }
     else
     {
-        sf::RectangleShape laser(sf::Vector2f(1, 240));
+        RectangleShape laser(glm::vec2(1, 240));
         laser.setOrigin(0.5, 0);
-        laser.setFillColor(sf::Color(255,0,0,64 + 64 * ((activateDelayMax - activateDelay) / activateDelayMax)));
+        laser.setFillColor({255,0,0,64 + 64 * ((activateDelayMax - activateDelay) / activateDelayMax)});
         laser.setRotation(getRotation());
         laser.setPosition(getPosition());
-        window.draw(laser);
+        laser.draw(window);
     }
 }
 
