@@ -1,6 +1,7 @@
 #include "gameEntity.h"
 #include "graphics/image.h"
 #include "vectorUtils.h"
+#include <unordered_map>
 
 
 SpriteManager spriteManager;
