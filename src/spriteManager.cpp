@@ -64,7 +64,7 @@ void RectangleShape::draw(sp::RenderTarget& window)
     glm::vec2 p2 = position + rotateVec2({s1.x, s1.y}, rotation);
 
     if (fill_color.a > 0)
-        window.drawTriangleStrip({p0, p1, p2, p3}, fill_color);
+        window.drawTriangleStrip({p0, p1, p3, p2}, fill_color);
     if (outline_thickness > 0) {
         auto t = outline_thickness;
         glm::vec2 o0 = position + rotateVec2({s0.x-t, s0.y-t}, rotation);
